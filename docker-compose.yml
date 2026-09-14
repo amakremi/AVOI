@@ -1,0 +1,62 @@
+# AVOI-GRC controlled IAM assurance testbed (Docker Desktop / Windows 11 compatible).
+# Components:
+#   kc-db         PostgreSQL 16 backing store for Keycloak (event store is queried by the ground-truth oracle only)
+#   keycloak      Keycloak 26.3 identity provider (realms = assessment scenarios)
+#   evidence-repo lightweight documentary-evidence repository (policies, HR feed, tickets, access reviews)
+#                 served read-only over HTTP by busybox httpd
+#   app-host      Linux host with local (break-glass) accounts, inspected through `docker exec`
+name: avoi-grc-testbed
+
+services:
+  kc-db:
+    image: postgres:16-alpine
+    container_name: avoi-kc-db
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak-testbed-only
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - kc-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak"]
+      interval: 5s
+      retries: 20
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.3
+    container_name: avoi-keycloak
+    command: ["start-dev", "--http-port=8080"]
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://kc-db:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak-testbed-only
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin-testbed-only
+      KC_HEALTH_ENABLED: "true"
+      JAVA_OPTS_KC_HEAP: "-Xms512m -Xmx2g"
+    ports:
+      - "127.0.0.1:58080:8080"
+    depends_on:
+      kc-db:
+        condition: service_healthy
+
+  evidence-repo:
+    image: busybox:1.36
+    container_name: avoi-evidence-repo
+    command: ["httpd", "-f", "-v", "-p", "8081", "-h", "/srv/grc"]
+    ports:
+      - "127.0.0.1:58081:8081"
+    volumes:
+      - ./testbed/state/evidence_repo:/srv/grc:ro
+
+  app-host:
+    image: alpine:3.20
+    container_name: avoi-app-host
+    command: ["sh", "-c", "apk add --no-cache shadow >/dev/null 2>&1; touch /var/log/auth.log; sleep infinity"]
+
+volumes:
+  kc-db-data:
+

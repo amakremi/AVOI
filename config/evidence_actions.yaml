@@ -1,0 +1,81 @@
+# Evidence-action catalogue (controlled IAM testbed + common evidence-source ontology for public replay).
+#
+# privacy_categories: sensitive field categories an acquisition reveals to the assessor/agent.
+# PrivacyExposure(a) = |categories revealed by a| / |defined categories|  (experimental proxy, not a privacy-risk valuation)
+# Categories are recorded per observation by the collector from the fields actually present in the raw artifact;
+# the list below is the declared schema that collectors check against.
+
+sensitive_categories:
+  - user_identifier
+  - email_address
+  - ip_address
+  - host_device_identifier
+  - role_group_membership
+  - authentication_event
+  - file_activity
+  - communication_content
+  - security_incident_information
+  - hr_employment_record
+
+# Common evidence-source ontology (Layer C mapping across domains)
+source_ontology:
+  policy_document: "Documentary policy/procedure/standard"
+  register_record: "Governance register or approval/review record"
+  ticket_record: "Ticket / remediation / emergency change record"
+  hr_record: "HR system-of-record export"
+  directory_state: "Identity directory state (users, roles, groups, attributes, credentials)"
+  configuration_state: "Security configuration (authentication flows, client bindings)"
+  reconciliation: "Cross-source reconciliation computed by the collector"
+  authentication_log: "Authentication / login events"
+  audit_log: "Administrative audit events"
+  host_state: "Operating-system host state"
+  technical_test: "Active technical test (SP 800-53A TEST method)"
+  device_activity: "Removable-device activity"
+  file_activity: "File activity"
+  network_observation: "Network / web / DNS / IDS observation"
+  communication_record: "E-mail / communication metadata"
+  system_log: "General system / application log"
+
+iam_actions:
+  doc_mfa_policy:            {source_type: policy_document,     method: examine, scf_erl: null,       privacy: []}
+  doc_mfa_exception_register: {source_type: register_record,    method: examine, scf_erl: null,       privacy: [user_identifier]}
+  kc_realm_browser_flow:     {source_type: configuration_state, method: examine, scf_erl: E-IAM-06,   privacy: []}
+  kc_client_flow_overrides:  {source_type: configuration_state, method: examine, scf_erl: E-IAM-06,   privacy: []}
+  test_mfa_login_sample:     {source_type: technical_test,      method: test,    scf_erl: null,       privacy: [user_identifier, authentication_event, role_group_membership]}
+  kc_priv_user_credentials:  {source_type: directory_state,     method: examine, scf_erl: E-IAM-03,   privacy: [user_identifier, role_group_membership]}
+  kc_auth_events_priv:       {source_type: authentication_log,  method: examine, scf_erl: E-MON-01,   privacy: [user_identifier, ip_address, authentication_event, role_group_membership]}
+
+  doc_offboarding_procedure: {source_type: policy_document,     method: examine, scf_erl: E-HRS-19,   privacy: []}
+  hr_termination_feed:       {source_type: hr_record,           method: examine, scf_erl: E-HRS-29,   privacy: [user_identifier, hr_employment_record]}
+  ticket_offboarding_records: {source_type: ticket_record,      method: examine, scf_erl: E-HRS-19,   privacy: [user_identifier]}
+  kc_disabled_accounts:      {source_type: directory_state,     method: examine, scf_erl: E-IAM-07,   privacy: [user_identifier]}
+  recon_hr_vs_directory:     {source_type: reconciliation,      method: examine, scf_erl: E-HRS-19,   privacy: [user_identifier, email_address, hr_employment_record]}
+  kc_login_events_post_termination: {source_type: authentication_log, method: examine, scf_erl: E-MON-01, privacy: [user_identifier, ip_address, authentication_event, hr_employment_record]}
+
+  doc_priv_access_procedure: {source_type: policy_document,     method: examine, scf_erl: E-IAM-08,   privacy: []}
+  approval_register:         {source_type: register_record,     method: examine, scf_erl: E-IAM-09,   privacy: [user_identifier, role_group_membership]}
+  recon_direct_members_vs_approvals: {source_type: reconciliation, method: examine, scf_erl: E-IAM-03, privacy: [user_identifier, role_group_membership]}
+  recon_group_members_vs_approvals:  {source_type: reconciliation, method: examine, scf_erl: E-IAM-08, privacy: [user_identifier, role_group_membership]}
+  kc_composite_role_analysis: {source_type: directory_state,    method: examine, scf_erl: E-IAM-02,   privacy: [role_group_membership]}
+  admin_events_role_grants:  {source_type: audit_log,           method: examine, scf_erl: E-MON-01,   privacy: [user_identifier, ip_address, role_group_membership]}
+  recon_effective_vs_approvals: {source_type: reconciliation,   method: examine, scf_erl: E-IAM-03,   privacy: [user_identifier, email_address, role_group_membership]}
+
+  doc_account_lifecycle_standard: {source_type: policy_document, method: examine, scf_erl: E-IAM-07,  privacy: []}
+  iam_dormancy_report:       {source_type: register_record,     method: examine, scf_erl: E-IAM-07,   privacy: [user_identifier]}
+  kc_user_inventory_age:     {source_type: directory_state,     method: examine, scf_erl: E-IAM-07,   privacy: [user_identifier, email_address]}
+  recon_events_api_vs_inventory: {source_type: reconciliation,  method: examine, scf_erl: E-MON-01,   privacy: [user_identifier, email_address, ip_address, authentication_event]}
+  siem_login_export:         {source_type: authentication_log,  method: examine, scf_erl: E-MON-05,   privacy: [user_identifier, ip_address, authentication_event]}
+
+  doc_breakglass_procedure:  {source_type: policy_document,     method: examine, scf_erl: null,       privacy: []}
+  recon_register_vs_kc_attribute: {source_type: reconciliation, method: examine, scf_erl: E-IAM-03,   privacy: [user_identifier, role_group_membership]}
+  kc_nonpersonal_priv_accounts: {source_type: directory_state,  method: examine, scf_erl: E-IAM-03,   privacy: [user_identifier, role_group_membership]}
+  host_local_emergency_account: {source_type: host_state,       method: examine, scf_erl: null,       privacy: [user_identifier, host_device_identifier]}
+  emergency_ticket_records:  {source_type: ticket_record,       method: examine, scf_erl: null,       privacy: [user_identifier, security_incident_information]}
+  kc_breakglass_login_events: {source_type: authentication_log, method: examine, scf_erl: E-MON-01,   privacy: [user_identifier, ip_address, authentication_event]}
+
+  doc_access_review_policy:  {source_type: policy_document,     method: examine, scf_erl: E-IAM-01,   privacy: []}
+  access_review_record:      {source_type: register_record,     method: examine, scf_erl: E-IAM-01,   privacy: [user_identifier]}
+  recon_review_scope_vs_effective: {source_type: reconciliation, method: examine, scf_erl: E-HRS-12,  privacy: [user_identifier, role_group_membership]}
+  recon_revocations_vs_directory:  {source_type: reconciliation, method: examine, scf_erl: E-IAM-01,  privacy: [user_identifier, role_group_membership]}
+  exception_ticket_records:  {source_type: ticket_record,       method: examine, scf_erl: null,       privacy: [user_identifier]}
+  admin_events_role_removals: {source_type: audit_log,          method: examine, scf_erl: E-MON-01,   privacy: [user_identifier, ip_address, role_group_membership]}
