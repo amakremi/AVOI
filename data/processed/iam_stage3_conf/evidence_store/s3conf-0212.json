@@ -1,0 +1,1626 @@
+{
+ "scenario_id": "s3conf-0212",
+ "family_id": 26,
+ "assessment_time_ms": 1789479191088,
+ "observations": {
+  "doc_mfa_policy": {
+   "outcome": "mandates_priv_mfa",
+   "raw": {
+    "document": "Authentication Standard",
+    "clauses": [
+     "AUTH-1",
+     "AUTH-2",
+     "AUTH-3"
+    ]
+   },
+   "bytes_read": 333,
+   "records": 1,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:doc_mfa_policy",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.012058,
+   "action_id": "doc_mfa_policy",
+   "objective_id": "IAM-01-MFA-PRIV",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:10Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:doc_mfa_policy"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/doc_mfa_policy/raw"
+  },
+  "doc_mfa_exception_register": {
+   "outcome": "exceptions_listed",
+   "raw": {
+    "rows": [
+     {
+      "exception": "vendor support account uses hardware token",
+      "approved_by": "IT manager"
+     }
+    ]
+   },
+   "bytes_read": 157,
+   "records": 1,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:doc_mfa_exception_register",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.030784,
+   "action_id": "doc_mfa_exception_register",
+   "objective_id": "IAM-01-MFA-PRIV",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:10Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:doc_mfa_exception_register"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/doc_mfa_exception_register/raw"
+  },
+  "kc_realm_browser_flow": {
+   "outcome": "otp_enforced_priv_role",
+   "raw": {
+    "browser_flow": "browser-avoi",
+    "subflow_requirement": "CONDITIONAL",
+    "otp_form": "REQUIRED",
+    "role_condition": "priv_admin",
+    "user_configured_condition": "DISABLED"
+   },
+   "bytes_read": 9013,
+   "records": 17,
+   "api_calls": 3,
+   "parser": "iam-collectors/1.0:kc_realm_browser_flow",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.059348,
+   "action_id": "kc_realm_browser_flow",
+   "objective_id": "IAM-01-MFA-PRIV",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:10Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:kc_realm_browser_flow"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/kc_realm_browser_flow/raw"
+  },
+  "kc_client_flow_overrides": {
+   "outcome": "overrides_present",
+   "raw": {
+    "overrides": [
+     {
+      "client": "legacy-portal",
+      "override": {
+       "browser": "ad0d4895-40c3-4293-a460-bb751786d70c"
+      }
+     }
+    ]
+   },
+   "bytes_read": 8224,
+   "records": 8,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:kc_client_flow_overrides",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.03914,
+   "action_id": "kc_client_flow_overrides",
+   "objective_id": "IAM-01-MFA-PRIV",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:10Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:kc_client_flow_overrides"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/kc_client_flow_overrides/raw"
+  },
+  "kc_priv_user_credentials": {
+   "outcome": "some_priv_without_otp",
+   "raw": {
+    "privileged": [
+     {
+      "username": "h.alanazi",
+      "otp": true
+     },
+     {
+      "username": "r.alzahrani",
+      "otp": false
+     },
+     {
+      "username": "s.alharbi",
+      "otp": true
+     },
+     {
+      "username": "t.alshammari",
+      "otp": true
+     }
+    ]
+   },
+   "bytes_read": 6743,
+   "records": 20,
+   "api_calls": 13,
+   "parser": "iam-collectors/1.0:kc_priv_user_credentials",
+   "privacy_categories": [
+    "email_address",
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "acquisition_seconds": 0.049745,
+   "action_id": "kc_priv_user_credentials",
+   "objective_id": "IAM-01-MFA-PRIV",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:kc_priv_user_credentials"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/kc_priv_user_credentials/raw"
+  },
+  "kc_auth_events_priv": {
+   "outcome": "nondefault_client_logins",
+   "raw": {
+    "events": [
+     {
+      "username": "t.alshammari",
+      "login_client": "legacy-portal",
+      "ipAddress": "172.18.0.1",
+      "event_time": 1788644319706
+     },
+     {
+      "username": "s.alharbi",
+      "login_client": "portal",
+      "ipAddress": "172.18.0.1",
+      "event_time": 1788039477706
+     },
+     {
+      "username": "t.alshammari",
+      "login_client": "portal",
+      "ipAddress": "172.18.0.1",
+      "event_time": 1787693863706
+     },
+     {
+      "username": "s.alharbi",
+      "login_client": "portal",
+      "ipAddress": "172.18.0.1",
+      "event_time": 1787002621706
+     },
+     {
+      "username": "t.alshammari",
+      "login_client": "legacy-portal",
+      "ipAddress": "172.18.0.1",
+      "event_time": 1786397758706
+     },
+     {
+      "username": "h.alanazi",
+      "login_client": "legacy-portal",
+      "ipAddress": "172.18.0.1",
+      "event_time": 1785792937706
+     },
+     {
+      "username": "h.alanazi",
+      "login_client": "portal",
+      "ipAddress": "172.18.0.1",
+      "event_time": 1785447316706
+     },
+     {
+      "username": "r.alzahrani",
+      "login_client": "legacy-portal",
+      "ipAddress": "172.18.0.1",
+      "event_time": 1785447309706
+     },
+     {
+      "username": "s.alharbi",
+      "login_client": "legacy-portal",
+      "ipAddress": "172.18.0.1",
+      "event_time": 1785015274706
+     },
+     {
+      "username": "r.alzahrani",
+      "login_client": "legacy-portal",
+      "ipAddress": "172.18.0.1",
+      "event_time": 1784151232706
+     }
+    ]
+   },
+   "bytes_read": 34593,
+   "records": 73,
+   "api_calls": 10,
+   "parser": "iam-collectors/1.0:kc_auth_events_priv",
+   "privacy_categories": [
+    "authentication_event",
+    "email_address",
+    "ip_address",
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "authentication_event",
+    "ip_address",
+    "user_identifier"
+   ],
+   "acquisition_seconds": 0.033194,
+   "action_id": "kc_auth_events_priv",
+   "objective_id": "IAM-01-MFA-PRIV",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:kc_auth_events_priv"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/kc_auth_events_priv/raw"
+  },
+  "doc_offboarding_procedure": {
+   "outcome": "not_found",
+   "raw": {
+    "document": null
+   },
+   "bytes_read": 124,
+   "records": 0,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:doc_offboarding_procedure",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.017922,
+   "action_id": "doc_offboarding_procedure",
+   "objective_id": "IAM-02-TERM-DISABLED",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:doc_offboarding_procedure"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/doc_offboarding_procedure/raw"
+  },
+  "hr_termination_feed": {
+   "outcome": "no_terminations",
+   "raw": {
+    "rows": []
+   },
+   "bytes_read": 46,
+   "records": 0,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:hr_termination_feed",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.014899,
+   "action_id": "hr_termination_feed",
+   "objective_id": "IAM-02-TERM-DISABLED",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:hr_termination_feed"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/hr_termination_feed/raw"
+  },
+  "ticket_offboarding_records": {
+   "outcome": "not_found",
+   "raw": {
+    "tickets": null
+   },
+   "bytes_read": 170,
+   "records": 0,
+   "api_calls": 2,
+   "parser": "iam-collectors/1.0:ticket_offboarding_records",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.048181,
+   "action_id": "ticket_offboarding_records",
+   "objective_id": "IAM-02-TERM-DISABLED",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:ticket_offboarding_records"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/ticket_offboarding_records/raw"
+  },
+  "kc_disabled_accounts": {
+   "outcome": "none_disabled",
+   "raw": {
+    "disabled": []
+   },
+   "bytes_read": 2,
+   "records": 0,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:kc_disabled_accounts",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.004045,
+   "action_id": "kc_disabled_accounts",
+   "objective_id": "IAM-02-TERM-DISABLED",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:kc_disabled_accounts"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/kc_disabled_accounts/raw"
+  },
+  "recon_hr_vs_directory": {
+   "outcome": "all_terminated_disabled",
+   "raw": {
+    "reconciliation": [],
+    "unlinked_enabled_accounts": [
+     {
+      "username": "h.alanazi"
+     }
+    ]
+   },
+   "bytes_read": 41532,
+   "records": 26,
+   "api_calls": 2,
+   "parser": "iam-collectors/1.0:recon_hr_vs_directory",
+   "privacy_categories": [
+    "email_address",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "user_identifier"
+   ],
+   "acquisition_seconds": 0.052034,
+   "action_id": "recon_hr_vs_directory",
+   "objective_id": "IAM-02-TERM-DISABLED",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:recon_hr_vs_directory"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/recon_hr_vs_directory/raw"
+  },
+  "kc_login_events_post_termination": {
+   "outcome": "none_observed",
+   "raw": {
+    "hits": []
+   },
+   "bytes_read": 46,
+   "records": 0,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:kc_login_events_post_termination",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.021617,
+   "action_id": "kc_login_events_post_termination",
+   "objective_id": "IAM-02-TERM-DISABLED",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:kc_login_events_post_termination"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/kc_login_events_post_termination/raw"
+  },
+  "doc_priv_access_procedure": {
+   "outcome": "documented",
+   "raw": {
+    "document": "Privileged Access Management Procedure"
+   },
+   "bytes_read": 88,
+   "records": 1,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:doc_priv_access_procedure",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.009649,
+   "action_id": "doc_priv_access_procedure",
+   "objective_id": "IAM-03-PRIV-AUTHZ",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:doc_priv_access_procedure"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/doc_priv_access_procedure/raw"
+  },
+  "approval_register": {
+   "outcome": "register_stale_or_absent",
+   "raw": {
+    "exported": "2026-06-07T13:33:03Z",
+    "rows": [
+     {
+      "username": "t.alshammari"
+     },
+     {
+      "username": "r.alzahrani"
+     },
+     {
+      "username": "o.alasmari"
+     },
+     {
+      "username": "h.alanazi"
+     },
+     {
+      "username": "bg-admin-1"
+     },
+     {
+      "username": "bg-admin-2"
+     }
+    ]
+   },
+   "bytes_read": 205,
+   "records": 7,
+   "api_calls": 2,
+   "parser": "iam-collectors/1.0:approval_register",
+   "privacy_categories": [
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "user_identifier"
+   ],
+   "acquisition_seconds": 0.022015,
+   "action_id": "approval_register",
+   "objective_id": "IAM-03-PRIV-AUTHZ",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:approval_register"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/approval_register/raw"
+  },
+  "recon_direct_members_vs_approvals": {
+   "outcome": "all_direct_approved",
+   "raw": {
+    "privileged": [
+     {
+      "username": "bg-admin-1"
+     },
+     {
+      "username": "bg-admin-2"
+     },
+     {
+      "username": "r.alzahrani"
+     },
+     {
+      "username": "t.alshammari"
+     }
+    ],
+    "unapproved": []
+   },
+   "bytes_read": 2462,
+   "records": 14,
+   "api_calls": 5,
+   "parser": "iam-collectors/1.0:recon_direct_members_vs_approvals",
+   "privacy_categories": [
+    "email_address",
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "acquisition_seconds": 0.03548,
+   "action_id": "recon_direct_members_vs_approvals",
+   "objective_id": "IAM-03-PRIV-AUTHZ",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:recon_direct_members_vs_approvals"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/recon_direct_members_vs_approvals/raw"
+  },
+  "recon_group_members_vs_approvals": {
+   "outcome": "unapproved_group_found",
+   "raw": {
+    "members": [
+     "h.alanazi",
+     "s.alharbi"
+    ],
+    "unapproved": [
+     "s.alharbi"
+    ]
+   },
+   "bytes_read": 2462,
+   "records": 14,
+   "api_calls": 5,
+   "parser": "iam-collectors/1.0:recon_group_members_vs_approvals",
+   "privacy_categories": [
+    "email_address",
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "user_identifier"
+   ],
+   "acquisition_seconds": 0.037481,
+   "action_id": "recon_group_members_vs_approvals",
+   "objective_id": "IAM-03-PRIV-AUTHZ",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:recon_group_members_vs_approvals"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/recon_group_members_vs_approvals/raw"
+  },
+  "kc_composite_role_analysis": {
+   "outcome": "no_composite_paths",
+   "raw": {
+    "composite_paths": []
+   },
+   "bytes_read": 1882,
+   "records": 9,
+   "api_calls": 2,
+   "parser": "iam-collectors/1.0:kc_composite_role_analysis",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.012408,
+   "action_id": "kc_composite_role_analysis",
+   "objective_id": "IAM-03-PRIV-AUTHZ",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:kc_composite_role_analysis"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/kc_composite_role_analysis/raw"
+  },
+  "admin_events_role_grants": {
+   "outcome": "recent_grants_present",
+   "raw": {
+    "grants": [
+     {
+      "resourcePath": "users/af3d6826-b2d7-46be-b7a1-f09b836f5cf3/groups/c1e1758f-95c6-42e2-ad7b-a3d307bd557b",
+      "event_time": 1784557983706,
+      "ipAddress": "172.18.0.1",
+      "roles": true
+     }
+    ]
+   },
+   "bytes_read": 4923,
+   "records": 7,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:admin_events_role_grants",
+   "privacy_categories": [
+    "email_address",
+    "ip_address",
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "authentication_event",
+    "ip_address",
+    "role_group_membership"
+   ],
+   "acquisition_seconds": 0.005425,
+   "action_id": "admin_events_role_grants",
+   "objective_id": "IAM-03-PRIV-AUTHZ",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:admin_events_role_grants"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/admin_events_role_grants/raw"
+  },
+  "recon_effective_vs_approvals": {
+   "outcome": "unapproved_effective_found",
+   "raw": {
+    "privileged": [
+     {
+      "username": "bg-admin-1",
+      "email": "bg-admin-1@corp.test"
+     },
+     {
+      "username": "bg-admin-2",
+      "email": "bg-admin-2@corp.test"
+     },
+     {
+      "username": "h.alanazi",
+      "email": "h.alanazi@corp.test"
+     },
+     {
+      "username": "r.alzahrani",
+      "email": "r.alzahrani@corp.test"
+     },
+     {
+      "username": "s.alharbi",
+      "email": "s.alharbi@corp.test"
+     },
+     {
+      "username": "t.alshammari",
+      "email": "t.alshammari@corp.test"
+     }
+    ],
+    "unapproved": [
+     "s.alharbi"
+    ]
+   },
+   "bytes_read": 42925,
+   "records": 39,
+   "api_calls": 29,
+   "parser": "iam-collectors/1.0:recon_effective_vs_approvals",
+   "privacy_categories": [
+    "email_address",
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "email_address",
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "acquisition_seconds": 0.131348,
+   "action_id": "recon_effective_vs_approvals",
+   "objective_id": "IAM-03-PRIV-AUTHZ",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:recon_effective_vs_approvals"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/recon_effective_vs_approvals/raw"
+  },
+  "doc_account_lifecycle_standard": {
+   "outcome": "dormancy_rule_documented",
+   "raw": {
+    "document": "Account Lifecycle Standard"
+   },
+   "bytes_read": 84,
+   "records": 1,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:doc_account_lifecycle_standard",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.057628,
+   "action_id": "doc_account_lifecycle_standard",
+   "objective_id": "IAM-04-DORMANT",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:doc_account_lifecycle_standard"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/doc_account_lifecycle_standard/raw"
+  },
+  "iam_dormancy_report": {
+   "outcome": "report_stale_or_absent",
+   "raw": {
+    "generated": null
+   },
+   "bytes_read": 124,
+   "records": 0,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:iam_dormancy_report",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.024245,
+   "action_id": "iam_dormancy_report",
+   "objective_id": "IAM-04-DORMANT",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:iam_dormancy_report"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/iam_dormancy_report/raw"
+  },
+  "kc_user_inventory_age": {
+   "outcome": "old_enabled_accounts_present",
+   "raw": {
+    "accounts": [
+     {
+      "username": "a.alasmari",
+      "email": "a.alasmari@corp.test"
+     },
+     {
+      "username": "a.alghamdi",
+      "email": "a.alghamdi@corp.test"
+     },
+     {
+      "username": "h.alanazi",
+      "email": "h.alanazi@corp.test"
+     },
+     {
+      "username": "h.alqahtani",
+      "email": "h.alqahtani@corp.test"
+     },
+     {
+      "username": "h.alsubaie",
+      "email": "h.alsubaie@corp.test"
+     },
+     {
+      "username": "h.alzahrani",
+      "email": "h.alzahrani@corp.test"
+     },
+     {
+      "username": "l.alotaibi",
+      "email": "l.alotaibi@corp.test"
+     },
+     {
+      "username": "l.alshehri",
+      "email": "l.alshehri@corp.test"
+     },
+     {
+      "username": "m.alyami",
+      "email": "m.alyami@corp.test"
+     },
+     {
+      "username": "n.alzahrani",
+      "email": "n.alzahrani@corp.test"
+     },
+     {
+      "username": "o.alanazi",
+      "email": "o.alanazi@corp.test"
+     },
+     {
+      "username": "o.alasmari",
+      "email": "o.alasmari@corp.test"
+     },
+     {
+      "username": "r.alzahrani",
+      "email": "r.alzahrani@corp.test"
+     },
+     {
+      "username": "s.alharbi",
+      "email": "s.alharbi@corp.test"
+     },
+     {
+      "username": "t.alanazi",
+      "email": "t.alanazi@corp.test"
+     },
+     {
+      "username": "t.alshammari",
+      "email": "t.alshammari@corp.test"
+     }
+    ]
+   },
+   "bytes_read": 41486,
+   "records": 26,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:kc_user_inventory_age",
+   "privacy_categories": [
+    "email_address",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "email_address",
+    "user_identifier"
+   ],
+   "acquisition_seconds": 0.007893,
+   "action_id": "kc_user_inventory_age",
+   "objective_id": "IAM-04-DORMANT",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:kc_user_inventory_age"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/kc_user_inventory_age/raw"
+  },
+  "recon_events_api_vs_inventory": {
+   "outcome": "all_old_accounts_active",
+   "raw": {
+    "page_size": 60,
+    "events": [
+     {
+      "userId": "cb821400-bd7b-4f06-a553-899b7d013c1e",
+      "event_time": 1789421975706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "ea6f4590-72d9-42aa-8406-8dbcdd8f6e4a",
+      "event_time": 1789335568706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "48e3e462-f2a7-4825-a8c3-f7864b124384",
+      "event_time": 1789076361706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "d1d19f1d-1f09-4efa-be61-a1869f606ecb",
+      "event_time": 1788989954706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "b9e59b72-ecee-4127-9097-89bc430bc283",
+      "event_time": 1788903547706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "bd6561df-1ced-48cc-b4b6-fce7dff7d55c",
+      "event_time": 1788817140706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "56f5b7bc-e009-4c4d-bd1b-66a21dd44a8c",
+      "event_time": 1788817133706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "56f5b7bc-e009-4c4d-bd1b-66a21dd44a8c",
+      "event_time": 1788730726706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "af97d3b4-10aa-463d-9c60-39dffdacdc43",
+      "event_time": 1788644319706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "56f5b7bc-e009-4c4d-bd1b-66a21dd44a8c",
+      "event_time": 1788557912706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "544aca08-149a-4ee3-b4ee-4048b259d007",
+      "event_time": 1788385105706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "544aca08-149a-4ee3-b4ee-4048b259d007",
+      "event_time": 1788298698706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "e3e9c739-5e94-4c09-9d13-cf04a1df50ef",
+      "event_time": 1788212291706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "47b43632-eebd-45fc-a27b-9bd8e5a12e58",
+      "event_time": 1788212284706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "af3d6826-b2d7-46be-b7a1-f09b836f5cf3",
+      "event_time": 1788039477706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "d1d19f1d-1f09-4efa-be61-a1869f606ecb",
+      "event_time": 1787953070706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "af97d3b4-10aa-463d-9c60-39dffdacdc43",
+      "event_time": 1787693863706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "ea6f4590-72d9-42aa-8406-8dbcdd8f6e4a",
+      "event_time": 1787693856706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "c54a6926-fc04-48ca-bb51-c67c9ac2563e",
+      "event_time": 1787693849706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "c54a6926-fc04-48ca-bb51-c67c9ac2563e",
+      "event_time": 1787607442706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "b9e59b72-ecee-4127-9097-89bc430bc283",
+      "event_time": 1787261835706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "81450a31-f74e-4ebb-a6b8-102c7e09c879",
+      "event_time": 1787002628706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "af3d6826-b2d7-46be-b7a1-f09b836f5cf3",
+      "event_time": 1787002621706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "b9e59b72-ecee-4127-9097-89bc430bc283",
+      "event_time": 1786829814706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "47b43632-eebd-45fc-a27b-9bd8e5a12e58",
+      "event_time": 1786743407706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "abbc3092-85b9-4597-bb11-1bacb4f6a0f0",
+      "event_time": 1786743400706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "48e3e462-f2a7-4825-a8c3-f7864b124384",
+      "event_time": 1786743393706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "e2b145fd-53c5-4f73-b641-daa4b54349b1",
+      "event_time": 1786570586706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "abbc3092-85b9-4597-bb11-1bacb4f6a0f0",
+      "event_time": 1786570579706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "bd6561df-1ced-48cc-b4b6-fce7dff7d55c",
+      "event_time": 1786484172706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "cb821400-bd7b-4f06-a553-899b7d013c1e",
+      "event_time": 1786484165706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "af97d3b4-10aa-463d-9c60-39dffdacdc43",
+      "event_time": 1786397758706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "596d9380-20e0-41e7-b4c2-a910c21efabe",
+      "event_time": 1786138551706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "abbc3092-85b9-4597-bb11-1bacb4f6a0f0",
+      "event_time": 1785879344706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "66985f6f-105b-43a4-894d-21310010f57e",
+      "event_time": 1785792937706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "e2b145fd-53c5-4f73-b641-daa4b54349b1",
+      "event_time": 1785706530706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "e2b145fd-53c5-4f73-b641-daa4b54349b1",
+      "event_time": 1785447323706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "66985f6f-105b-43a4-894d-21310010f57e",
+      "event_time": 1785447316706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "afcb1a6e-b2b4-4fb1-8301-3ad938810a43",
+      "event_time": 1785447309706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "cfba2f8b-e066-4a4c-ac46-b3d8b58b2613",
+      "event_time": 1785188102706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "ea6f4590-72d9-42aa-8406-8dbcdd8f6e4a",
+      "event_time": 1785188095706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "484eccc5-9804-4ef5-b2b9-1ea397a12beb",
+      "event_time": 1785101688706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "abbc3092-85b9-4597-bb11-1bacb4f6a0f0",
+      "event_time": 1785015281706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "af3d6826-b2d7-46be-b7a1-f09b836f5cf3",
+      "event_time": 1785015274706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "d1d19f1d-1f09-4efa-be61-a1869f606ecb",
+      "event_time": 1784928867706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "596d9380-20e0-41e7-b4c2-a910c21efabe",
+      "event_time": 1784756060706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "e3e9c739-5e94-4c09-9d13-cf04a1df50ef",
+      "event_time": 1784756053706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "a97c81ba-29d1-4f43-9dd0-51e2dfdecca5",
+      "event_time": 1784669646706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "484eccc5-9804-4ef5-b2b9-1ea397a12beb",
+      "event_time": 1784410439706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "afcb1a6e-b2b4-4fb1-8301-3ad938810a43",
+      "event_time": 1784151232706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "bd6561df-1ced-48cc-b4b6-fce7dff7d55c",
+      "event_time": 1784064825706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "bd6561df-1ced-48cc-b4b6-fce7dff7d55c",
+      "event_time": 1783546418706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "cfba2f8b-e066-4a4c-ac46-b3d8b58b2613",
+      "event_time": 1783373611706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "e2b145fd-53c5-4f73-b641-daa4b54349b1",
+      "event_time": 1783200804706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "2b61ee65-98f3-43f2-a99d-0d1b0e8b2061",
+      "event_time": 1783114397706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "cb821400-bd7b-4f06-a553-899b7d013c1e",
+      "event_time": 1782855190706,
+      "ipAddress": "172.18.0.1"
+     },
+     {
+      "userId": "2b61ee65-98f3-43f2-a99d-0d1b0e8b2061",
+      "event_time": 1782768783706,
+      "ipAddress": "172.18.0.1"
+     }
+    ],
+    "unseen": []
+   },
+   "bytes_read": 71181,
+   "records": 86,
+   "api_calls": 2,
+   "parser": "iam-collectors/1.0:recon_events_api_vs_inventory",
+   "privacy_categories": [
+    "authentication_event",
+    "email_address",
+    "ip_address",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "authentication_event",
+    "ip_address",
+    "user_identifier"
+   ],
+   "acquisition_seconds": 0.012282,
+   "action_id": "recon_events_api_vs_inventory",
+   "objective_id": "IAM-04-DORMANT",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:recon_events_api_vs_inventory"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/recon_events_api_vs_inventory/raw"
+  },
+  "siem_login_export": {
+   "outcome": "no_dormant_in_export",
+   "raw": {
+    "dormant": []
+   },
+   "bytes_read": 1775,
+   "records": 23,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:siem_login_export",
+   "privacy_categories": [
+    "authentication_event",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.014703,
+   "action_id": "siem_login_export",
+   "objective_id": "IAM-04-DORMANT",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:siem_login_export"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/siem_login_export/raw"
+  },
+  "doc_breakglass_procedure": {
+   "outcome": "documented",
+   "raw": {
+    "document": "Emergency Access Procedure"
+   },
+   "bytes_read": 74,
+   "records": 1,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:doc_breakglass_procedure",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.012444,
+   "action_id": "doc_breakglass_procedure",
+   "objective_id": "IAM-05-BREAKGLASS",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:doc_breakglass_procedure"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/doc_breakglass_procedure/raw"
+  },
+  "recon_register_vs_kc_attribute": {
+   "outcome": "consistent",
+   "raw": {
+    "tagged": [
+     {
+      "username": "bg-admin-1"
+     },
+     {
+      "username": "bg-admin-2"
+     }
+    ],
+    "register": [
+     {
+      "username": "bg-admin-1"
+     },
+     {
+      "username": "bg-admin-2"
+     }
+    ]
+   },
+   "bytes_read": 3308,
+   "records": 4,
+   "api_calls": 2,
+   "parser": "iam-collectors/1.0:recon_register_vs_kc_attribute",
+   "privacy_categories": [
+    "email_address",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "user_identifier"
+   ],
+   "acquisition_seconds": 0.019423,
+   "action_id": "recon_register_vs_kc_attribute",
+   "objective_id": "IAM-05-BREAKGLASS",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:recon_register_vs_kc_attribute"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/recon_register_vs_kc_attribute/raw"
+  },
+  "kc_nonpersonal_priv_accounts": {
+   "outcome": "unidentified_nonpersonal_priv",
+   "raw": {
+    "privileged": [
+     {
+      "username": "h.alanazi"
+     }
+    ]
+   },
+   "bytes_read": 41685,
+   "records": 27,
+   "api_calls": 2,
+   "parser": "iam-collectors/1.0:kc_nonpersonal_priv_accounts",
+   "privacy_categories": [
+    "email_address",
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "acquisition_seconds": 0.009341,
+   "action_id": "kc_nonpersonal_priv_accounts",
+   "objective_id": "IAM-05-BREAKGLASS",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:kc_nonpersonal_priv_accounts"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/kc_nonpersonal_priv_accounts/raw"
+  },
+  "host_local_emergency_account": {
+   "outcome": "locked",
+   "raw": {
+    "host": "app-host",
+    "shadow_entry": {
+     "username": "bgroot",
+     "locked": true
+    }
+   },
+   "bytes_read": 28,
+   "records": 1,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:host_local_emergency_account",
+   "privacy_categories": [
+    "host_device_identifier",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "host_device_identifier",
+    "user_identifier"
+   ],
+   "acquisition_seconds": 0.125254,
+   "action_id": "host_local_emergency_account",
+   "objective_id": "IAM-05-BREAKGLASS",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:host_local_emergency_account"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/host_local_emergency_account/raw"
+  },
+  "emergency_ticket_records": {
+   "outcome": "not_found",
+   "raw": {
+    "tickets": null
+   },
+   "bytes_read": 124,
+   "records": 0,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:emergency_ticket_records",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.007418,
+   "action_id": "emergency_ticket_records",
+   "objective_id": "IAM-05-BREAKGLASS",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:emergency_ticket_records"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/emergency_ticket_records/raw"
+  },
+  "kc_breakglass_login_events": {
+   "outcome": "no_bg_logins",
+   "raw": {
+    "logins": []
+   },
+   "bytes_read": 3175,
+   "records": 2,
+   "api_calls": 3,
+   "parser": "iam-collectors/1.0:kc_breakglass_login_events",
+   "privacy_categories": [
+    "email_address",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.013217,
+   "action_id": "kc_breakglass_login_events",
+   "objective_id": "IAM-05-BREAKGLASS",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:kc_breakglass_login_events"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/kc_breakglass_login_events/raw"
+  },
+  "doc_access_review_policy": {
+   "outcome": "periodic_review_documented",
+   "raw": {
+    "document": "Access Review Policy"
+   },
+   "bytes_read": 83,
+   "records": 1,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:doc_access_review_policy",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.009251,
+   "action_id": "doc_access_review_policy",
+   "objective_id": "IAM-06-ACCESS-REVIEW",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:doc_access_review_policy"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/doc_access_review_policy/raw"
+  },
+  "access_review_record": {
+   "outcome": "current_signed",
+   "raw": {
+    "completed": "2026-07-11T13:33:03Z",
+    "signed": true,
+    "scope": [
+     "bg-admin-1",
+     "bg-admin-2",
+     "h.alanazi",
+     "o.alasmari",
+     "r.alzahrani",
+     "t.alshammari"
+    ]
+   },
+   "bytes_read": 602,
+   "records": 6,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:access_review_record",
+   "privacy_categories": [
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "user_identifier"
+   ],
+   "acquisition_seconds": 0.009967,
+   "action_id": "access_review_record",
+   "objective_id": "IAM-06-ACCESS-REVIEW",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:access_review_record"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/access_review_record/raw"
+  },
+  "recon_review_scope_vs_effective": {
+   "outcome": "scope_gaps",
+   "raw": {
+    "scope": [
+     "bg-admin-1",
+     "bg-admin-2",
+     "h.alanazi",
+     "o.alasmari",
+     "r.alzahrani",
+     "t.alshammari"
+    ],
+    "privileged": [
+     "bg-admin-1",
+     "bg-admin-2",
+     "h.alanazi",
+     "r.alzahrani",
+     "s.alharbi",
+     "t.alshammari"
+    ],
+    "gaps": [
+     "s.alharbi"
+    ]
+   },
+   "bytes_read": 43322,
+   "records": 38,
+   "api_calls": 28,
+   "parser": "iam-collectors/1.0:recon_review_scope_vs_effective",
+   "privacy_categories": [
+    "email_address",
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "acquisition_seconds": 0.082503,
+   "action_id": "recon_review_scope_vs_effective",
+   "objective_id": "IAM-06-ACCESS-REVIEW",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:recon_review_scope_vs_effective"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/recon_review_scope_vs_effective/raw"
+  },
+  "recon_revocations_vs_directory": {
+   "outcome": "all_revocations_implemented",
+   "raw": {
+    "decision": [
+     "o.alasmari"
+    ],
+    "still_privileged": []
+   },
+   "bytes_read": 2199,
+   "records": 7,
+   "api_calls": 3,
+   "parser": "iam-collectors/1.0:recon_revocations_vs_directory",
+   "privacy_categories": [
+    "email_address",
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "role_group_membership"
+   ],
+   "acquisition_seconds": 0.020112,
+   "action_id": "recon_revocations_vs_directory",
+   "objective_id": "IAM-06-ACCESS-REVIEW",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:recon_revocations_vs_directory"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/recon_revocations_vs_directory/raw"
+  },
+  "exception_ticket_records": {
+   "outcome": "not_found",
+   "raw": {
+    "tickets": null
+   },
+   "bytes_read": 124,
+   "records": 0,
+   "api_calls": 1,
+   "parser": "iam-collectors/1.0:exception_ticket_records",
+   "privacy_categories": [],
+   "privacy_categories_in_artifact": [],
+   "acquisition_seconds": 0.022139,
+   "action_id": "exception_ticket_records",
+   "objective_id": "IAM-06-ACCESS-REVIEW",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:exception_ticket_records"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/exception_ticket_records/raw"
+  },
+  "admin_events_role_removals": {
+   "outcome": "removals_after_review",
+   "raw": {
+    "removals": [
+     {
+      "resourcePath": "users/cb821400-bd7b-4f06-a553-899b7d013c1e/groups/c1e1758f-95c6-42e2-ad7b-a3d307bd557b",
+      "event_time": 1784039583706,
+      "roles": true
+     }
+    ]
+   },
+   "bytes_read": 1333,
+   "records": 7,
+   "api_calls": 2,
+   "parser": "iam-collectors/1.0:admin_events_role_removals",
+   "privacy_categories": [
+    "email_address",
+    "ip_address",
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "authentication_event",
+    "role_group_membership"
+   ],
+   "acquisition_seconds": 0.031592,
+   "action_id": "admin_events_role_removals",
+   "objective_id": "IAM-06-ACCESS-REVIEW",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:11Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:admin_events_role_removals"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/admin_events_role_removals/raw"
+  },
+  "test_mfa_login_sample": {
+   "outcome": "all_challenged",
+   "raw": {
+    "client": "portal",
+    "tests": [
+     {
+      "username": "r.alzahrani",
+      "test_result": "otp_enrolment_required"
+     },
+     {
+      "username": "h.alanazi",
+      "test_result": "otp_challenged"
+     }
+    ]
+   },
+   "bytes_read": 35151,
+   "records": 15,
+   "api_calls": 11,
+   "parser": "iam-collectors/1.0:test_mfa_login_sample",
+   "privacy_categories": [
+    "authentication_event",
+    "email_address",
+    "role_group_membership",
+    "user_identifier"
+   ],
+   "privacy_categories_in_artifact": [
+    "authentication_event",
+    "user_identifier"
+   ],
+   "acquisition_seconds": 0.129626,
+   "action_id": "test_mfa_login_sample",
+   "objective_id": "IAM-01-MFA-PRIV",
+   "source": "controlled-iam-testbed",
+   "timestamp_utc": "2026-09-15T13:33:12Z",
+   "scope": "realm:s3conf-0212",
+   "provenance": {
+    "realm": "s3conf-0212",
+    "assessment_time_ms": 1789479191088,
+    "collector": "iam-collectors/1.0:test_mfa_login_sample"
+   },
+   "raw_artifact_ref": "data/processed/iam_stage3_conf/evidence_store/s3conf-0212.json#/observations/test_mfa_login_sample/raw"
+  }
+ }
+}
