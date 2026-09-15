@@ -1,0 +1,91 @@
+# STAGE-2 IAM confirmation scenarios: identical generation distribution to config/scenario_generator.yaml; only the master seed differs.
+# Scenario-generation distribution for the controlled IAM testbed.
+# DEFINED BEFORE ANY METHOD EVALUATION and frozen in results/EXPERIMENT_FREEZE.json.
+# The generator samples LEGITIMATE CONFIGURATION STATES; ground truth is computed afterwards by the oracle
+# from the live system, never from these parameters.
+#
+# Structure: n_families scenario families (grouping unit for cross-validation), each with latent
+# organisational parameters; scenarios_per_family concrete scenarios drawn around the family parameters.
+
+master_seed: 20261103   # STAGE 2 confirmation seed (never used in Stage 1); all other parameters identical to Stage 1
+n_families: 40
+scenarios_per_family: 8
+
+family_latents:
+  hygiene_beta: [2.2, 1.8]              # technical IAM hygiene h_f ~ Beta(a, b)
+  doc_maturity_mix: 0.35                # m_f = mix * h_f + (1 - mix) * Beta(2, 2)
+  scenario_jitter_sd: 0.08              # h_s = clip(h_f + N(0, sd)), same for m_s
+  n_human_users: [10, 24]               # uniform integer range per scenario
+  n_privileged_humans: [2, 5]
+  n_service_accounts: [1, 3]
+  n_breakglass_accounts: [1, 2]
+
+# violation propensity multiplier g(h) = clip(1.6 - 1.2 * h, 0.2, 1.6); mechanism probability = base * g(h)
+mechanisms:
+  mfa:
+    flow_disabled_base: 0.10
+    flow_wrong_role_base: 0.10
+    legacy_client_prob: 0.40            # legacy client exists (independent of h)
+    legacy_override_nonotp_base: 0.45   # given legacy client exists
+    kiosk_client_prob: 0.25             # kiosk client with a BENIGN override to an OTP-enforcing flow
+    priv_uses_nondefault_client_prob: 0.5
+    voluntary_otp_enrolment_prob: 0.25  # privileged user enrolled OTP although not enforced
+  termination:
+    n_terminations_probs: [0.25, 0.35, 0.25, 0.15]   # 0,1,2,3 terminations in the last 180 days
+    left_enabled_base: 0.22
+    deleted_prob: 0.15
+    unlinked_account_base: 0.10         # account lacks employee_id attribute
+    post_termination_login_prob: 0.35   # given left enabled
+  privileged_authz:
+    unapproved_direct_base: 0.10
+    unapproved_group_base: 0.10
+    composite_role_prob: 0.40
+    unapproved_composite_base: 0.30     # given composite role exists
+    expired_approval_base: 0.10
+    register_has_expiry_col_intercept: 0.5   # P = intercept + slope * m
+    register_has_expiry_col_slope: 0.5
+    register_export_lag_days: [0, 120]
+    recent_legit_grant_prob: 0.35
+  dormancy:
+    old_account_prob: 0.80              # account created > threshold days ago
+    dormant_account_base: 0.035         # per old enabled human account
+    dormant_disabled_prob: 0.30         # a dormant account that was nevertheless disabled
+    logins_per_active_user: [1, 4]
+    report_exists_intercept: 0.30
+    report_exists_slope: 0.60
+    report_lag_days: [0, 120]
+    siem_export_intercept: 0.50
+    siem_export_slope: 0.40
+    siem_lag_days: [0, 45]
+  breakglass:
+    unregistered_base: 0.12
+    missing_attribute_base: 0.12
+    register_absent_base: 0.25          # multiplied by (1 - m) instead of g(h)
+    host_unlocked_base: 0.15
+    host_unlocked_with_ticket_prob: 0.30
+    bg_login_without_ticket_base: 0.12
+    bg_login_with_ticket_prob: 0.10
+  access_review:
+    current_review_intercept: 0.50      # P(review age <= max age) = intercept + slope * h
+    current_review_slope: 0.40
+    signed_intercept: 0.60
+    signed_slope: 0.40
+    scope_gap_base: 0.15
+    n_revocations_probs: [0.4, 0.4, 0.2]
+    unimplemented_revocation_base: 0.25
+    exception_ticket_given_unimplemented: 0.50
+    unrelated_removal_prob: 0.30
+
+documents:
+  doc_present_intercept: 0.30           # P(policy/procedure document present) = intercept + slope * m
+  doc_present_slope: 0.65
+  mfa_policy_mandates_given_present: 0.85
+  exception_register_intercept: 0.30
+  exception_register_slope: 0.60
+  exception_listed_given_override: 0.60
+  spurious_exception_prob: 0.15
+  ticket_system_intercept: 0.30
+  ticket_system_slope: 0.60
+  ticket_closed_given_disabled: 0.90
+  ticket_closed_given_enabled: 0.55
+  ticket_open_given_enabled: 0.25

@@ -24,9 +24,10 @@ def action_catalogue() -> dict:
     return yaml.safe_load((ROOT / "config" / "evidence_actions.yaml").read_text(encoding="utf-8"))["iam_actions"]
 
 
-def load_iam() -> dict[str, ObjectiveData]:
+def load_iam(store_dir: str | None = None, domain: str = "iam") -> dict[str, ObjectiveData]:
     cfg, cat = objective_config(), action_catalogue()
-    files = sorted(STORE.glob("scn-*.json"))
+    store = ROOT / store_dir if store_dir else STORE
+    files = sorted(p for p in store.glob("*.json") if p.stem.startswith(("scn-", "s2scn-")))
     stores = [json.loads(f.read_text(encoding="utf-8")) for f in files]
     out = {}
     for obj in cfg["objectives"]:
@@ -54,7 +55,7 @@ def load_iam() -> dict[str, ObjectiveData]:
         pol = np.array([sp.polarity for sp in specs], dtype=object)
         full_pol = np.array([[specs[j].polarity[values[i, j]] for j in range(m)] for i in range(n)])
         conflict = (full_pol == 1).any(1) & (full_pol == -1).any(1)
-        out[obj["id"]] = ObjectiveData("iam", obj["id"], specs, ids, fam,
+        out[obj["id"]] = ObjectiveData(domain, obj["id"], specs, ids, fam,
                                        {"scenario": np.array([st["scenario_id"] for st in stores]), "conflict": conflict},
                                        "categorical", values, sec, rec, byt, priv, prov, "controlled-iam-testbed")
     return out

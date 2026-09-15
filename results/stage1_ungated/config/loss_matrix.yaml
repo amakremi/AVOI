@@ -1,0 +1,18 @@
+# Assurance loss matrix. EXPERIMENTAL UTILITY PARAMETERS (normalised relative losses), not financial values and not a
+# claim about the correct regulatory penalty.
+primary:
+  false_assurance: 10.0        # Assured when objective violated (Y=0)
+  false_non_assurance: 2.0     # NotAssured when objective satisfied (Y=1)
+  human_review: 1.0            # HumanReview (either Y)
+  correct_autonomous: 0.0
+sensitivity_false_assurance: [2.0, 5.0, 10.0, 20.0]
+# Ablation "without asymmetric loss": false assurance and false non-assurance are penalised equally.
+symmetric_ablation:
+  false_assurance: 2.0
+  false_non_assurance: 2.0
+  human_review: 1.0
+# Assessor preference weights on normalised acquisition terms (declared a priori; loss units per normalised unit)
+preference_weights:
+  lambda_cost: 0.05
+  mu_privacy: 0.02
+  nu_delay: 0.02

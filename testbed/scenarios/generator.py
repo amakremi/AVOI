@@ -23,8 +23,8 @@ LAST = ["Alharbi", "Alqahtani", "Alghamdi", "Alzahrani", "Alotaibi", "Aldosari",
 DEPTS = ["finance", "operations", "it", "hr", "sales", "engineering"]
 
 
-def load_cfg() -> dict:
-    return yaml.safe_load((ROOT / "config" / "scenario_generator.yaml").read_text(encoding="utf-8"))
+def load_cfg(path: str | None = None) -> dict:
+    return yaml.safe_load((ROOT / (path or "config/scenario_generator.yaml")).read_text(encoding="utf-8"))
 
 
 def _rng(*keys) -> np.random.Generator:
@@ -40,7 +40,7 @@ def family_latents(family_id: int, cfg: dict) -> dict:
     return {"hygiene": h, "doc_maturity": m}
 
 
-def generate_spec(scenario_index: int, cfg: dict | None = None) -> dict:
+def generate_spec(scenario_index: int, cfg: dict | None = None, id_prefix: str = "scn") -> dict:
     cfg = cfg or load_cfg()
     spf = cfg["scenarios_per_family"]
     family_id = scenario_index // spf
@@ -62,7 +62,7 @@ def generate_spec(scenario_index: int, cfg: dict | None = None) -> dict:
     def ri(lo, hi):
         return int(r.integers(lo, hi + 1))
 
-    sid = f"scn-{scenario_index:04d}"
+    sid = f"{id_prefix}-{scenario_index:04d}"
     # ------------------------------------------------------------------ people and human accounts
     n_humans = ri(*fl["n_human_users"])
     used = set()

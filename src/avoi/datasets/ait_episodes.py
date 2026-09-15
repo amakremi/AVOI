@@ -38,10 +38,13 @@ CLAIMS = ("AIT-EXFIL", "AIT-INTRUSION")
 FAM_ORDER = list(FAMILIES)  # checklist order
 
 
-def build() -> None:
-    (OUT / "ground_truth").mkdir(parents=True, exist_ok=True)
+def build(testbeds: list[str] | None = None, out_dir: Path | None = None) -> None:
+    """Stage 1: russellmitchell, santos -> data/processed/ait. Stage 2: fox, harrison, wardbeck -> data/processed/ait_stage2
+    (the per-testbed SQLite indexes and labelled-line files are always read from data/processed/ait)."""
+    dest = out_dir or OUT
+    (dest / "ground_truth").mkdir(parents=True, exist_ok=True)
     rows_ev, rows_lab = [], []
-    for tb in TESTBEDS:
+    for tb in (testbeds or TESTBEDS):
         meta = json.loads((OUT / f"{tb}_index_meta.json").read_text(encoding="utf-8"))
         con = sqlite3.connect(OUT / f"{tb}_evidence.sqlite")
         windows = list(range(meta["start"], meta["end"], WINDOW_S))
@@ -71,15 +74,16 @@ def build() -> None:
         for w0 in windows:
             rows_lab.append((f"ait|{tb}|{w0}|AIT-EXFIL", int(w0 not in exfil)))
             rows_lab.append((f"ait|{tb}|{w0}|AIT-INTRUSION", int(w0 not in intr)))
-    (OUT / "evidence_store.json").write_text(json.dumps(rows_ev), encoding="utf-8")
-    with (OUT / "ground_truth" / "episode_labels.csv").open("w", newline="", encoding="utf-8") as fh:
+    (dest / "evidence_store.json").write_text(json.dumps(rows_ev), encoding="utf-8")
+    with (dest / "ground_truth" / "episode_labels.csv").open("w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         w.writerow(["episode_id", "y"])
         w.writerows(rows_lab)
 
 
-def load_ait() -> dict[str, ObjectiveData]:
-    recs = json.loads((OUT / "evidence_store.json").read_text(encoding="utf-8"))
+def load_ait(out_dir: str | None = None, domain: str = "ait") -> dict[str, ObjectiveData]:
+    base = OUT.parents[2] / out_dir if out_dir else OUT
+    recs = json.loads((base / "evidence_store.json").read_text(encoding="utf-8"))
     out = {}
     for claim in CLAIMS:
         specs = [ActionSpec(f"ait_query_{fam}", claim, SOURCE_TYPE[fam], NUMERIC_OUTCOMES, (0, 1, 0, -1),
@@ -102,12 +106,16 @@ def load_ait() -> dict[str, ObjectiveData]:
             prov.append(vrow)
         ids = np.array([f"ait|{r['testbed']}|{r['w0']}|{claim}" for r in recs])
         tbs = np.array([r["testbed"] for r in recs])
-        out[claim] = ObjectiveData("ait", claim, specs, ids, tbs, {"testbed": tbs, "w0": np.array([r["w0"] for r in recs])},
+        out[claim] = ObjectiveData(domain, claim, specs, ids, tbs, {"testbed": tbs, "w0": np.array([r["w0"] for r in recs])},
                                    "numeric", vals, sec, rows, byt, priv, prov, "AIT-LDS-v2.0")
     return out
 
 
 if __name__ == "__main__":
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "stage2":
+        build(["fox", "harrison", "wardbeck"], OUT.parent / "ait_stage2")
+        raise SystemExit
     build()
     for k, d in load_ait().items():
         print(k, d.n, d.m)

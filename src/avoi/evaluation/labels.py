@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 def load_labels(domain: str, episode_ids: np.ndarray) -> np.ndarray:
     gt = ROOT / "data" / "processed" / domain / "ground_truth"
-    if domain == "iam":
+    if domain.startswith("iam"):
         cache = {}
         y = np.zeros(len(episode_ids), dtype=int)
         for k, eid in enumerate(episode_ids):

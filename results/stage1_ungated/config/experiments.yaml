@@ -1,0 +1,92 @@
+# Experiment definitions (frozen in results/EXPERIMENT_FREEZE.json before final runs).
+domains:
+  iam:  {layer: A, description: "Controlled causal IAM testbed (objective-level ground truth from live configuration)"}
+  ait:  {layer: B, description: "AIT-LDS v2.0 window-level replay micro-claims"}
+  cert: {layer: B, description: "CERT r4.2 user-week replay micro-claims"}
+
+primary_condition:
+  start: cold (no evidence acquired at t = 0)
+  cost_regime: B
+  evidence_model: tan
+  loss: primary (10 / 2 / 1)
+
+experiments:
+  primary:
+    domains: [iam, ait, cert]
+    suite: main
+    model: tan
+    cost_regime: B
+    traces: true
+    curves: true
+    budgets: true
+    calibration: true
+    safety_targets: [0.01, 0.02, 0.05]
+    coverage_targets: [0.6, 0.7, 0.8, 0.9]
+    missing_levels: [0.2, 0.4, 0.6, 0.8]
+    missing_modes: [mcar, block, adversarial]
+    degradation_rates: [0.5]
+    cost_shift_multipliers: [5.0]
+  regime_a:
+    domains: [iam, ait, cert]
+    suite: main
+    model: tan
+    cost_regime: A
+    curves: true
+  model_lr:
+    domains: [iam, ait, cert]
+    suite: main
+    model: lr
+    cost_regime: B
+    curves: true
+    calibration: true
+    random_baseline: false
+    methods: [AVOI-GRC, B0-AllEvidence, B1-FixedChecklist, B3-CheapestFirst, B4-InformationGain, B5-GenericVOI,
+              B6-ConfidenceThreshold, B7-MyopicCostSensitiveVOI]
+  ablation:
+    domains: [iam, ait, cert]
+    suite: ablation
+    coverage_targets: [0.6, 0.7, 0.8, 0.9]
+    safety_targets: [0.01, 0.02, 0.05]
+    model: tan
+    cost_regime: B
+    curves: true
+    random_baseline: false
+  loss_sensitivity:
+    domains: [iam, ait, cert]
+    suite: main
+    model: tan
+    cost_regime: B
+    curves: true
+    random_baseline: false
+    false_assurance: [2.0, 5.0, 10.0, 20.0]
+    methods: [AVOI-GRC, B1-FixedChecklist, B4-InformationGain, B5-GenericVOI, B6-ConfidenceThreshold, B7-MyopicCostSensitiveVOI]
+  weight_sensitivity:
+    domains: [iam, ait, cert]
+    suite: main
+    model: tan
+    cost_regime: B
+    curves: true
+    random_baseline: false
+    methods: [AVOI-GRC]
+    weight_multipliers:
+      - {lam: 0.0, mu: 1.0, nu: 1.0}
+      - {lam: 0.5, mu: 1.0, nu: 1.0}
+      - {lam: 2.0, mu: 1.0, nu: 1.0}
+      - {lam: 5.0, mu: 1.0, nu: 1.0}
+      - {lam: 1.0, mu: 0.0, nu: 1.0}
+      - {lam: 1.0, mu: 2.5, nu: 1.0}
+      - {lam: 1.0, mu: 5.0, nu: 1.0}
+      - {lam: 1.0, mu: 10.0, nu: 1.0}
+      - {lam: 1.0, mu: 25.0, nu: 1.0}
+  lofo:
+    domains: [iam]
+    outer: lofo
+    suite: main
+    model: tan
+    cost_regime: B
+    random_baseline: false
+    methods: [AVOI-GRC, B1-FixedChecklist, B4-InformationGain, B5-GenericVOI, B6-ConfidenceThreshold, B7-MyopicCostSensitiveVOI]
+  llm_planner:
+    domains: [iam]
+    description: "Secondary: local LLM planner (Ollama) on a predefined subset; see experiments/run_llm_planner.py"
+

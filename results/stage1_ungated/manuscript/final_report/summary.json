@@ -1,0 +1,181 @@
+{
+ "domains": [
+  "iam",
+  "ait",
+  "cert"
+ ],
+ "tables": {
+  "t1": "results/tables/table1_dataset_provenance.csv",
+  "t2": "results/tables/table2_objectives_actions.csv",
+  "t3": "results/tables/table3_main_comparison.csv",
+  "t4": "results/tables/table4_matched_coverage.csv",
+  "t5": "results/tables/table5_matched_safety.csv",
+  "t6": "results/tables/table6_calibration.csv",
+  "t7": "results/tables/table7_ablation.csv",
+  "t8": "results/tables/table8_statistical_significance.csv",
+  "t9": "results/tables/table9_generalization.csv",
+  "t10": "results/tables/table10_sensitivity.csv",
+  "t5b": "results/tables/table5b_matched_safety_nondegenerate.csv"
+ },
+ "figures": {
+  "Figure 1 risk-coverage": [
+   "results/figures/risk_coverage_curve.pdf",
+   "results/figures/risk_coverage_curve.png"
+  ],
+  "Figure 2 cost-safety frontier": [
+   "results/figures/cost_safety_frontier.pdf",
+   "results/figures/cost_safety_frontier.png"
+  ],
+  "Figure 3 budget performance": [
+   "results/figures/budget_performance_curve.pdf",
+   "results/figures/budget_performance_curve.png"
+  ],
+  "Figure 4 calibration": [
+   "results/figures/calibration_curve.pdf",
+   "results/figures/calibration_curve.png"
+  ],
+  "Figure 5 risk trajectory": [
+   "results/figures/acquisition_risk_trajectory.pdf",
+   "results/figures/acquisition_risk_trajectory.png"
+  ],
+  "Figure 6 ECDF": [
+   "results/figures/evidence_request_ecdf.pdf",
+   "results/figures/evidence_request_ecdf.png"
+  ],
+  "Figure 7 privacy-safety": [
+   "results/figures/privacy_safety_tradeoff.pdf",
+   "results/figures/privacy_safety_tradeoff.png"
+  ],
+  "Figure 8 missingness": [
+   "results/figures/missingness_robustness_curve.pdf",
+   "results/figures/missingness_robustness_curve.png",
+   "results/figures/missingness_uar_curve.pdf",
+   "results/figures/missingness_uar_curve.png"
+  ],
+  "ROC/PR": [
+   "results/figures/roc_pr_curves.pdf",
+   "results/figures/roc_pr_curves.png"
+  ],
+  "Sensitivity heatmap": [
+   "results/figures/sensitivity_heatmap_tau_fa.pdf",
+   "results/figures/sensitivity_heatmap_tau_fa.png"
+  ],
+  "Action frequency heatmap": [
+   "results/figures/action_frequency_heatmap.pdf",
+   "results/figures/action_frequency_heatmap.png"
+  ],
+  "Cost violin": [
+   "results/figures/cost_violin.pdf",
+   "results/figures/cost_violin.png"
+  ],
+  "Decision flow": [
+   "results/figures/decision_flow.pdf",
+   "results/figures/decision_flow.png"
+  ]
+ },
+ "hypotheses": [
+  {
+   "hypothesis": "H1",
+   "dataset": "iam",
+   "verdict": "not supported - registered operating point degenerate (both methods selected thresholds that stop at t=0 with zero acquisitions; see post-hoc deviation D1)"
+  },
+  {
+   "hypothesis": "H2",
+   "dataset": "iam",
+   "verdict": "not supported"
+  },
+  {
+   "hypothesis": "H3",
+   "dataset": "iam",
+   "verdict": "supported"
+  },
+  {
+   "hypothesis": "H4",
+   "dataset": "iam",
+   "verdict": "supported"
+  },
+  {
+   "hypothesis": "H5",
+   "dataset": "iam",
+   "verdict": "supported"
+  },
+  {
+   "hypothesis": "H1",
+   "dataset": "ait",
+   "verdict": "not supported - registered operating point degenerate (both methods selected thresholds that stop at t=0 with zero acquisitions; see post-hoc deviation D1)"
+  },
+  {
+   "hypothesis": "H2",
+   "dataset": "ait",
+   "verdict": "not supported"
+  },
+  {
+   "hypothesis": "H3",
+   "dataset": "ait",
+   "verdict": "not supported"
+  },
+  {
+   "hypothesis": "H4",
+   "dataset": "ait",
+   "verdict": "supported"
+  },
+  {
+   "hypothesis": "H5",
+   "dataset": "ait",
+   "verdict": "supported (no conflict subset in this domain; insufficient-evidence subset used)"
+  },
+  {
+   "hypothesis": "H1",
+   "dataset": "cert",
+   "verdict": "not supported - registered operating point degenerate (both methods selected thresholds that stop at t=0 with zero acquisitions; see post-hoc deviation D1)"
+  },
+  {
+   "hypothesis": "H2",
+   "dataset": "cert",
+   "verdict": "not supported"
+  },
+  {
+   "hypothesis": "H3",
+   "dataset": "cert",
+   "verdict": "supported"
+  },
+  {
+   "hypothesis": "H4",
+   "dataset": "cert",
+   "verdict": "supported"
+  },
+  {
+   "hypothesis": "H5",
+   "dataset": "cert",
+   "verdict": "supported (no conflict subset in this domain; insufficient-evidence subset used)"
+  }
+ ],
+ "avoi": {
+  "iam": {
+   "UAR": 0.009446693657219974,
+   "expected_loss": 0.3807291666666667,
+   "mean_acquisitions": 1.6380208333333333,
+   "normalized_cost": 0.697526800612621,
+   "coverage": 0.7609375
+  },
+  "ait": {
+   "UAR": 0.30465116279069765,
+   "expected_loss": 1.4765625,
+   "mean_acquisitions": 0.5659722222222222,
+   "normalized_cost": 0.023156192134031753,
+   "coverage": 0.8723958333333334
+  },
+  "cert": {
+   "UAR": 0.03067484662576687,
+   "expected_loss": 0.4406604747162023,
+   "mean_acquisitions": 1.345717234262126,
+   "normalized_cost": 0.007359275211461803,
+   "coverage": 0.9308565531475749
+  }
+ },
+ "strongest_baseline_by_expected_loss": {
+  "iam": "B0-AllEvidence",
+  "ait": "B7-MyopicCostSensitiveVOI",
+  "cert": "B4-InformationGain"
+ }
+}

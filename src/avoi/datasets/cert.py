@@ -34,6 +34,18 @@ OUT = ROOT / "data" / "processed" / "cert"
 EPOCH = pd.Timestamp("2010-01-04")   # first Monday of the dataset period; week index = floor((date - EPOCH)/7d)
 SEED = 20260914
 CLAIM = "CERT-INSIDER"
+ANSWER_PREFIX = "answers/r4.2-"
+RELEASE = "r4.2"
+
+
+def configure(release: str = "r4.2", out_dir: str | None = None, seed: int | None = None) -> None:
+    """Select the CERT release (Stage 1: r4.2 -> data/processed/cert; Stage 2: r5.2 -> data/processed/cert_stage2)."""
+    global SRC, OUT, SEED, ANSWER_PREFIX, RELEASE
+    RELEASE = release
+    SRC = RAW / f"{release}_extracted" / release
+    OUT = ROOT / (out_dir or ("data/processed/cert" if release == "r4.2" else "data/processed/cert_stage2"))
+    SEED = seed if seed is not None else (20260914 if release == "r4.2" else 20261103)
+    ANSWER_PREFIX = f"answers/{release}-"
 
 ACTIONS = [  # (action_id, source table, source_type, privacy categories)
     ("cert_logon_afterhours", "logon", "authentication_log", ["user_identifier", "host_device_identifier", "authentication_event"]),
@@ -59,7 +71,7 @@ def answer_events() -> pd.DataFrame:
     rows = []
     with tarfile.open(RAW / "answers.tar.bz2") as t:
         for m in t.getmembers():
-            if m.isfile() and m.name.startswith("answers/r4.2-") and m.name.endswith(".csv"):
+            if m.isfile() and m.name.startswith(ANSWER_PREFIX) and m.name.endswith(".csv"):
                 for line in t.extractfile(m).read().decode(errors="replace").splitlines():
                     parts = line.split(",")
                     if len(parts) >= 4:
@@ -126,17 +138,31 @@ def build_stores(episodes: pd.DataFrame) -> None:
     store("logon", lg, ["pc", "activity", "hour", "dow"])
     dv = keep(pd.read_csv(SRC / "device.csv"))
     store("device", dv, ["pc", "activity"])
-    for chunk in pd.read_csv(SRC / "file.csv", usecols=["date", "user", "pc", "filename"], chunksize=500_000):
-        store("file", keep(chunk), ["pc", "filename"])
-    for chunk in pd.read_csv(SRC / "email.csv", usecols=["date", "user", "pc", "to", "cc", "bcc", "from", "size", "attachments"],
-                             chunksize=500_000):
+    file_cols = pd.read_csv(SRC / "file.csv", nrows=0).columns
+    fcols = ["date", "user", "pc", "filename"] + (["to_removable_media"] if "to_removable_media" in file_cols else [])
+    for chunk in pd.read_csv(SRC / "file.csv", usecols=fcols, chunksize=500_000):
         c = keep(chunk)
+        if "to_removable_media" in c:   # releases >= r5 log all file activity; r4.2 file.csv = copies to removable media
+            c = c[c["to_removable_media"].astype(str).str.lower() == "true"]
+        store("file", c, ["pc", "filename"])
+    email_cols = pd.read_csv(SRC / "email.csv", nrows=0).columns
+    ecols = ["date", "user", "pc", "to", "cc", "bcc", "from", "size", "attachments"] + (["activity"] if "activity" in email_cols else [])
+    for chunk in pd.read_csv(SRC / "email.csv", usecols=ecols, chunksize=500_000):
+        c = keep(chunk)
+        if "activity" in c:   # releases >= r5 also log viewed e-mails; keep sent e-mails as in r4.2
+            c = c[c["activity"].astype(str).str.lower() == "send"]
         rcpt = (c["to"].fillna("") + ";" + c["cc"].fillna("") + ";" + c["bcc"].fillna(""))
         c["external"] = rcpt.apply(lambda s: int(any(x and not x.endswith("@dtaa.com") for x in s.split(";"))))
+        if not pd.api.types.is_numeric_dtype(c["attachments"]):   # r5+: "name(size);name(size)" replaces attachment_count
+            c["attachments"] = c["attachments"].fillna("").astype(str).map(lambda s: sum(1 for x in s.split(";") if x.strip()))
         store("email", c, ["pc", "from", "external", "size", "attachments"])
     print("logon/device/file/email stored", round(time.time() - t), flush=True)
-    for k, chunk in enumerate(pd.read_csv(SRC / "http.csv", header=None, names=["id", "date", "user", "pc", "url", "content"],
-                                          usecols=["date", "user", "pc", "url"], chunksize=2_000_000)):
+    with (SRC / "http.csv").open(encoding="utf-8", errors="replace") as fh:
+        has_header = fh.readline().lower().startswith("id,")
+    http_kw = dict(usecols=["date", "user", "pc", "url"], chunksize=2_000_000, on_bad_lines="skip")
+    if not has_header:
+        http_kw.update(header=None, names=["id", "date", "user", "pc", "url", "content"])
+    for k, chunk in enumerate(pd.read_csv(SRC / "http.csv", **http_kw)):
         c = keep(chunk)
         c["domain"] = c["url"].str.extract(r"^(?:https?://)?([^/]+)", expand=False)
         store("http", c, ["pc", "domain"])
@@ -250,8 +276,9 @@ def build() -> None:
             w.writerow([e.episode_id, int((e.user, int(e.week)) not in positive)])
 
 
-def load_cert() -> dict[str, ObjectiveData]:
-    recs = json.loads((OUT / "evidence_store.json").read_text(encoding="utf-8"))
+def load_cert(out_dir: str | None = None) -> dict[str, ObjectiveData]:
+    base = ROOT / out_dir if out_dir else OUT
+    recs = json.loads((base / "evidence_store.json").read_text(encoding="utf-8"))
     specs = [ActionSpec(aid, CLAIM, stype, NUMERIC_OUTCOMES, (0, 1, 0, -1), tuple(priv)) for aid, _, stype, priv in ACTIONS]
     n, m = len(recs), len(ACTIONS)
     vals, sec, rows, byt = np.full((n, m), np.nan), np.zeros((n, m)), np.zeros((n, m)), np.zeros((n, m))
@@ -265,16 +292,19 @@ def load_cert() -> dict[str, ObjectiveData]:
             sec[i, j], rows[i, j], byt[i, j] = e["seconds"], e["rows"], e["bytes"]
             prow.append(list(pcats) if e["rows"] > 0 else [])
             vrow.append({"scope": f"user={r['user']};week={r['week']}", "parser": f"cert-store/1.0:{aid}",
-                         "raw_artifact_ref": f"data/processed/cert/cert_evidence.sqlite#{table}", "timestamp_utc": r["week"]})
+                         "raw_artifact_ref": f"{base.relative_to(ROOT).as_posix()}/cert_evidence.sqlite#{table}", "timestamp_utc": r["week"]})
         priv.append(prow)
         prov.append(vrow)
     users = np.array([r["user"] for r in recs])
     return {CLAIM: ObjectiveData("cert", CLAIM, specs, np.array([r["episode_id"] for r in recs]), users,
                                  {"insider": np.array([r["insider"] for r in recs]), "week": np.array([r["week"] for r in recs])},
-                                 "numeric", vals, sec, rows, byt, priv, prov, "CERT-r4.2")}
+                                 "numeric", vals, sec, rows, byt, priv, prov, "CERT-r5.2" if base.name == "cert_stage2" else "CERT-r4.2")}
 
 
 if __name__ == "__main__":
+    import sys
+    if len(sys.argv) > 1:
+        configure(sys.argv[1])
     build()
     d = load_cert()[CLAIM]
     print(d.n, d.m)

@@ -1,0 +1,4495 @@
+{
+ "generated_utc": "2026-09-14T12:59:11+00:00",
+ "frozen_configuration_sha256": "4370311ede64cd3215fc4bc3ceeddbbbcef4a66453697b0595d80f1bca7715c8",
+ "experiments": {
+  "primary": {
+   "domains": [
+    "iam",
+    "ait",
+    "cert"
+   ],
+   "suite": "main",
+   "model": "tan",
+   "cost_regime": "B",
+   "traces": true,
+   "curves": true,
+   "budgets": true,
+   "calibration": true,
+   "safety_targets": [
+    0.01,
+    0.02,
+    0.05
+   ],
+   "coverage_targets": [
+    0.6,
+    0.7,
+    0.8,
+    0.9
+   ],
+   "missing_levels": [
+    0.2,
+    0.4,
+    0.6,
+    0.8
+   ],
+   "missing_modes": [
+    "mcar",
+    "block",
+    "adversarial"
+   ],
+   "degradation_rates": [
+    0.5
+   ],
+   "cost_shift_multipliers": [
+    5.0
+   ]
+  },
+  "regime_a": {
+   "domains": [
+    "iam",
+    "ait",
+    "cert"
+   ],
+   "suite": "main",
+   "model": "tan",
+   "cost_regime": "A",
+   "curves": true
+  },
+  "model_lr": {
+   "domains": [
+    "iam",
+    "ait",
+    "cert"
+   ],
+   "suite": "main",
+   "model": "lr",
+   "cost_regime": "B",
+   "curves": true,
+   "calibration": true,
+   "random_baseline": false,
+   "methods": [
+    "AVOI-GRC",
+    "B0-AllEvidence",
+    "B1-FixedChecklist",
+    "B3-CheapestFirst",
+    "B4-InformationGain",
+    "B5-GenericVOI",
+    "B6-ConfidenceThreshold",
+    "B7-MyopicCostSensitiveVOI"
+   ]
+  },
+  "ablation": {
+   "domains": [
+    "iam",
+    "ait",
+    "cert"
+   ],
+   "suite": "ablation",
+   "coverage_targets": [
+    0.6,
+    0.7,
+    0.8,
+    0.9
+   ],
+   "safety_targets": [
+    0.01,
+    0.02,
+    0.05
+   ],
+   "model": "tan",
+   "cost_regime": "B",
+   "curves": true,
+   "random_baseline": false
+  },
+  "loss_sensitivity": {
+   "domains": [
+    "iam",
+    "ait",
+    "cert"
+   ],
+   "suite": "main",
+   "model": "tan",
+   "cost_regime": "B",
+   "curves": true,
+   "random_baseline": false,
+   "false_assurance": [
+    2.0,
+    5.0,
+    10.0,
+    20.0
+   ],
+   "methods": [
+    "AVOI-GRC",
+    "B1-FixedChecklist",
+    "B4-InformationGain",
+    "B5-GenericVOI",
+    "B6-ConfidenceThreshold",
+    "B7-MyopicCostSensitiveVOI"
+   ]
+  },
+  "weight_sensitivity": {
+   "domains": [
+    "iam",
+    "ait",
+    "cert"
+   ],
+   "suite": "main",
+   "model": "tan",
+   "cost_regime": "B",
+   "curves": true,
+   "random_baseline": false,
+   "methods": [
+    "AVOI-GRC"
+   ],
+   "weight_multipliers": [
+    {
+     "lam": 0.0,
+     "mu": 1.0,
+     "nu": 1.0
+    },
+    {
+     "lam": 0.5,
+     "mu": 1.0,
+     "nu": 1.0
+    },
+    {
+     "lam": 2.0,
+     "mu": 1.0,
+     "nu": 1.0
+    },
+    {
+     "lam": 5.0,
+     "mu": 1.0,
+     "nu": 1.0
+    },
+    {
+     "lam": 1.0,
+     "mu": 0.0,
+     "nu": 1.0
+    },
+    {
+     "lam": 1.0,
+     "mu": 2.5,
+     "nu": 1.0
+    },
+    {
+     "lam": 1.0,
+     "mu": 5.0,
+     "nu": 1.0
+    },
+    {
+     "lam": 1.0,
+     "mu": 10.0,
+     "nu": 1.0
+    },
+    {
+     "lam": 1.0,
+     "mu": 25.0,
+     "nu": 1.0
+    }
+   ]
+  },
+  "lofo": {
+   "domains": [
+    "iam"
+   ],
+   "outer": "lofo",
+   "suite": "main",
+   "model": "tan",
+   "cost_regime": "B",
+   "random_baseline": false,
+   "methods": [
+    "AVOI-GRC",
+    "B1-FixedChecklist",
+    "B4-InformationGain",
+    "B5-GenericVOI",
+    "B6-ConfidenceThreshold",
+    "B7-MyopicCostSensitiveVOI"
+   ]
+  },
+  "llm_planner": {
+   "domains": [
+    "iam"
+   ],
+   "description": "Secondary: local LLM planner (Ollama) on a predefined subset; see experiments/run_llm_planner.py"
+  }
+ },
+ "n_tasks": 474,
+ "n_failed": 0,
+ "tasks": [
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 6.4,
+   "n_rows": 3136
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 5.5,
+   "n_rows": 3264
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 5.8,
+   "n_rows": 3456
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 5.6,
+   "n_rows": 2880
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 5.7,
+   "n_rows": 3584
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 5.8,
+   "n_rows": 3584
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 6.1,
+   "n_rows": 2944
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 6.3,
+   "n_rows": 3328
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 7.4,
+   "n_rows": 2752
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 6.2,
+   "n_rows": 2944
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 6.3,
+   "n_rows": 2240
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 6.4,
+   "n_rows": 2304
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 7.9,
+   "n_rows": 3200
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 6.4,
+   "n_rows": 2304
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 6.4,
+   "n_rows": 2432
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 7.6,
+   "n_rows": 3328
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 6.5,
+   "n_rows": 3264
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 6.6,
+   "n_rows": 2880
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 7.7,
+   "n_rows": 3072
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 6.6,
+   "n_rows": 3264
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 6.8,
+   "n_rows": 2432
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 7.4,
+   "n_rows": 3200
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 4.7,
+   "n_rows": 3392
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 4.7,
+   "n_rows": 2688
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 5.3,
+   "n_rows": 2752
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 4.5,
+   "n_rows": 3328
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 4.8,
+   "n_rows": 3264
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 5.1,
+   "n_rows": 3520
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 5.2,
+   "n_rows": 3200
+  },
+  {
+   "experiment": "ablation",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 5.0,
+   "n_rows": 2560
+  },
+  {
+   "experiment": "ablation",
+   "domain": "ait",
+   "objective": "AIT-EXFIL",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 27.6,
+   "n_rows": 20736
+  },
+  {
+   "experiment": "ablation",
+   "domain": "ait",
+   "objective": "AIT-INTRUSION",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 28.7,
+   "n_rows": 20736
+  },
+  {
+   "experiment": "ablation",
+   "domain": "ait",
+   "objective": "AIT-INTRUSION",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 30.5,
+   "n_rows": 22464
+  },
+  {
+   "experiment": "ablation",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 31.2,
+   "n_rows": 10136
+  },
+  {
+   "experiment": "ablation",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 31.7,
+   "n_rows": 12198
+  },
+  {
+   "experiment": "ablation",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 31.8,
+   "n_rows": 10472
+  },
+  {
+   "experiment": "ablation",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 31.9,
+   "n_rows": 10614
+  },
+  {
+   "experiment": "ablation",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 32.1,
+   "n_rows": 11076
+  },
+  {
+   "experiment": "ablation",
+   "domain": "ait",
+   "objective": "AIT-EXFIL",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 33.4,
+   "n_rows": 29376
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 12.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 11.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 11.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 5,
+   "status": "ok",
+   "seconds": 11.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 11.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 6,
+   "status": "ok",
+   "seconds": 11.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 9,
+   "status": "ok",
+   "seconds": 11.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 11.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 18,
+   "status": "ok",
+   "seconds": 11.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 13,
+   "status": "ok",
+   "seconds": 11.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 14,
+   "status": "ok",
+   "seconds": 10.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 7,
+   "status": "ok",
+   "seconds": 11.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 11,
+   "status": "ok",
+   "seconds": 10.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 12,
+   "status": "ok",
+   "seconds": 11.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 19,
+   "status": "ok",
+   "seconds": 11.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 8,
+   "status": "ok",
+   "seconds": 10.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 10,
+   "status": "ok",
+   "seconds": 10.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 20,
+   "status": "ok",
+   "seconds": 10.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 17,
+   "status": "ok",
+   "seconds": 10.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 21,
+   "status": "ok",
+   "seconds": 11.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 16,
+   "status": "ok",
+   "seconds": 10.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 15,
+   "status": "ok",
+   "seconds": 11.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 23,
+   "status": "ok",
+   "seconds": 3.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 22,
+   "status": "ok",
+   "seconds": 3.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 24,
+   "status": "ok",
+   "seconds": 3.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 25,
+   "status": "ok",
+   "seconds": 3.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 26,
+   "status": "ok",
+   "seconds": 3.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 27,
+   "status": "ok",
+   "seconds": 3.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 28,
+   "status": "ok",
+   "seconds": 3.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 29,
+   "status": "ok",
+   "seconds": 3.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 2.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 2.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 30,
+   "status": "ok",
+   "seconds": 3.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 2.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 3.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 31,
+   "status": "ok",
+   "seconds": 3.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 35,
+   "status": "ok",
+   "seconds": 3.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 33,
+   "status": "ok",
+   "seconds": 3.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 34,
+   "status": "ok",
+   "seconds": 3.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 32,
+   "status": "ok",
+   "seconds": 3.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 37,
+   "status": "ok",
+   "seconds": 3.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 39,
+   "status": "ok",
+   "seconds": 3.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 36,
+   "status": "ok",
+   "seconds": 4.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 38,
+   "status": "ok",
+   "seconds": 3.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 3.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 5,
+   "status": "ok",
+   "seconds": 3.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 6,
+   "status": "ok",
+   "seconds": 3.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 8,
+   "status": "ok",
+   "seconds": 3.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 7,
+   "status": "ok",
+   "seconds": 3.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 9,
+   "status": "ok",
+   "seconds": 4.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 11,
+   "status": "ok",
+   "seconds": 4.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 10,
+   "status": "ok",
+   "seconds": 4.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 13,
+   "status": "ok",
+   "seconds": 4.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 14,
+   "status": "ok",
+   "seconds": 4.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 12,
+   "status": "ok",
+   "seconds": 4.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 15,
+   "status": "ok",
+   "seconds": 4.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 17,
+   "status": "ok",
+   "seconds": 4.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 16,
+   "status": "ok",
+   "seconds": 4.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 18,
+   "status": "ok",
+   "seconds": 4.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 20,
+   "status": "ok",
+   "seconds": 4.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 19,
+   "status": "ok",
+   "seconds": 4.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 21,
+   "status": "ok",
+   "seconds": 4.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 23,
+   "status": "ok",
+   "seconds": 4.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 22,
+   "status": "ok",
+   "seconds": 4.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 24,
+   "status": "ok",
+   "seconds": 4.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 25,
+   "status": "ok",
+   "seconds": 4.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 26,
+   "status": "ok",
+   "seconds": 4.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 28,
+   "status": "ok",
+   "seconds": 4.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 27,
+   "status": "ok",
+   "seconds": 5.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 29,
+   "status": "ok",
+   "seconds": 4.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 30,
+   "status": "ok",
+   "seconds": 4.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 31,
+   "status": "ok",
+   "seconds": 4.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 32,
+   "status": "ok",
+   "seconds": 4.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 34,
+   "status": "ok",
+   "seconds": 4.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 33,
+   "status": "ok",
+   "seconds": 4.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 35,
+   "status": "ok",
+   "seconds": 4.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 36,
+   "status": "ok",
+   "seconds": 4.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 37,
+   "status": "ok",
+   "seconds": 4.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 38,
+   "status": "ok",
+   "seconds": 4.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 39,
+   "status": "ok",
+   "seconds": 4.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 5.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 5.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 5.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 5.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 5.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 6,
+   "status": "ok",
+   "seconds": 5.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 5,
+   "status": "ok",
+   "seconds": 5.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 7,
+   "status": "ok",
+   "seconds": 5.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 8,
+   "status": "ok",
+   "seconds": 5.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 9,
+   "status": "ok",
+   "seconds": 5.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 10,
+   "status": "ok",
+   "seconds": 5.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 11,
+   "status": "ok",
+   "seconds": 5.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 12,
+   "status": "ok",
+   "seconds": 5.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 13,
+   "status": "ok",
+   "seconds": 4.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 14,
+   "status": "ok",
+   "seconds": 5.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 15,
+   "status": "ok",
+   "seconds": 5.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 16,
+   "status": "ok",
+   "seconds": 5.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 17,
+   "status": "ok",
+   "seconds": 5.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 18,
+   "status": "ok",
+   "seconds": 5.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 20,
+   "status": "ok",
+   "seconds": 5.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 19,
+   "status": "ok",
+   "seconds": 6.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 21,
+   "status": "ok",
+   "seconds": 5.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 22,
+   "status": "ok",
+   "seconds": 5.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 26,
+   "status": "ok",
+   "seconds": 5.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 24,
+   "status": "ok",
+   "seconds": 5.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 23,
+   "status": "ok",
+   "seconds": 5.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 25,
+   "status": "ok",
+   "seconds": 6.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 27,
+   "status": "ok",
+   "seconds": 5.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 28,
+   "status": "ok",
+   "seconds": 5.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 29,
+   "status": "ok",
+   "seconds": 6.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 30,
+   "status": "ok",
+   "seconds": 5.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 31,
+   "status": "ok",
+   "seconds": 5.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 33,
+   "status": "ok",
+   "seconds": 6.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 32,
+   "status": "ok",
+   "seconds": 6.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 34,
+   "status": "ok",
+   "seconds": 6.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 4.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 4.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 35,
+   "status": "ok",
+   "seconds": 6.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 4.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 38,
+   "status": "ok",
+   "seconds": 5.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 4.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 39,
+   "status": "ok",
+   "seconds": 5.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 4.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 36,
+   "status": "ok",
+   "seconds": 6.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 5,
+   "status": "ok",
+   "seconds": 4.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 6,
+   "status": "ok",
+   "seconds": 4.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 7,
+   "status": "ok",
+   "seconds": 4.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 8,
+   "status": "ok",
+   "seconds": 4.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 37,
+   "status": "ok",
+   "seconds": 6.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 9,
+   "status": "ok",
+   "seconds": 4.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 10,
+   "status": "ok",
+   "seconds": 4.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 13,
+   "status": "ok",
+   "seconds": 3.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 12,
+   "status": "ok",
+   "seconds": 4.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 11,
+   "status": "ok",
+   "seconds": 4.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 14,
+   "status": "ok",
+   "seconds": 3.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 16,
+   "status": "ok",
+   "seconds": 4.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 18,
+   "status": "ok",
+   "seconds": 4.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 15,
+   "status": "ok",
+   "seconds": 4.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 17,
+   "status": "ok",
+   "seconds": 4.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 19,
+   "status": "ok",
+   "seconds": 4.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 22,
+   "status": "ok",
+   "seconds": 4.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 26,
+   "status": "ok",
+   "seconds": 3.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 20,
+   "status": "ok",
+   "seconds": 4.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 24,
+   "status": "ok",
+   "seconds": 4.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 21,
+   "status": "ok",
+   "seconds": 4.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 25,
+   "status": "ok",
+   "seconds": 4.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 23,
+   "status": "ok",
+   "seconds": 4.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 31,
+   "status": "ok",
+   "seconds": 3.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 30,
+   "status": "ok",
+   "seconds": 3.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 32,
+   "status": "ok",
+   "seconds": 3.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 27,
+   "status": "ok",
+   "seconds": 4.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 28,
+   "status": "ok",
+   "seconds": 4.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 29,
+   "status": "ok",
+   "seconds": 4.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 33,
+   "status": "ok",
+   "seconds": 3.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 34,
+   "status": "ok",
+   "seconds": 4.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 35,
+   "status": "ok",
+   "seconds": 4.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 36,
+   "status": "ok",
+   "seconds": 4.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 37,
+   "status": "ok",
+   "seconds": 4.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 38,
+   "status": "ok",
+   "seconds": 3.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 39,
+   "status": "ok",
+   "seconds": 4.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 4.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 5.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 6,
+   "status": "ok",
+   "seconds": 4.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 5.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 5.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 8,
+   "status": "ok",
+   "seconds": 5.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 7,
+   "status": "ok",
+   "seconds": 5.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 5.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 5,
+   "status": "ok",
+   "seconds": 5.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 10,
+   "status": "ok",
+   "seconds": 4.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 9,
+   "status": "ok",
+   "seconds": 5.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 12,
+   "status": "ok",
+   "seconds": 5.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 11,
+   "status": "ok",
+   "seconds": 5.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 13,
+   "status": "ok",
+   "seconds": 5.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 14,
+   "status": "ok",
+   "seconds": 5.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 17,
+   "status": "ok",
+   "seconds": 4.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 15,
+   "status": "ok",
+   "seconds": 5.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 16,
+   "status": "ok",
+   "seconds": 5.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 18,
+   "status": "ok",
+   "seconds": 5.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 20,
+   "status": "ok",
+   "seconds": 4.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 19,
+   "status": "ok",
+   "seconds": 4.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 21,
+   "status": "ok",
+   "seconds": 4.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 23,
+   "status": "ok",
+   "seconds": 4.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 22,
+   "status": "ok",
+   "seconds": 5.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 25,
+   "status": "ok",
+   "seconds": 4.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 27,
+   "status": "ok",
+   "seconds": 5.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 26,
+   "status": "ok",
+   "seconds": 5.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 29,
+   "status": "ok",
+   "seconds": 5.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 24,
+   "status": "ok",
+   "seconds": 5.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 28,
+   "status": "ok",
+   "seconds": 5.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 31,
+   "status": "ok",
+   "seconds": 5.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 30,
+   "status": "ok",
+   "seconds": 5.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 33,
+   "status": "ok",
+   "seconds": 5.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 34,
+   "status": "ok",
+   "seconds": 5.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 35,
+   "status": "ok",
+   "seconds": 5.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 32,
+   "status": "ok",
+   "seconds": 6.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 37,
+   "status": "ok",
+   "seconds": 5.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 36,
+   "status": "ok",
+   "seconds": 5.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 39,
+   "status": "ok",
+   "seconds": 5.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 4.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 38,
+   "status": "ok",
+   "seconds": 5.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 5.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 5.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 5.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 5.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 6,
+   "status": "ok",
+   "seconds": 5.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 5,
+   "status": "ok",
+   "seconds": 5.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 10,
+   "status": "ok",
+   "seconds": 4.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 8,
+   "status": "ok",
+   "seconds": 5.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 7,
+   "status": "ok",
+   "seconds": 5.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 12,
+   "status": "ok",
+   "seconds": 5.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 9,
+   "status": "ok",
+   "seconds": 5.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 15,
+   "status": "ok",
+   "seconds": 4.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 13,
+   "status": "ok",
+   "seconds": 4.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 11,
+   "status": "ok",
+   "seconds": 5.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 14,
+   "status": "ok",
+   "seconds": 4.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 16,
+   "status": "ok",
+   "seconds": 5.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 18,
+   "status": "ok",
+   "seconds": 5.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 17,
+   "status": "ok",
+   "seconds": 5.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 20,
+   "status": "ok",
+   "seconds": 5.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 23,
+   "status": "ok",
+   "seconds": 4.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 21,
+   "status": "ok",
+   "seconds": 5.2,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 19,
+   "status": "ok",
+   "seconds": 5.4,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 22,
+   "status": "ok",
+   "seconds": 5.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 24,
+   "status": "ok",
+   "seconds": 4.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 25,
+   "status": "ok",
+   "seconds": 5.0,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 26,
+   "status": "ok",
+   "seconds": 4.5,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 27,
+   "status": "ok",
+   "seconds": 4.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 28,
+   "status": "ok",
+   "seconds": 4.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 30,
+   "status": "ok",
+   "seconds": 4.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 31,
+   "status": "ok",
+   "seconds": 4.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 29,
+   "status": "ok",
+   "seconds": 4.3,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 33,
+   "status": "ok",
+   "seconds": 3.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 32,
+   "status": "ok",
+   "seconds": 3.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 36,
+   "status": "ok",
+   "seconds": 3.7,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 34,
+   "status": "ok",
+   "seconds": 3.8,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 37,
+   "status": "ok",
+   "seconds": 3.6,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 35,
+   "status": "ok",
+   "seconds": 3.9,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 38,
+   "status": "ok",
+   "seconds": 3.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "lofo",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 39,
+   "status": "ok",
+   "seconds": 3.1,
+   "n_rows": 48
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 12.1,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 12.0,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 12.1,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 12.1,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 12.1,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 13.4,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 13.7,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 13.6,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 13.6,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 13.6,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 14.1,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 14.6,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 15.0,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 16.3,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 15.0,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 15.1,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 15.2,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 16.3,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 15.6,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 16.5,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 15.9,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 16.1,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 11.6,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 11.5,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 11.7,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 11.8,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 11.8,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 11.6,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 11.4,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 11.6,
+   "n_rows": 1536
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "ait",
+   "objective": "AIT-INTRUSION",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 46.2,
+   "n_rows": 13824
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "ait",
+   "objective": "AIT-INTRUSION",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 57.8,
+   "n_rows": 13824
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "ait",
+   "objective": "AIT-EXFIL",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 71.7,
+   "n_rows": 13824
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 80.7,
+   "n_rows": 4344
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 81.4,
+   "n_rows": 4488
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 81.5,
+   "n_rows": 4176
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 81.7,
+   "n_rows": 5136
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 82.0,
+   "n_rows": 5112
+  },
+  {
+   "experiment": "loss_sensitivity",
+   "domain": "ait",
+   "objective": "AIT-EXFIL",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 84.4,
+   "n_rows": 13824
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 13.8,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 14.7,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 14.7,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 14.8,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 14.9,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 20.2,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 20.4,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 20.0,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 20.3,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 21.0,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 22.6,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 23.0,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 23.3,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 23.9,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 24.7,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 25.1,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 25.9,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 27.3,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 28.4,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 28.1,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 28.4,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 27.9,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 19.0,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 20.4,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 19.3,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 20.5,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 20.8,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 17.3,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 17.4,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 17.9,
+   "n_rows": 512
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "ait",
+   "objective": "AIT-INTRUSION",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 107.3,
+   "n_rows": 4608
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "ait",
+   "objective": "AIT-INTRUSION",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 125.8,
+   "n_rows": 4608
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "ait",
+   "objective": "AIT-EXFIL",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 125.8,
+   "n_rows": 4608
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 152.4,
+   "n_rows": 1496
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "ait",
+   "objective": "AIT-EXFIL",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 152.5,
+   "n_rows": 4608
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 155.0,
+   "n_rows": 1704
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 156.8,
+   "n_rows": 1448
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 157.6,
+   "n_rows": 1712
+  },
+  {
+   "experiment": "model_lr",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 162.4,
+   "n_rows": 1392
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 17.9,
+   "n_rows": 20160
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 18.2,
+   "n_rows": 22144
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 18.8,
+   "n_rows": 21888
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 18.6,
+   "n_rows": 22144
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 18.6,
+   "n_rows": 23360
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 21.4,
+   "n_rows": 22528
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 21.2,
+   "n_rows": 22400
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 22.1,
+   "n_rows": 21632
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 21.7,
+   "n_rows": 21568
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 21.5,
+   "n_rows": 22400
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 22.6,
+   "n_rows": 23168
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 22.6,
+   "n_rows": 21568
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 23.7,
+   "n_rows": 17216
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 23.9,
+   "n_rows": 16960
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 24.3,
+   "n_rows": 17920
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 23.9,
+   "n_rows": 17536
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 24.2,
+   "n_rows": 17088
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 26.3,
+   "n_rows": 22336
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 25.8,
+   "n_rows": 22720
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 26.4,
+   "n_rows": 22656
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 26.1,
+   "n_rows": 22528
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 25.9,
+   "n_rows": 21376
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 13.5,
+   "n_rows": 23552
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 13.3,
+   "n_rows": 21632
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 14.3,
+   "n_rows": 22720
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 13.6,
+   "n_rows": 21824
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 14.4,
+   "n_rows": 24256
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 11.7,
+   "n_rows": 20160
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 11.9,
+   "n_rows": 22016
+  },
+  {
+   "experiment": "primary",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 12.0,
+   "n_rows": 23040
+  },
+  {
+   "experiment": "primary",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 110.2,
+   "n_rows": 66294
+  },
+  {
+   "experiment": "primary",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 113.7,
+   "n_rows": 68780
+  },
+  {
+   "experiment": "primary",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 116.1,
+   "n_rows": 71060
+  },
+  {
+   "experiment": "primary",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 121.2,
+   "n_rows": 81534
+  },
+  {
+   "experiment": "primary",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 124.1,
+   "n_rows": 80514
+  },
+  {
+   "experiment": "primary",
+   "domain": "ait",
+   "objective": "AIT-INTRUSION",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 125.7,
+   "n_rows": 175104
+  },
+  {
+   "experiment": "primary",
+   "domain": "ait",
+   "objective": "AIT-EXFIL",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 133.3,
+   "n_rows": 215424
+  },
+  {
+   "experiment": "primary",
+   "domain": "ait",
+   "objective": "AIT-INTRUSION",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 141.1,
+   "n_rows": 175104
+  },
+  {
+   "experiment": "primary",
+   "domain": "ait",
+   "objective": "AIT-EXFIL",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 161.4,
+   "n_rows": 214848
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 12.6,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 12.4,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 12.5,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 12.7,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 12.8,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 14.1,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 14.4,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 14.4,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 14.5,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 14.4,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 15.1,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 15.2,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 16.2,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 16.2,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 18.1,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 16.5,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 16.4,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 17.5,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 18.0,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 17.8,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 16.7,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 17.3,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 10.4,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 10.0,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 10.4,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 10.4,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 9.2,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 10.4,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 9.3,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 9.3,
+   "n_rows": 1856
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "ait",
+   "objective": "AIT-EXFIL",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 51.4,
+   "n_rows": 16704
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "ait",
+   "objective": "AIT-INTRUSION",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 52.0,
+   "n_rows": 16704
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "ait",
+   "objective": "AIT-INTRUSION",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 53.9,
+   "n_rows": 16704
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 60.5,
+   "n_rows": 6206
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 64.4,
+   "n_rows": 5249
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 65.1,
+   "n_rows": 5046
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 66.1,
+   "n_rows": 5423
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 66.9,
+   "n_rows": 6177
+  },
+  {
+   "experiment": "regime_a",
+   "domain": "ait",
+   "objective": "AIT-EXFIL",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 68.2,
+   "n_rows": 16704
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 12.6,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 12.6,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 12.7,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 12.7,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-04-DORMANT",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 13.0,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 15.2,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 15.1,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 15.7,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 17.3,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 16.9,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 17.0,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 17.1,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-02-TERM-DISABLED",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 17.1,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 17.6,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 17.8,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 22.1,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 18.1,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-03-PRIV-AUTHZ",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 18.4,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 22.0,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 20.9,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 22.3,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-01-MFA-PRIV",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 21.9,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 15.6,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 15.9,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 16.2,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-05-BREAKGLASS",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 16.3,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 16.4,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 14.7,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 15.0,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "iam",
+   "objective": "IAM-06-ACCESS-REVIEW",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 14.5,
+   "n_rows": 576
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "ait",
+   "objective": "AIT-EXFIL",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 31.8,
+   "n_rows": 5184
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "ait",
+   "objective": "AIT-INTRUSION",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 39.7,
+   "n_rows": 5184
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "ait",
+   "objective": "AIT-INTRUSION",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 40.0,
+   "n_rows": 5184
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "ait",
+   "objective": "AIT-EXFIL",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 47.1,
+   "n_rows": 5184
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 3,
+   "status": "ok",
+   "seconds": 48.9,
+   "n_rows": 1926
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 2,
+   "status": "ok",
+   "seconds": 49.4,
+   "n_rows": 1917
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 4,
+   "status": "ok",
+   "seconds": 49.1,
+   "n_rows": 1629
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 0,
+   "status": "ok",
+   "seconds": 50.7,
+   "n_rows": 1683
+  },
+  {
+   "experiment": "weight_sensitivity",
+   "domain": "cert",
+   "objective": "CERT-INSIDER",
+   "fold": 1,
+   "status": "ok",
+   "seconds": 50.6,
+   "n_rows": 1566
+  }
+ ],
+ "llm_planner": {
+  "model": "llama3.1:8b",
+  "fold": 0,
+  "new_llm_calls": 305,
+  "invalid_responses": 0,
+  "temperature": 0,
+  "seed": 0
+ }
+}

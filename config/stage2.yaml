@@ -1,0 +1,47 @@
+# STAGE-2 confirmation protocol (frozen in results/stage2/EXPERIMENT_FREEZE_STAGE2.json before adequacy validation).
+study_version: AVOI-stage2-1.0
+method_display_name: AVOI
+
+partitions:
+  iam:
+    development: "Stage-1 controlled IAM episodes (320 scenarios, seed 20260914)"
+    new_scenarios: "320 NEW live scenarios generated with config/scenario_generator_stage2.yaml (master seed 20261103)"
+    validation_families_below: 16          # new families 0-15 -> adequacy validation + threshold tuning; 16-39 -> confirmation
+    bootstrap_group: scenario family
+  ait:
+    development: [russellmitchell, santos]  # Stage-1 testbeds
+    validation_testbeds: [fox]
+    confirmation_testbeds: [harrison, wardbeck]
+    bootstrap_group: "testbed x 60-minute block"
+  cert:
+    development: "CERT r4.2 (Stage-1 episodes)"
+    new_release: r5.2
+    validation_user_fraction: 0.40
+    user_split_seed: 20261103
+    bootstrap_group: user
+
+tuning: "all thresholds / target operating points selected on the adequacy-validation partition; confirmation labels only score decisions"
+coverage_targets: [0.6, 0.7, 0.8, 0.9]
+safety_targets: [0.01, 0.02, 0.05]         # non-degenerate matched safety: min cost s.t. UAR <= eta AND coverage >= gamma
+missing_levels: [0.2, 0.4, 0.6, 0.8]       # plus cold start (1.0)
+missing_modes: [mcar, block, adversarial]
+condition_methods: [AVOI, B0-AllEvidence, B1-FixedChecklist, B3-CheapestFirst, B4-InformationGain, B5-GenericVOI, B6-ConfidenceThreshold, B7-MyopicCostSensitiveVOI]
+trace_methods: [AVOI, B0-AllEvidence, B1-FixedChecklist, B4-InformationGain, B5-GenericVOI, B6-ConfidenceThreshold]
+privacy_mu_values: [0.0, 0.02, 0.1, 0.25, 0.5, 1.0]   # 0.02 = primary preference weight
+false_assurance_values: [2.0, 5.0, 10.0, 20.0]
+fa_methods: [AVOI, B1-FixedChecklist, B4-InformationGain, B5-GenericVOI, B6-ConfidenceThreshold, B7-MyopicCostSensitiveVOI]
+
+metrics:
+  UAR: "#(Assured AND Y=0) / #(Y=0) over ALL evaluated episodes (HumanReview with Y=0 stays in the denominator)"
+  FAA: "false assurance among assurances = #(Assured AND Y=0) / #(Assured)"
+  coverage: "#(Assured or NotAssured) / #episodes"
+  budget: "hard budget k = AT MOST k acquisitions"
+  acquisition_required: "episode whose initial evidence does not satisfy the autonomous stopping threshold (tuned tau) at t=0"
+
+llm_planner:
+  model: gemma4:e4b
+  subset: "IAM confirmation families 16-23 (first 8 confirmation families), all six objectives"
+  families: [16, 23]
+  temperature: 0
+  seed: 0
+  think: false

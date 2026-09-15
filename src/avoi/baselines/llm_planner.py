@@ -19,12 +19,14 @@ OLLAMA = "http://127.0.0.1:11434/api/chat"
 
 
 class LLMPlanner:
-    def __init__(self, model: str, objective_text: dict[str, dict], seed: int = 0, max_steps: int | None = None):
+    def __init__(self, model: str, objective_text: dict[str, dict], seed: int = 0, max_steps: int | None = None,
+                 cache_path: Path | None = None):
         self.model, self.seed, self.objective_text, self.max_steps = model, seed, objective_text, max_steps
+        self.cache_path = cache_path or CACHE
         self.cache: dict[str, dict] = {}
-        CACHE.parent.mkdir(parents=True, exist_ok=True)
-        if CACHE.exists():
-            for line in CACHE.read_text(encoding="utf-8").splitlines():
+        self.cache_path.parent.mkdir(parents=True, exist_ok=True)
+        if self.cache_path.exists():
+            for line in self.cache_path.read_text(encoding="utf-8").splitlines():
                 rec = json.loads(line)
                 self.cache[rec["key"]] = rec
         self.calls = 0
@@ -58,7 +60,7 @@ class LLMPlanner:
         key = hashlib.sha256(json.dumps([self.model, self.seed, text, schema], sort_keys=True).encode()).hexdigest()
         rec = self.cache.get(key)
         if rec is None:
-            body = {"model": self.model, "stream": False, "format": schema,
+            body = {"model": self.model, "stream": False, "format": schema, "think": False,
                     "options": {"temperature": 0, "seed": self.seed, "num_ctx": 8192},
                     "messages": [{"role": "user", "content": text}]}
             r = requests.post(OLLAMA, json=body, timeout=600)
@@ -66,7 +68,7 @@ class LLMPlanner:
             content = r.json()["message"]["content"]
             rec = {"key": key, "model": self.model, "prompt": text, "schema": schema, "response": content}
             self.cache[key] = rec
-            with CACHE.open("a", encoding="utf-8") as fh:
+            with self.cache_path.open("a", encoding="utf-8") as fh:
                 fh.write(json.dumps(rec) + "\n")
             self.calls += 1
         try:

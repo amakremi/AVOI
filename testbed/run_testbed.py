@@ -41,8 +41,8 @@ def action_order(cfg: dict) -> list[tuple[str, str]]:
     return sorted(pairs, key=lambda p: p[1].startswith("test_"))
 
 
-def run_scenario(i: int, gen_cfg: dict, obj_cfg: dict, kc: KeycloakAdmin, keep: bool) -> dict:
-    spec = generate_spec(i, gen_cfg)
+def run_scenario(i: int, gen_cfg: dict, obj_cfg: dict, kc: KeycloakAdmin, keep: bool, prefix: str = "scn") -> dict:
+    spec = generate_spec(i, gen_cfg, prefix)
     realm = spec["scenario_id"]
     t_start = time.time()
     applier = Applier(kc)
@@ -62,7 +62,7 @@ def run_scenario(i: int, gen_cfg: dict, obj_cfg: dict, kc: KeycloakAdmin, keep: 
                     "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(ts)),
                     "scope": f"realm:{realm}", "provenance": {"realm": realm, "assessment_time_ms": info["t0_ms"],
                                                               "collector": obs["parser"]},
-                    "raw_artifact_ref": f"data/processed/iam/evidence_store/{realm}.json#/observations/{action_id}/raw"})
+                    "raw_artifact_ref": f"{OUT.relative_to(ROOT).as_posix()}/evidence_store/{realm}.json#/observations/{action_id}/raw"})
         allowed = {o["id"]: {a["id"]: a["outcomes"] for a in o["actions"]} for o in obj_cfg["objectives"]}[obj_id][action_id]
         if obs["outcome"] not in allowed:
             raise ValueError(f"{realm} {action_id}: outcome {obs['outcome']} not declared in config")
@@ -89,8 +89,13 @@ def main():
     ap.add_argument("--end", type=int, default=None)
     ap.add_argument("--keep-realms", type=int, default=2, help="keep the last N realms alive for live-mode checks")
     ap.add_argument("--skip-existing", action="store_true")
+    ap.add_argument("--gen-config", default="config/scenario_generator.yaml")
+    ap.add_argument("--out-dir", default="data/processed/iam")
+    ap.add_argument("--id-prefix", default="scn")
     args = ap.parse_args()
-    gen_cfg, obj_cfg = load_cfg(), objectives_cfg()
+    global OUT
+    OUT = ROOT / args.out_dir
+    gen_cfg, obj_cfg = load_cfg(args.gen_config), objectives_cfg()
     end = args.end if args.end is not None else gen_cfg["n_families"] * gen_cfg["scenarios_per_family"]
     kc = KeycloakAdmin()
     OUT.mkdir(parents=True, exist_ok=True)
@@ -98,15 +103,15 @@ def main():
         w = csv.writer(fh)
         w.writerow(["scenario_id", "scenario_index", "family_id"])
         for i in range(gen_cfg["n_families"] * gen_cfg["scenarios_per_family"]):
-            w.writerow([f"scn-{i:04d}", i, i // gen_cfg["scenarios_per_family"]])
+            w.writerow([f"{args.id_prefix}-{i:04d}", i, i // gen_cfg["scenarios_per_family"]])
     log = (OUT / "collection_log.jsonl").open("a", encoding="utf-8")
     for i in range(args.start, end):
-        realm = f"scn-{i:04d}"
+        realm = f"{args.id_prefix}-{i:04d}"
         if args.skip_existing and (OUT / "ground_truth" / f"{realm}.json").exists():
             continue
         for attempt in range(3):
             try:
-                rec = run_scenario(i, gen_cfg, obj_cfg, kc, keep=i >= end - args.keep_realms)
+                rec = run_scenario(i, gen_cfg, obj_cfg, kc, keep=i >= end - args.keep_realms, prefix=args.id_prefix)
                 rec["labels_logged"] = False
                 labels = rec.pop("labels")
                 log.write(json.dumps(rec) + "\n")

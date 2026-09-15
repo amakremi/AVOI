@@ -1,0 +1,451 @@
+{
+ "frozen_utc": "2026-09-15T06:14:07+00:00",
+ "statement": "Stage-2 protocol frozen before any Stage-2 adequacy validation or confirmation evaluation.",
+ "stage1_freeze_sha256": "4370311ede64cd3215fc4bc3ceeddbbbcef4a66453697b0595d80f1bca7715c8",
+ "stage1_git_commit": "7bb325ceff9629709642ce9f6cf85039002f2eac",
+ "adequacy_policy": {
+  "policy_version": "stage2-adequacy-1.0",
+  "evaluation_state": "full_evidence",
+  "positive_class_for_discrimination": "violated",
+  "primary": {
+   "discrimination": {
+    "auroc_ci_lower_gt": 0.5,
+    "pr_skill_ci_lower_gt": 0.0
+   },
+   "calibration": {
+    "bss_gt": 0.0,
+    "ece_le": 0.1,
+    "slope_min": 0.5,
+    "slope_max": 1.5
+   },
+   "support": {
+    "min_violated_cases": 20,
+    "min_satisfied_cases": 20,
+    "min_groups": 10,
+    "min_groups_with_violation": 5
+   }
+  },
+  "status_rules": [
+   "support fails -> RESTRICTED (INSUFFICIENT_ADEQUACY_SAMPLE_SUPPORT)",
+   "discrimination fails -> UNSUPPORTED (MODEL_ADEQUACY_UNSUPPORTED)",
+   "calibration fails -> RESTRICTED (MODEL_ADEQUACY_RESTRICTED)",
+   "otherwise VALIDATED"
+  ],
+  "enforced_behaviour": "RESTRICTED or UNSUPPORTED: no autonomous acquisition and no autonomous terminal decision; the operational output is HumanReview with reason MODEL_ADEQUACY_RESTRICTED or MODEL_ADEQUACY_UNSUPPORTED (never NotAssured). Ungated AVOI trajectories are retained only as diagnostics.\n",
+  "bootstrap": {
+   "n_resamples": 5000,
+   "confidence": 0.95,
+   "unit": "group",
+   "seed": 20261103
+  },
+  "calibration_candidates": [
+   "none",
+   "sigmoid",
+   "isotonic",
+   "beta"
+  ],
+  "calibration_selection": "5-fold group cross-validated mean log loss on development out-of-fold predictions (full evidence + 3 random evidence subsets per episode); ties resolved in the order listed",
+  "model_candidates": {
+   "tan": {
+    "alpha": [
+     0.5,
+     1.0,
+     2.0,
+     5.0
+    ]
+   },
+   "naive_bayes": {
+    "alpha": [
+     0.5,
+     1.0,
+     2.0,
+     5.0
+    ]
+   }
+  },
+  "model_selection": "development out-of-fold log loss of uncalibrated posteriors (full evidence + 3 random evidence subsets)",
+  "oof_random_masks": 3,
+  "ece_bins": 10,
+  "sensitivity": {
+   "ece_le": [
+    0.05,
+    0.1,
+    0.15
+   ],
+   "slope_interval": [
+    [
+     0.75,
+     1.25
+    ],
+    [
+     0.5,
+     1.5
+    ],
+    [
+     0.25,
+     1.75
+    ]
+   ],
+   "auroc_ci_lower_gt": [
+    0.5,
+    0.55,
+    0.6
+   ],
+   "min_violated_cases": [
+    10,
+    20,
+    40
+   ]
+  }
+ },
+ "stage2_protocol": {
+  "study_version": "AVOI-stage2-1.0",
+  "method_display_name": "AVOI",
+  "partitions": {
+   "iam": {
+    "development": "Stage-1 controlled IAM episodes (320 scenarios, seed 20260914)",
+    "new_scenarios": "320 NEW live scenarios generated with config/scenario_generator_stage2.yaml (master seed 20261103)",
+    "validation_families_below": 16,
+    "bootstrap_group": "scenario family"
+   },
+   "ait": {
+    "development": [
+     "russellmitchell",
+     "santos"
+    ],
+    "validation_testbeds": [
+     "fox"
+    ],
+    "confirmation_testbeds": [
+     "harrison",
+     "wardbeck"
+    ],
+    "bootstrap_group": "testbed x 60-minute block"
+   },
+   "cert": {
+    "development": "CERT r4.2 (Stage-1 episodes)",
+    "new_release": "r5.2",
+    "validation_user_fraction": 0.4,
+    "user_split_seed": 20261103,
+    "bootstrap_group": "user"
+   }
+  },
+  "tuning": "all thresholds / target operating points selected on the adequacy-validation partition; confirmation labels only score decisions",
+  "coverage_targets": [
+   0.6,
+   0.7,
+   0.8,
+   0.9
+  ],
+  "safety_targets": [
+   0.01,
+   0.02,
+   0.05
+  ],
+  "missing_levels": [
+   0.2,
+   0.4,
+   0.6,
+   0.8
+  ],
+  "missing_modes": [
+   "mcar",
+   "block",
+   "adversarial"
+  ],
+  "condition_methods": [
+   "AVOI",
+   "B0-AllEvidence",
+   "B1-FixedChecklist",
+   "B3-CheapestFirst",
+   "B4-InformationGain",
+   "B5-GenericVOI",
+   "B6-ConfidenceThreshold",
+   "B7-MyopicCostSensitiveVOI"
+  ],
+  "trace_methods": [
+   "AVOI",
+   "B0-AllEvidence",
+   "B1-FixedChecklist",
+   "B4-InformationGain",
+   "B5-GenericVOI",
+   "B6-ConfidenceThreshold"
+  ],
+  "privacy_mu_values": [
+   0.0,
+   0.02,
+   0.1,
+   0.25,
+   0.5,
+   1.0
+  ],
+  "false_assurance_values": [
+   2.0,
+   5.0,
+   10.0,
+   20.0
+  ],
+  "fa_methods": [
+   "AVOI",
+   "B1-FixedChecklist",
+   "B4-InformationGain",
+   "B5-GenericVOI",
+   "B6-ConfidenceThreshold",
+   "B7-MyopicCostSensitiveVOI"
+  ],
+  "metrics": {
+   "UAR": "#(Assured AND Y=0) / #(Y=0) over ALL evaluated episodes (HumanReview with Y=0 stays in the denominator)",
+   "FAA": "false assurance among assurances = #(Assured AND Y=0) / #(Assured)",
+   "coverage": "#(Assured or NotAssured) / #episodes",
+   "budget": "hard budget k = AT MOST k acquisitions",
+   "acquisition_required": "episode whose initial evidence does not satisfy the autonomous stopping threshold (tuned tau) at t=0"
+  },
+  "llm_planner": {
+   "model": "gemma4:e4b",
+   "subset": "IAM confirmation families 16-23 (first 8 confirmation families), all six objectives",
+   "families": [
+    16,
+    23
+   ],
+   "temperature": 0,
+   "seed": 0,
+   "think": false
+  }
+ },
+ "loss_matrix": {
+  "primary": {
+   "false_assurance": 10.0,
+   "false_non_assurance": 2.0,
+   "human_review": 1.0,
+   "correct_autonomous": 0.0
+  },
+  "sensitivity_false_assurance": [
+   2.0,
+   5.0,
+   10.0,
+   20.0
+  ],
+  "symmetric_ablation": {
+   "false_assurance": 2.0,
+   "false_non_assurance": 2.0,
+   "human_review": 1.0
+  },
+  "preference_weights": {
+   "lambda_cost": 0.05,
+   "mu_privacy": 0.02,
+   "nu_delay": 0.02
+  }
+ },
+ "hyperparameters": {
+  "evidence_models": {
+   "tan": {
+    "alpha": [
+     0.5,
+     1.0,
+     2.0,
+     5.0
+    ]
+   },
+   "naive_bayes": {
+    "alpha": [
+     0.5,
+     1.0,
+     2.0,
+     5.0
+    ]
+   },
+   "calibrated_logistic": {
+    "C": [
+     0.1,
+     1.0,
+     10.0
+    ],
+    "n_masks": 12,
+    "isotonic_min_rows": 1000
+   },
+   "model_selection_criterion": "masked_log_loss",
+   "masked_eval_masks": 5
+  },
+  "policy_thresholds": {
+   "risk_tau": [
+    0.0,
+    0.02,
+    0.05,
+    0.08,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.4,
+    0.5,
+    0.6,
+    0.7,
+    0.8,
+    0.9,
+    1.0
+   ],
+   "confidence_theta": [
+    0.5,
+    0.6,
+    0.7,
+    0.75,
+    0.8,
+    0.85,
+    0.9,
+    0.93,
+    0.95,
+    0.97,
+    0.99,
+    0.999,
+    1.01
+   ],
+   "symmetric_tau": [
+    0.0,
+    0.01,
+    0.02,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.3,
+    0.4,
+    0.5
+   ],
+   "curve_tau_points": 81,
+   "information_gain_eps_bits": 0.001
+  },
+  "tuning_objective": "mean(realised primary loss) + lambda*mean(cost) + mu*mean(privacy exposure) + nu*mean(delay)",
+  "cross_validation": {
+   "iam": {
+    "outer": "StratifiedGroupKFold(n_splits=5) over scenario families; stratified by scenario-level count of violated objectives >= 3",
+    "inner": "GroupKFold(n_splits=3) over families within the outer training fold",
+    "robustness": "leave-one-scenario-family-out (40 folds) for AVOI and selected baselines at primary thresholds"
+   },
+   "ait": {
+    "outer": "leave-one-testbed-out (2 folds: russellmitchell, santos)",
+    "inner": "3 contiguous day-blocks of the training testbed"
+   },
+   "cert": {
+    "outer": "StratifiedGroupKFold(n_splits=5) over users; stratified by insider status",
+    "inner": "StratifiedGroupKFold(n_splits=3) over users within the outer training fold"
+   }
+  },
+  "random_baseline_seeds": 20,
+  "master_seed": 20260914
+ },
+ "iam_generation_seed": 20261103,
+ "required_figures": [
+  "model_adequacy_diagnostics",
+  "calibration_curve",
+  "roc_pr_curves",
+  "risk_coverage_raw",
+  "risk_coverage_adequacy_enforced",
+  "cost_safety_frontier",
+  "budget_performance_curve",
+  "acquisition_risk_trajectory",
+  "evidence_request_ecdf",
+  "missingness_robustness",
+  "missingness_uar_coverage",
+  "privacy_safety_tradeoff",
+  "action_frequency_heatmap",
+  "asymmetric_loss_ablation",
+  "adequacy_sensitivity",
+  "cost_violin",
+  "decision_flow"
+ ],
+ "required_tables": [
+  "table_model_adequacy",
+  "adequacy_gate_effect",
+  "main_comparison_raw",
+  "main_comparison_enforced",
+  "matched_coverage",
+  "matched_safety_nondegenerate",
+  "budget",
+  "missingness",
+  "privacy",
+  "ablation",
+  "asymmetric_loss_ablation",
+  "escalation",
+  "zero_acquisition",
+  "statistics",
+  "adequacy_sensitivity",
+  "fa_sensitivity",
+  "table_boundary",
+  "llm_planner",
+  "main_comparison_validated_models"
+ ],
+ "analysis_code_note": "Table/figure/report code (stage2_tables.py, stage2_figures.py, run_stage2_report.py) is not hashed so presentation bugs can be fixed; it reads only saved raw outputs and cannot change them.",
+ "hashes": {
+  "files": {
+   "config/model_adequacy.yaml": "788ce4c6ed360cbd5ab6e4cd2b20e728dac8927afb00f7f5f3be7caf2512f8ae",
+   "config/stage2.yaml": "cd4f22dbc9e7b7b8174e23b6a221cc7ced31610b7c37eae25d3304f84205c892",
+   "config/loss_matrix.yaml": "6e59e6b74908e668d1ed6b28d7fcb650b2f622861a97ab64ed1cb948ecef423e",
+   "config/hyperparameters.yaml": "55a9570e310a3ae2f056963374f4bcf6c0c7542149f0b6770d4426d6e9c626b6",
+   "config/assurance_objectives.yaml": "1218883f9d3a3a8bea62c8db5f5c45cd5837c21e528db7da34298fcb7d963feb",
+   "config/evidence_actions.yaml": "733cd07f3b86b570471e152c0a291f876f3dbc03a1cb2b59c46a5633a01a41ca",
+   "config/scenario_generator_stage2.yaml": "e768b8158317d38bc748522bb2c48d3dc531494db63e9822b96ec9797cd1dafd",
+   "docs/STAGE2_HYPOTHESES.md": "35196bc27035bbcedaddda6bf42001129de0db63a63e8e6a35aefe2c03bbdcfa",
+   "docs/PREREGISTERED_HYPOTHESES.md": "6a0474915e3ad181a95be04a44bfa087db75aac8fafbe5b992ba0835e86704f3",
+   "src/avoi/adequacy.py": "a34b687a582377f222bcb4457b993e845135b1acd169b90532ea25e669ce8fdf",
+   "src/avoi/agent.py": "1353b1d61d329527ca3a88a7b09f142048e67d8fd5ab12eda74827738d169229",
+   "src/avoi/avoi.py": "83d1505efef7b794f1fd1fa342c56f0895675cb5f84414b8a131b96dccd12e2e",
+   "src/avoi/bayes_risk.py": "e5c8c96e0f4f521ecf2986e3286be43b35b2d130ebc298697354cbb167e15a3e",
+   "src/avoi/costs.py": "eab09d1724538185f1d9b286b39ce9fc1179001603a628cfbbe6e2c9c29ec0d5",
+   "src/avoi/actions.py": "00a9500778111de7b45aeedbc607dd9b533e44a0a555643b5bf6d164038accd7",
+   "src/avoi/models/tan.py": "d36b4b1af85803ae148fba22cff1b67a04834d908a107d202bafb8b7bdb05d83",
+   "src/avoi/datasets/common.py": "fd2b9bfb1242805d0c16f0ab88c3bfd7d109f03c4b9aa14050a177551beb4ad5",
+   "src/avoi/datasets/iam.py": "2ec3ef4bf19dd73d0c839a5dd6c10f496a4ee0a3748c5cb22290dfa89b3192e2",
+   "src/avoi/datasets/ait_episodes.py": "74c132be0e254f4eb8c8bbc65ff234429619f2027988c141b8277ec29aaad416",
+   "src/avoi/datasets/cert.py": "510b3ecb9fe0f1ac74f996d9e26280643719265dc5cc6fa9109f40d7a91980ac",
+   "src/avoi/evaluation/engine.py": "7b5a938914e3119596bbccbbe1cf9c259b3b40211995577f0b42736a4e8bacab",
+   "src/avoi/evaluation/stage2.py": "a3810a8975603767b2a8bb8bf5e1095f64c09dbe0cb736f81d222ac9bbbb6bb5",
+   "src/avoi/evaluation/labels.py": "f3680d7f1ab7f9e981a9ccae5aaa8964807e4d43b4c56681b119508c0148e6ba",
+   "src/avoi/baselines/llm_planner.py": "af5097ea0dd4df1a7431d71624bf9a1e56ac9cfc51287594fe0ce90c138de808",
+   "testbed/scenarios/generator.py": "7d7c738f7ab9f0c0b0848d74d45714642a9c0fc7a12ad3d3cfa692b734b4cc5f",
+   "testbed/oracle.py": "7ee9c0128a5f4852692ffd7410ae343b6d6346f20d1de0983047296deb55c602",
+   "testbed/evidence_collectors/collectors.py": "9b86bc06a93b8fb207abe27999be4781152c888c4df4ac0a264c45aa2dd0b294",
+   "experiments/run_stage2.py": "1a170f0e701a65087276918e17385deb881b957922f915fd26b952ffffe8f937",
+   "experiments/run_llm_planner_stage2.py": "6c4409ae332c71d34aa79179e47dc532d25714f742dac2eba206f404198bad79"
+  },
+  "data": {
+   "data/processed/iam_stage2/evidence_store/*.json": {
+    "n_files": 320,
+    "sha256": "27011aefa4c01fe905d4bd9e2982bf1acb68e3558e9e3692afbbb73952aa0297"
+   },
+   "data/processed/iam_stage2/ground_truth/*.json": {
+    "n_files": 320,
+    "sha256": "ab8c8d73953bec083f214a92816e202524d6fe51be1801fbd316a786378ff5f9"
+   },
+   "data/processed/ait_stage2/evidence_store.json": {
+    "n_files": 1,
+    "sha256": "1e64638085b775b3aa0602501a87d2991baacdabab73b4dee14754fd0ba6334b"
+   },
+   "data/processed/ait_stage2/ground_truth/episode_labels.csv": {
+    "n_files": 1,
+    "sha256": "638594f6d16369831310c0f726dad90bd2f015ff6b58a1befe126960379b5e90"
+   },
+   "data/processed/cert_stage2/evidence_store.json": {
+    "n_files": 1,
+    "sha256": "dd56af2d141b76d6b2a5cd5afd7eb343906ac8a00b8d270a699d2fb28775d84b"
+   },
+   "data/processed/cert_stage2/ground_truth/episode_labels.csv": {
+    "n_files": 1,
+    "sha256": "707af8253d28b1172ac6f559e660757cda4260260d12cf2b8ee5c7ffd6632a40"
+   },
+   "data/processed/iam/evidence_store/*.json": {
+    "n_files": 320,
+    "sha256": "3fcc7e62e87fbb57ec8f33bc90839dc81d420630b42820b9f5da94dd02edb9f2"
+   },
+   "data/processed/ait/evidence_store.json": {
+    "n_files": 1,
+    "sha256": "177214d3d0dc4ff1aa2ba86825db84b6351eb0ae1e9f6c44200beaed11aeaa73"
+   },
+   "data/processed/cert/evidence_store.json": {
+    "n_files": 1,
+    "sha256": "7f4393eed79f654df78eec5a0d3dbe0044ec085baa0a16e0daffb18dcce55278"
+   }
+  },
+  "combined_sha256": "6a99f0fa797c93cf85e77f2850702adbb146ff2f28d1478458cb7414b44300e9"
+ }
+}

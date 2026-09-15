@@ -88,7 +88,10 @@ class SequentialAssuranceAgent:
         self.cfg, self.model, self.cost, self.objective_id = cfg, model, cost_model, objective_id
         self.record_candidates = record_candidates
 
-    def run(self, env: EvidenceEnvironment, max_steps: int | None = None) -> dict:
+    def run(self, env: EvidenceEnvironment, max_steps: int | None = None, adequacy=None, adequacy_mode: str = "diagnostic") -> dict:
+        """adequacy: optional avoi.adequacy.AdequacyDecision for the evidence model (Stage 2).
+        adequacy_mode 'enforced': a non-VALIDATED model yields HumanReview (MODEL_ADEQUACY_RESTRICTED/UNSUPPORTED) without
+        autonomous acquisition; 'diagnostic': the ungated AVOI process runs and the adequacy status is only recorded."""
         cfg, cost = self.cfg, self.cost
         evidence = env.observed()                                   # (2) evidence already in hand
         b = self.model.posterior(evidence)                          # (4)
@@ -96,6 +99,17 @@ class SequentialAssuranceAgent:
                  "pre_acquired": sorted(env.actions[i].action_id for i in env.pre_acquired()),
                  "initial_belief": b, "initial_risk": cfg.loss.risk(b), "steps": [], "states": [
                      {"t": 0, "belief": b, "risk": cfg.loss.risk(b), "evidence": [list(e) for e in evidence]}]}
+        if adequacy is not None:
+            trace.update({"model_id": adequacy.model_id, "calibrator": adequacy.calibrator,
+                          "adequacy_status": adequacy.status, "adequacy_metrics": adequacy.compact(),
+                          "adequacy_policy_version": adequacy.policy_version, "adequacy_mode": adequacy_mode,
+                          "autonomous_allowed": adequacy.autonomous_allowed, "gate_reason": adequacy.gate_reason,
+                          "adequacy_reason": adequacy.reason, "adequacy_failed_conditions": list(adequacy.failed_conditions)})
+            if adequacy_mode == "enforced" and not adequacy.autonomous_allowed:
+                trace.update({"stop_reason": adequacy.gate_reason, "stopping_reason": adequacy.gate_reason,
+                              "final_belief": b, "final_risk": cfg.loss.risk(b), "final_decision": HUMAN_REVIEW,
+                              "n_acquisitions": 0, "total_cost": 0.0, "total_delay": 0.0, "privacy_categories": []})
+                return trace
         order = _order(cfg, env, cost) if cfg.selector in ("fixed", "random", "cheapest", "all") else None
         reason = None
         t = 0

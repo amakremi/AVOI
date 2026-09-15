@@ -24,7 +24,9 @@ ROOT = Path(__file__).resolve().parents[3]
 FIG = ROOT / "results" / "figures"
 INK, INK2, MUTED, GRID = "#0b0b0b", "#52514e", "#898781", "#e1e0d9"
 STYLE = {  # method -> (color, marker, linestyle, short label)
-    "AVOI-GRC": ("#2a78d6", "o", "-", "AVOI-GRC"),
+    "AVOI-GRC": ("#2a78d6", "o", "-", "AVOI"),      # Stage-1 raw method id; displayed as AVOI
+    "AVOI": ("#2a78d6", "o", "-", "AVOI"),
+    "AVOI (ungated diagnostic)": ("#86b6ef", "o", ":", "AVOI (ungated diagnostic)"),
     "B1-FixedChecklist": ("#eb6834", "s", "--", "B1 Checklist"),
     "B4-InformationGain": ("#1baf7a", "^", "-.", "B4 Info-gain"),
     "B5-GenericVOI": ("#eda100", "D", ":", "B5 Generic VOI"),
@@ -37,6 +39,7 @@ STYLE = {  # method -> (color, marker, linestyle, short label)
 }
 CURVE_METHODS = ["AVOI-GRC", "B1-FixedChecklist", "B3-CheapestFirst", "B4-InformationGain", "B5-GenericVOI",
                  "B6-ConfidenceThreshold", "B7-MyopicCostSensitiveVOI", "B7b-Lookahead2VOI", "B0-AllEvidence", "B2-Random"]
+MU_BASE = 0.02   # Stage-1 weight_sensitivity stored multipliers of the primary mu = 0.02; plots show actual mu values
 DOM_TITLE = {"iam": "Controlled IAM testbed", "ait": "AIT-LDS v2.0 replay", "cert": "CERT r4.2 replay"}
 
 
@@ -135,9 +138,6 @@ def fig_cost_safety_frontier() -> list[str]:
             mask = pareto_mask(p["cost"].to_numpy(), p[ycol].to_numpy())
             fr = p[mask].sort_values("cost")
             axes[i][j].step(fr["cost"], fr[ycol], where="post", color=INK, lw=0.9, zorder=4, label="Pareto frontier (all methods)")
-            share = (fr["method"] == "AVOI-GRC").mean()
-            axes[i][j].text(0.98, 0.95, f"AVOI share of frontier: {share:.0%}", transform=axes[i][j].transAxes, ha="right",
-                            va="top", fontsize=6.5, color=INK2)
         axes[0][j].set_title(DOM_TITLE[dom])
         axes[1][j].set_xlabel("Mean normalised acquisition cost")
     axes[0][0].set_ylabel("Expected decision loss")
@@ -249,9 +249,11 @@ def fig_trajectory() -> list[str]:
                 ax.fill_between(t, np.quantile(bs, .025, axis=0), np.quantile(bs, .975, axis=0), color=col, alpha=0.10, lw=0)
         ax.set_title(DOM_TITLE[dom])
         ax.set_xlabel("Evidence-acquisition step")
-    axes[0][0].set_ylabel("Mean posterior Bayes risk (95% CI)")
+    axes[0][0].set_ylabel("Mean Bayes decision risk (95% CI)")
     shared_legend(fig, axes)
-    fig.suptitle("Sequential assurance-risk trajectory (carried forward after stopping)", y=1.06, color=INK)
+    fig.suptitle("Sequential assurance-risk trajectory: E[R_t | Y=1] (solid) and E[R_t | Y=0] (dashed)", y=1.06, color=INK)
+    fig.text(0.5, -0.12, "For episodes terminating before step t, terminal risk is carried forward to avoid survivor conditioning.",
+             ha="center", fontsize=7, color=INK2)
     return save(fig, "acquisition_risk_trajectory")
 
 
@@ -296,9 +298,9 @@ def fig_privacy_tradeoff() -> list[str]:
         pts = sorted(set(pts))
         for i, idx in enumerate((2, 3)):
             ax = axes[i][j]
-            ax.plot([p[1] for p in pts], [p[idx] for p in pts], color=st("AVOI-GRC")[0], marker="o", lw=1.8, label="AVOI-GRC (μ varied)")
+            ax.plot([p[1] for p in pts], [p[idx] for p in pts], color=st("AVOI")[0], marker="o", lw=1.8, label="AVOI (μ varied)")
             for p in (pts[0], pts[-1]):
-                ax.annotate(f"μ×{p[0]:g}", (p[1], p[idx]), textcoords="offset points", xytext=(3, 3), fontsize=6, color=INK2)
+                ax.annotate(f"μ={p[0] * MU_BASE:g}", (p[1], p[idx]), textcoords="offset points", xytext=(3, 3), fontsize=6, color=INK2)
             for m in ("B1-FixedChecklist", "B4-InformationGain", "B5-GenericVOI", "B6-ConfidenceThreshold", "B0-AllEvidence"):
                 x = AD.per_method(prim, m)
                 if x.empty:
@@ -431,13 +433,16 @@ def fig_action_frequency() -> list[str]:
     n_ep = pd.Series([tr["objective_id"] for tr in traces]).value_counts()
     fig, axes = plt.subplots(2, 3, figsize=(14, 6.5), gridspec_kw={"wspace": 1.1, "hspace": 0.45})
     for ax, (obj, g) in zip(np.ravel(axes), df.groupby("objective")):
-        freq = g.pivot_table(index="action", columns="t", aggfunc="size", fill_value=0) / n_ep[obj]
+        counts = g.pivot_table(index="action", columns="t", aggfunc="size", fill_value=0)
+        n_t = counts.sum(0)                           # episodes reaching step t (each selects exactly one action at t)
+        freq = counts / n_t
         im = ax.imshow(freq.to_numpy(), aspect="auto", cmap="Blues", vmin=0, vmax=1)
         ax.set_yticks(range(len(freq.index)), freq.index, fontsize=5.5)
-        ax.set_xticks(range(len(freq.columns)), freq.columns)
-        ax.set_title(obj, fontsize=7); ax.set_xlabel("Step"); ax.grid(False)
+        ax.set_xticks(range(len(freq.columns)), [f"{t}\nn={int(n_t[t])}" for t in freq.columns], fontsize=6)
+        single = len(freq.index) == 1
+        ax.set_title(obj + ("  [single-action objective]" if single else ""), fontsize=7); ax.set_xlabel("Step (n_t)"); ax.grid(False)
     fig.colorbar(im, ax=axes, fraction=0.02, label="Fraction of episodes selecting action at step")
-    fig.suptitle("AVOI-GRC action selection frequency by objective (IAM, held-out)", color=INK)
+    fig.suptitle("AVOI action selection frequency P(A_t = a | N_acq >= t) by objective (IAM, held-out)", color=INK)
     return save(fig, "action_frequency_heatmap")
 
 
@@ -475,7 +480,7 @@ def fig_decision_flow() -> list[str]:
         ax.set_title(DOM_TITLE[dom]); ax.set_xlabel("Acquisitions before stopping")
     axes[0][0].set_ylabel("Share of episodes")
     shared_legend(fig, axes)
-    fig.suptitle("AVOI-GRC state transitions: Unknown → acquire × k → terminal decision", y=1.06, color=INK)
+    fig.suptitle("AVOI state transitions: Unknown → acquire × k → terminal decision", y=1.06, color=INK)
     return save(fig, "decision_flow")
 
 

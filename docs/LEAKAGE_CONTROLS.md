@@ -16,3 +16,15 @@ stratified splitting are derived from the answer key (never passed to policies);
 (which label types form EXFIL vs INTRUSION) were chosen after inspecting label temporal prevalence, before any method
 was run; (iii) the adversarial-missingness condition hides the sources with the highest training-fold mutual
 information with Y (training labels only).
+
+## Stage-2 additions (evidence-model adequacy and confirmation)
+
+| Risk | Control | Automated test |
+|---|---|---|
+| Confirmation labels influence adequacy status | adequacy computed only from the adequacy-validation partition; decisions frozen and hashed before confirmation; confirmation runner verifies the hash | `test_final_test_labels_cannot_influence_adequacy_or_calibration`, `test_confirmation_requires_frozen_adequacy_decisions` |
+| Calibrator chosen on test data | model and calibrator selection use development out-of-fold posteriors only | same test (scrambling validation/confirmation labels leaves calibrator unchanged) |
+| Thresholds hidden in code / tuned post hoc | policy thresholds read from `config/model_adequacy.yaml`, frozen in `EXPERIMENT_FREEZE_STAGE2.json`; sensitivity grid reported separately | `test_gate_thresholds_come_from_config` |
+| Gate returns autonomous decisions for inadequate models | enforced agent returns HumanReview with MODEL_ADEQUACY_* reason and no acquisition | `test_inadequate_models_never_decide_autonomously` |
+| Diagnostic mode contaminates enforced results | diagnostic and enforced runs are separate; enforced rows derived deterministically from the gate | `test_diagnostic_mode_equals_ungated_and_does_not_affect_enforced` |
+| Stage-1 history modified | archive manifest hashes re-verified | `test_stage1_archive_unchanged_and_freeze_hash_preserved` |
+| Development/validation/confirmation overlap | IAM new seed + family split; AIT separate testbeds; CERT separate release + user split (docs/STAGE2_DATA_INDEPENDENCE.md) | partition construction in `stage2.domain_partitions` |

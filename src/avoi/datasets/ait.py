@@ -135,7 +135,9 @@ def classify(path: str) -> str | None:
 def index(testbed: str) -> dict:
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "ground_truth").mkdir(parents=True, exist_ok=True)
-    z = zipfile.ZipFile(RAW / f"{testbed}.zip")
+    full = RAW / f"{testbed}.zip"
+    # Stage-2 testbeds: CRC-verified subset of the official archive fetched by range requests (data/ait_remote_subset.py)
+    z = zipfile.ZipFile(full if full.exists() else RAW / f"{testbed}_subset.zip")
     meta = yaml.safe_load(z.read("dataset.yaml"))
     start = int(datetime.fromisoformat(meta["start"]).replace(tzinfo=timezone.utc).timestamp())
     end = int(datetime.fromisoformat(meta["end"]).replace(tzinfo=timezone.utc).timestamp())
