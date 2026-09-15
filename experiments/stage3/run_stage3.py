@@ -45,7 +45,7 @@ DATA_GLOBS = [
     "data/processed/ait/evidence_store.json", "data/processed/ait_stage2/evidence_store.json", "data/processed/ait_stage3/evidence_store.json",
     "data/processed/cert/evidence_store.json", "data/processed/cert_stage2/evidence_store.json",
     "data/processed/cert_stage3_r4_1/evidence_store.json", "data/processed/cert_stage3_r5_1/evidence_store.json",
-    "data/processed/cert_stage3_r6_1/evidence_store.json", "data/processed/cert_stage3_r6_2/evidence_store.json",
+    # r6.1/r6.2 intentionally excluded - see config/stage3.yaml wp2.cert.new_releases and docs/STAGE3_EXTERNAL_MODELS.md §2b
 ]
 WP1_OBJECTIVES = ["IAM-01-MFA-PRIV", "IAM-02-TERM-DISABLED", "IAM-03-PRIV-AUTHZ"]
 WP2_AIT_CLAIMS = ["AIT-EXFIL", "AIT-INTRUSION"]

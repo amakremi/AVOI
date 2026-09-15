@@ -54,7 +54,11 @@ wp2:
     claim: CERT-INSIDER
     development_releases: [r4.2, r5.2]          # all previously examined users
     development_validation: "train r4.2 -> evaluate r5.2 and train r5.2 -> evaluate r4.2"
-    new_releases: [r4.1, r5.1, r6.1, r6.2]      # untouched, pooled (public insider counts 3/4/5/5)
+    new_releases: [r4.1, r5.1]      # untouched, pooled (public insider counts 3/4). Originally planned as r4.1/r5.1/r6.1/r6.2
+      # (3/4/5/5 insiders); r6.1 (20GB) and r6.2 (24GB) were dropped from the pool BEFORE any Stage-3 label was read,
+      # once r5.1's real single-threaded bz2 decompression time (~110 min for 11GB) showed the two remaining releases
+      # would need a further ~7-8 hours of pure extraction time, exceeding this session's practical time budget. This
+      # is a scope reduction, not a data-driven exclusion; see docs/STAGE3_EXTERNAL_MODELS.md Section 2b.
     episode_sampling: "Stage-1 rule per release (all answer-key insider user-weeks with >= 4 prior weeks + 2 clean active weeks per insider + 2 active weeks for 250 random non-insiders), seed 20270404"
     user_split: {unit: "release:user", rule: "sha256(seed|release|user) mod 100: < 20 calibration, < 60 adequacy_validation, else confirmation", seed: 20270405}
     bootstrap_groups: "release:user"

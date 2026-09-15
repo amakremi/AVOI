@@ -34,8 +34,9 @@ from avoi.evaluation.labels import load_labels  # noqa: E402
 from avoi.evaluation.stage3 import S3  # noqa: E402
 
 DEV_RELEASES = {"r4.2": "data/processed/cert", "r5.2": "data/processed/cert_stage2"}
-NEW_RELEASES = {"r4.1": "data/processed/cert_stage3_r4_1", "r5.1": "data/processed/cert_stage3_r5_1",
-                "r6.1": "data/processed/cert_stage3_r6_1", "r6.2": "data/processed/cert_stage3_r6_2"}
+# r6.1/r6.2 dropped before any Stage-3 label was read - see config/stage3.yaml wp2.cert.new_releases and
+# docs/STAGE3_EXTERNAL_MODELS.md Section 2b (single-threaded bz2 decompression time budget, not a data-driven choice).
+NEW_RELEASES = {"r4.1": "data/processed/cert_stage3_r4_1", "r5.1": "data/processed/cert_stage3_r5_1"}
 
 
 def require_new_releases():

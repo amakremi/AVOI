@@ -54,6 +54,25 @@ TAN/NB/HGB already span the linear-vs-tree-ensemble range and no candidate-selec
 enough (worst-fold AUROC within 0.01) for a fourth candidate class to plausibly change the selected model. This is a
 scope limitation, noted for completeness rather than silently omitted.
 
+## 2b. CERT new-release pool reduced from 4 to 2 releases (time-budget decision, made before any label was read)
+
+The original design pooled four untouched CERT releases (r4.1, r5.1, r6.1, r6.2; public answer-key insider counts
+3/4/5/5). All four archives were fully downloaded and MD5-verified (§ Stage-2/3 dataset manifest). Extraction uses a
+single-threaded `bzip2` (no parallel-bzip2 tool was available in this environment); r4.1 (5GB compressed) took ~17 min
+and r5.1 (11GB compressed) took **~110 min**. At that measured rate, r6.1 (20GB) and r6.2 (24GB) would together need a
+further **~7-8 hours** of pure decompression before any processing could start.
+
+**Decision (frozen in `config/stage3.yaml` before r4.1/r5.1 labels, answer keys, or any evidence-model result was
+inspected):** the CERT new-release pool is reduced to **r4.1 + r5.1** (7 insiders combined). r6.1.tar.bz2 and
+r6.2.tar.bz2 remain on disk, fully downloaded and MD5-verified, for future continuation; they were not extracted or
+processed further. This is a practical scope reduction driven by wall-clock decompression time, decided before seeing
+any consequence for the adequacy outcome - it is reported here for transparency, not concealed by silently redefining
+"new releases" as r4.1+r5.1 without comment.
+
+**Consequence for sample support.** With only 7 insiders pooled (versus 17 in the original 4-release design), the
+CERT adequacy-validation partition may not reach the required 5 independent groups with a violation even if the
+model discriminates well - this is reported as the actual outcome, not adjusted for.
+
 ## 3a. Stage-3 outcome on the pre-committed target testbed (honest, not worked around)
 
 The role rule (Section 3, fixed before any Stage-3 label was read: smallest untouched archive by size → target A) chose
