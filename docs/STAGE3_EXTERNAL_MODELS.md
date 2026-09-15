@@ -73,6 +73,22 @@ any consequence for the adequacy outcome - it is reported here for transparency,
 CERT adequacy-validation partition may not reach the required 5 independent groups with a violation even if the
 model discriminates well - this is reported as the actual outcome, not adjusted for.
 
+## 3. Untouched external data (verified against official sources on 2026-09-15)
+
+* AIT-LDS v2.0 (Zenodo record 5789064) has eight testbeds. Used before Stage 3: russellmitchell, santos (Stage 1); fox,
+  harrison, wardbeck (Stage 2). **Untouched: shaw (17.6 GB), wheeler (19.6 GB), wilson (26.5 GB).**
+  Role rule (fixed before any Stage-3 label is read, same size rule as Stage 2): smallest (shaw) → testbed A
+  (target calibration 40% / adequacy validation 60%, label-blind split by hour block); wheeler and wilson → confirmation.
+* CERT (figshare article 12841247): releases used before Stage 3: r4.2 (Stage 1), r5.2 (Stage 2). Untouched releases with
+  the logon/device/file/http/email/LDAP/psychometric schema family: r4.1, r5.1, r6.1, r6.2 (r1–r3.x have a different
+  schema and are excluded). The public answer-key index `insiders.csv` lists 3, 4, 5 and 5 insider users for these
+  releases (17 in total) — a single release cannot meet the unchanged support rule (≥ 5 groups with a violation in the
+  validation partition). Design fixed before downloading: **pool r4.1 + r5.1 + r6.1 + r6.2** (later reduced to r4.1+r5.1
+  for the time-budget reason in Section 2b), reuse the Stage-1 episode sampling rule per release, and split users
+  label-blind by hash of `release:user` into calibration 20% / adequacy validation 40% / confirmation 40%. The
+  larger-than-recommended validation share is a pre-specified response to the public insider count, not to observed
+  class counts.
+
 ## 3a. Stage-3 outcome on the pre-committed target testbed (honest, not worked around)
 
 The role rule (Section 3, fixed before any Stage-3 label was read: smallest untouched archive by size → target A) chose
@@ -96,18 +112,3 @@ underlying evidence model shows strong descriptive discrimination on the confirm
 `results/final_report_v3/RESULTS.md`). The rule is not changed post hoc; a different pre-registered role assignment
 (e.g. rotating which testbed serves as target A, or a label-blind stratified choice) is left as future work, since
 choosing it now would use confirmation-adjacent information not available before the freeze.
-
-## 3. Untouched external data (verified against official sources on 2026-09-15)
-
-* AIT-LDS v2.0 (Zenodo record 5789064) has eight testbeds. Used before Stage 3: russellmitchell, santos (Stage 1); fox,
-  harrison, wardbeck (Stage 2). **Untouched: shaw (17.6 GB), wheeler (19.6 GB), wilson (26.5 GB).**
-  Role rule (fixed before any Stage-3 label is read, same size rule as Stage 2): smallest (shaw) → testbed A
-  (target calibration 40% / adequacy validation 60%, label-blind split by hour block); wheeler and wilson → confirmation.
-* CERT (figshare article 12841247): releases used before Stage 3: r4.2 (Stage 1), r5.2 (Stage 2). Untouched releases with
-  the logon/device/file/http/email/LDAP/psychometric schema family: r4.1, r5.1, r6.1, r6.2 (r1–r3.x have a different
-  schema and are excluded). The public answer-key index `insiders.csv` lists 3, 4, 5 and 5 insider users for these
-  releases (17 in total) — a single release cannot meet the unchanged support rule (≥ 5 groups with a violation in the
-  validation partition). Design fixed before downloading: **pool r4.1 + r5.1 + r6.1 + r6.2**, reuse the Stage-1 episode
-  sampling rule per release, and split users label-blind by hash of `release:user` into calibration 20% / adequacy
-  validation 40% / confirmation 40%. The larger-than-recommended validation share is a pre-specified response to the
-  public insider count, not to observed class counts.
