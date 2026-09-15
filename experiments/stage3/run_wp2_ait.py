@@ -166,6 +166,7 @@ def confirm():
     from avoi.bayes_risk import LossMatrix
     loss = LossMatrix(lcfg["primary"]["false_assurance"], lcfg["primary"]["false_non_assurance"], lcfg["primary"]["human_review"])
     w = lcfg["preference_weights"]
+    S.CONFLICT["flags"] = None   # AIT has no IAM-style evidence-polarity conflict flag; clear any stale global from WP1
     rows_raw, rows_enf, curve_rows = [], [], []
     for claim in CLAIMS:
         dev = develop_ait(claim, C)

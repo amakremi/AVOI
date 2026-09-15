@@ -160,6 +160,7 @@ def confirm():
     from avoi.bayes_risk import LossMatrix
     lcfg = C["loss"]; w = lcfg["preference_weights"]
     loss = LossMatrix(lcfg["primary"]["false_assurance"], lcfg["primary"]["false_non_assurance"], lcfg["primary"]["human_review"])
+    S.CONFLICT["flags"] = None   # CERT has no IAM-style evidence-polarity conflict flag; clear any stale global from WP1/WP2-AIT
     dev = develop_cert(C)
     var = variants(dev, C)
     fd = decisions[f"cert|{CLAIM}"]
