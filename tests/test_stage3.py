@@ -248,6 +248,23 @@ def test_adaptive_and_frozen_share_every_other_component(iam_agent_fixture):
         assert tr_a["initial_belief"] == tr_f["initial_belief"]
 
 
+def test_adaptive_path_byte_identical_to_stage2_avoi(iam_agent_fixture):
+    """frozen_order=False (the default) must reproduce Stage-2 AVOI trajectories exactly, since it takes the identical
+    a_star = best.action branch; only frozen_order=True changes selection."""
+    from avoi.agent import SequentialAssuranceAgent
+    from avoi.datasets.common import make_environment
+    ctx, data, spec, oid = iam_agent_fixture
+    stage2_cfg = replace(spec.cfg)               # Stage-2 AVOI: frozen_order defaults to False
+    stage3_cfg = replace(spec.cfg, frozen_order=False)   # explicit Stage-3 default
+    for i in range(15):
+        env_a = make_environment(data, i, ctx.codes[i], ctx.cost)
+        env_b = make_environment(data, i, ctx.codes[i], ctx.cost)
+        tr_a = SequentialAssuranceAgent(stage2_cfg, ctx.models["primary"], ctx.cost, oid).run(env_a)
+        tr_b = SequentialAssuranceAgent(stage3_cfg, ctx.models["primary"], ctx.cost, oid).run(env_b)
+        assert [s["action_index"] for s in tr_a["steps"]] == [s["action_index"] for s in tr_b["steps"]]
+        assert tr_a["final_decision"] == tr_b["final_decision"] and tr_a["n_acquisitions"] == tr_b["n_acquisitions"]
+
+
 # ====================================================================================== 18-19: fixed horizon / hard budget
 def test_fixed_horizon_obtains_exactly_k_actions(iam_agent_fixture):
     from avoi.evaluation import stage3_wp1 as W

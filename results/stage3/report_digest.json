@@ -1,0 +1,184 @@
+{
+ "tables": {
+  "external_adequacy": {
+   "name": "table_external_adequacy_stage3",
+   "csv": "results/stage3/tables/table_external_adequacy_stage3.csv",
+   "md": "results/stage3/tables/table_external_adequacy_stage3.md",
+   "tex": "results/stage3/tables/table_external_adequacy_stage3.tex"
+  },
+  "zero_shot_vs_target": {
+   "name": "table_zero_shot_vs_target_stage3",
+   "csv": "results/stage3/tables/table_zero_shot_vs_target_stage3.csv",
+   "md": "results/stage3/tables/table_zero_shot_vs_target_stage3.md",
+   "tex": "results/stage3/tables/table_zero_shot_vs_target_stage3.tex"
+  },
+  "feature_stability": {
+   "name": "table_feature_stability_stage3",
+   "csv": "results/stage3/tables/table_feature_stability_stage3.csv",
+   "md": "results/stage3/tables/table_feature_stability_stage3.md",
+   "tex": "results/stage3/tables/table_feature_stability_stage3.tex"
+  }
+ },
+ "figures": {
+  "external_model_adequacy_stage3": [
+   "results/stage3/figures/external_model_adequacy_stage3.pdf",
+   "results/stage3/figures/external_model_adequacy_stage3.png"
+  ],
+  "external_model_transfer_stage3": [
+   "results/stage3/figures/external_model_transfer_stage3.pdf",
+   "results/stage3/figures/external_model_transfer_stage3.png"
+  ],
+  "cross_stage_summary": [
+   "results/stage3/figures/cross_stage_summary.pdf",
+   "results/stage3/figures/cross_stage_summary.png"
+  ]
+ },
+ "ait_decisions": {
+  "AIT-EXFIL": {
+   "model_id": "ait_s3:AIT-EXFIL:hgb(alpha=None)+target_isotonic",
+   "status": "RESTRICTED",
+   "reason": "INSUFFICIENT_ADEQUACY_SAMPLE_SUPPORT",
+   "discrimination_pass": false,
+   "calibration_pass": false,
+   "support_pass": false,
+   "failed_conditions": [
+    "sample_support",
+    "discrimination",
+    "calibration"
+   ],
+   "metrics": {
+    "n": 504,
+    "n_violated": 0,
+    "n_satisfied": 504,
+    "prevalence_violated": 0.0,
+    "AUROC": NaN,
+    "AUPRC": NaN,
+    "PR_skill": NaN,
+    "sensitivity_violated": NaN,
+    "specificity": 1.0,
+    "balanced_accuracy": 1.0,
+    "MCC": 0.0,
+    "Brier": 1.0290773937005223e-05,
+    "Brier_reference": 0.4024124870183669,
+    "BSS": 0.9999744272996763,
+    "log_loss": 0.002362260372154038,
+    "ECE": 0.0023570999569976214,
+    "calibration_intercept": NaN,
+    "calibration_slope": NaN
+   },
+   "ci": {
+    "AUROC": [
+     NaN,
+     NaN
+    ],
+    "AUPRC": [
+     NaN,
+     NaN
+    ],
+    "PR_skill": [
+     NaN,
+     NaN
+    ],
+    "MCC": [
+     NaN,
+     NaN
+    ],
+    "Brier": [
+     NaN,
+     NaN
+    ],
+    "BSS": [
+     NaN,
+     NaN
+    ],
+    "ECE": [
+     NaN,
+     NaN
+    ],
+    "calibration_slope": [
+     NaN,
+     NaN
+    ],
+    "calibration_intercept": [
+     NaN,
+     NaN
+    ]
+   },
+   "calibrator": "isotonic",
+   "policy_version": "stage2-adequacy-1.0"
+  },
+  "AIT-INTRUSION": {
+   "model_id": "ait_s3:AIT-INTRUSION:tan(alpha=2.0)+target_none",
+   "status": "RESTRICTED",
+   "reason": "INSUFFICIENT_ADEQUACY_SAMPLE_SUPPORT",
+   "discrimination_pass": true,
+   "calibration_pass": false,
+   "support_pass": false,
+   "failed_conditions": [
+    "sample_support",
+    "calibration"
+   ],
+   "metrics": {
+    "n": 504,
+    "n_violated": 6,
+    "n_satisfied": 498,
+    "prevalence_violated": 0.011904761904761904,
+    "AUROC": 0.9939759036144578,
+    "AUPRC": 0.7074346405228757,
+    "PR_skill": 0.7039097566737538,
+    "sensitivity_violated": 0.16666666666666666,
+    "specificity": 1.0,
+    "balanced_accuracy": 0.5833333333333334,
+    "MCC": 0.40621415578220915,
+    "Brier": 0.007632707359209526,
+    "Brier_reference": 0.011764110180934378,
+    "BSS": 0.3511870220682267,
+    "log_loss": 0.02457211163390464,
+    "ECE": 0.0069992466430966885,
+    "calibration_intercept": -2.5577948881095702,
+    "calibration_slope": 1.6374084349314226
+   },
+   "ci": {
+    "AUROC": [
+     0.9833666001330672,
+     1.0
+    ],
+    "AUPRC": [
+     0.2394593253968256,
+     1.0
+    ],
+    "PR_skill": [
+     0.23490518962075865,
+     1.0
+    ],
+    "MCC": [
+     0.0,
+     0.5762013122913574
+    ],
+    "Brier": [
+     0.0026467403950318985,
+     0.019887205546706872
+    ],
+    "BSS": [
+     0.10468160663741259,
+     0.5688617474576774
+    ],
+    "ECE": [
+     0.0032566696911016674,
+     0.02146936085020306
+    ],
+    "calibration_slope": [
+     1.1789021110161948,
+     94.8166839431373
+    ],
+    "calibration_intercept": [
+     -210.61399679143923,
+     -0.7751308126677718
+    ]
+   },
+   "calibrator": "none",
+   "policy_version": "stage2-adequacy-1.0"
+  }
+ },
+ "cert_decision": null
+}
