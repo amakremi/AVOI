@@ -8,7 +8,7 @@ data never used in Stage 1. Partition rules were fixed in `config/stage2.yaml` b
 |---|---|---|---|---|
 | Controlled IAM | 320 Stage-1 scenarios (1,920 episodes) | new scenario families 0–15 (128 scenarios, 768 episodes) | new families 16–39 (192 scenarios, 1,152 episodes) | **Independent**: 320 new live scenarios from the frozen generator with a new master seed (20261103; 0 seed collisions with Stage 1), same objectives, same distribution, ground truth from the live oracle |
 | AIT-LDS v2.0 | russellmitchell, santos | testbed **fox** (720 windows × 2 claims) | testbeds **harrison**, **wardbeck** (1,440 windows × 2 claims) | **Independent testbeds** of the same official release (different simulated organisations/time periods); same attack-scenario family and generator → not an independent benchmark family |
-| CERT | r4.2 (969 episodes) | 40% of sampled **r5.2** users (seeded split) | remaining 60% of r5.2 users | **Different official release** (independently generated organisation, adds scenario 4); same benchmark family/generator → external confirmation within the CERT family, not an independent benchmark |
+| CERT | r4.2 (969 episodes, 322 users) | 40% of the 349 sampled **r5.2** users (seeded split) | remaining 60% of r5.2 users (1,251 r5.2 user-weeks in total) | **Different official release** (independently generated organisation, adds scenario 4); same benchmark family/generator → external confirmation within the CERT family, not an independent benchmark |
 
 ## Selection rules (fixed before evaluation)
 * **AIT:** the three smallest unused archives of the official AIT-LDS v2.0 Zenodo record (fox 15.8 GB, harrison 16.8 GB,

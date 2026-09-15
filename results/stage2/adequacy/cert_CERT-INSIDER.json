@@ -1,0 +1,341 @@
+{
+ "domain": "cert",
+ "objective": "CERT-INSIDER",
+ "model_id": "cert:CERT-INSIDER:tan(alpha=5.0)+none",
+ "decision": {
+  "model_id": "cert:CERT-INSIDER:tan(alpha=5.0)+none",
+  "status": "RESTRICTED",
+  "reason": "MODEL_ADEQUACY_RESTRICTED",
+  "discrimination_pass": true,
+  "calibration_pass": false,
+  "support_pass": true,
+  "failed_conditions": [
+   "calibration"
+  ],
+  "metrics": {
+   "n": 482,
+   "n_violated": 202,
+   "n_satisfied": 280,
+   "prevalence_violated": 0.4190871369294606,
+   "AUROC": 0.7635431400282885,
+   "AUPRC": 0.6811061795944282,
+   "PR_skill": 0.45104706630183716,
+   "sensitivity_violated": 0.48514851485148514,
+   "specificity": 0.8607142857142858,
+   "balanced_accuracy": 0.6729314002828855,
+   "MCC": 0.37834563083075406,
+   "Brier": 0.23023463201112565,
+   "Brier_reference": 0.25028542517956887,
+   "BSS": 0.08011170907797627,
+   "log_loss": 1.092666658492409,
+   "ECE": 0.18281076481110006,
+   "calibration_intercept": -0.5498723176234979,
+   "calibration_slope": 0.28254817449882524
+  },
+  "ci": {
+   "AUROC": [
+    0.6778653507735141,
+    0.8476122013534987
+   ],
+   "AUPRC": [
+    0.5857673915162188,
+    0.7648074494382887
+   ],
+   "PR_skill": [
+    0.31177655917093455,
+    0.5963467057033317
+   ],
+   "MCC": [
+    0.2523109205627015,
+    0.5115816591243046
+   ],
+   "Brier": [
+    0.1578601994369381,
+    0.30001233236564806
+   ],
+   "BSS": [
+    -0.15622223050289308,
+    0.32209399185331733
+   ],
+   "ECE": [
+    0.11144227543950844,
+    0.2666987692850511
+   ],
+   "calibration_slope": [
+    0.18109737535732578,
+    0.43665201799758574
+   ],
+   "calibration_intercept": [
+    -0.8312659323921573,
+    -0.18382903738921064
+   ]
+  },
+  "calibrator": "none",
+  "policy_version": "stage2-adequacy-1.0"
+ },
+ "selection": {
+  "model_candidates": [
+   {
+    "kind": "tan",
+    "alpha": 0.5,
+    "oof_log_loss": 0.42742242651310247
+   },
+   {
+    "kind": "tan",
+    "alpha": 1.0,
+    "oof_log_loss": 0.4203204880405554
+   },
+   {
+    "kind": "tan",
+    "alpha": 2.0,
+    "oof_log_loss": 0.4194554198783066
+   },
+   {
+    "kind": "tan",
+    "alpha": 5.0,
+    "oof_log_loss": 0.4123060045349056
+   },
+   {
+    "kind": "nb",
+    "alpha": 0.5,
+    "oof_log_loss": 0.4776627804046074
+   },
+   {
+    "kind": "nb",
+    "alpha": 1.0,
+    "oof_log_loss": 0.4668588389927358
+   },
+   {
+    "kind": "nb",
+    "alpha": 2.0,
+    "oof_log_loss": 0.45849512362155986
+   },
+   {
+    "kind": "nb",
+    "alpha": 5.0,
+    "oof_log_loss": 0.46845350958040627
+   }
+  ],
+  "selected_model": {
+   "kind": "tan",
+   "alpha": 5.0
+  },
+  "calibrator_cv_log_loss": {
+   "none": 0.4072043183088515,
+   "sigmoid": 0.41370275644269744,
+   "isotonic": 0.44028786187505464,
+   "beta": 0.4175499416164345
+  },
+  "selected_calibrator": "none",
+  "calibrator_params": {},
+  "oof_metrics_uncalibrated": {
+   "n": 969,
+   "n_violated": 326,
+   "n_satisfied": 643,
+   "prevalence_violated": 0.3364293085655315,
+   "AUROC": 0.9226402312778481,
+   "AUPRC": 0.8490068048386963,
+   "PR_skill": 0.7724534897180353,
+   "sensitivity_violated": 0.7883435582822086,
+   "specificity": 0.8693623639191291,
+   "balanced_accuracy": 0.8288529611006689,
+   "MCC": 0.6507123172842066,
+   "Brier": 0.10167771875018124,
+   "Brier_reference": 0.22324462890364985,
+   "BSS": 0.5445457333082611,
+   "log_loss": 0.3305053596218215,
+   "ECE": 0.03527646199559708,
+   "calibration_intercept": -0.21069998624392636,
+   "calibration_slope": 0.7469920063249759
+  },
+  "oof_metrics_calibrated": {
+   "n": 969,
+   "n_violated": 326,
+   "n_satisfied": 643,
+   "prevalence_violated": 0.3364293085655315,
+   "AUROC": 0.9226402312778481,
+   "AUPRC": 0.8490068048386963,
+   "PR_skill": 0.7724534897180353,
+   "sensitivity_violated": 0.7883435582822086,
+   "specificity": 0.8693623639191291,
+   "balanced_accuracy": 0.8288529611006689,
+   "MCC": 0.6507123172842066,
+   "Brier": 0.10167771875018124,
+   "Brier_reference": 0.22324462890364985,
+   "BSS": 0.5445457333082611,
+   "log_loss": 0.3305053596218215,
+   "ECE": 0.03527646199559708,
+   "calibration_intercept": -0.21069998624392636,
+   "calibration_slope": 0.7469920063249759
+  },
+  "model_structure": {
+   "type": "TAN",
+   "alpha": 5.0,
+   "parent": [
+    3,
+    0,
+    -1,
+    2,
+    0,
+    6,
+    4,
+    4,
+    2,
+    2
+   ],
+   "prior_satisfied": 0.6618998978549541
+  }
+ },
+ "validation_uncalibrated": {
+  "metrics": {
+   "n": 482,
+   "n_violated": 202,
+   "n_satisfied": 280,
+   "prevalence_violated": 0.4190871369294606,
+   "AUROC": 0.7635431400282885,
+   "AUPRC": 0.6811061795944282,
+   "PR_skill": 0.45104706630183716,
+   "sensitivity_violated": 0.48514851485148514,
+   "specificity": 0.8607142857142858,
+   "balanced_accuracy": 0.6729314002828855,
+   "MCC": 0.37834563083075406,
+   "Brier": 0.23023463201112565,
+   "Brier_reference": 0.25028542517956887,
+   "BSS": 0.08011170907797627,
+   "log_loss": 1.092666658492409,
+   "ECE": 0.18281076481110006,
+   "calibration_intercept": -0.5498723176234979,
+   "calibration_slope": 0.28254817449882524
+  },
+  "ci": {
+   "ci": {
+    "AUROC": [
+     0.6778653507735141,
+     0.8476122013534987
+    ],
+    "AUPRC": [
+     0.5857673915162188,
+     0.7648074494382887
+    ],
+    "PR_skill": [
+     0.31177655917093455,
+     0.5963467057033317
+    ],
+    "MCC": [
+     0.2523109205627015,
+     0.5115816591243046
+    ],
+    "Brier": [
+     0.1578601994369381,
+     0.30001233236564806
+    ],
+    "BSS": [
+     -0.15622223050289308,
+     0.32209399185331733
+    ],
+    "ECE": [
+     0.11144227543950844,
+     0.2666987692850511
+    ],
+    "calibration_slope": [
+     0.18109737535732578,
+     0.43665201799758574
+    ],
+    "calibration_intercept": [
+     -0.8312659323921573,
+     -0.18382903738921064
+    ]
+   },
+   "n_resamples": 5000,
+   "skipped_single_class": 0,
+   "n_groups": 140
+  }
+ },
+ "validation_primary": {
+  "metrics": {
+   "n": 482,
+   "n_violated": 202,
+   "n_satisfied": 280,
+   "prevalence_violated": 0.4190871369294606,
+   "AUROC": 0.7635431400282885,
+   "AUPRC": 0.6811061795944282,
+   "PR_skill": 0.45104706630183716,
+   "sensitivity_violated": 0.48514851485148514,
+   "specificity": 0.8607142857142858,
+   "balanced_accuracy": 0.6729314002828855,
+   "MCC": 0.37834563083075406,
+   "Brier": 0.23023463201112565,
+   "Brier_reference": 0.25028542517956887,
+   "BSS": 0.08011170907797627,
+   "log_loss": 1.092666658492409,
+   "ECE": 0.18281076481110006,
+   "calibration_intercept": -0.5498723176234979,
+   "calibration_slope": 0.28254817449882524
+  },
+  "bootstrap": {
+   "ci": {
+    "AUROC": [
+     0.6778653507735141,
+     0.8476122013534987
+    ],
+    "AUPRC": [
+     0.5857673915162188,
+     0.7648074494382887
+    ],
+    "PR_skill": [
+     0.31177655917093455,
+     0.5963467057033317
+    ],
+    "MCC": [
+     0.2523109205627015,
+     0.5115816591243046
+    ],
+    "Brier": [
+     0.1578601994369381,
+     0.30001233236564806
+    ],
+    "BSS": [
+     -0.15622223050289308,
+     0.32209399185331733
+    ],
+    "ECE": [
+     0.11144227543950844,
+     0.2666987692850511
+    ],
+    "calibration_slope": [
+     0.18109737535732578,
+     0.43665201799758574
+    ],
+    "calibration_intercept": [
+     -0.8312659323921573,
+     -0.18382903738921064
+    ]
+   },
+   "n_resamples": 5000,
+   "skipped_single_class": 0,
+   "n_groups": 140
+  }
+ },
+ "masked_diagnostic_metrics": {
+  "n": 1446,
+  "n_violated": 606,
+  "n_satisfied": 840,
+  "prevalence_violated": 0.4190871369294606,
+  "AUROC": 0.7091515401540154,
+  "AUPRC": 0.6339243048075774,
+  "PR_skill": 0.3698268389901869,
+  "sensitivity_violated": 0.3712871287128713,
+  "specificity": 0.875,
+  "balanced_accuracy": 0.6231435643564356,
+  "MCC": 0.28955335641535107,
+  "Brier": 0.2360307962380832,
+  "Brier_reference": 0.25028542517956887,
+  "BSS": 0.056953491923305455,
+  "log_loss": 0.8288360710996264,
+  "ECE": 0.13508359380368143,
+  "calibration_intercept": -0.21266667943508444,
+  "calibration_slope": 0.3146129591091432
+ },
+ "groups_with_violation": 40,
+ "prevalence_satisfied_dev": 0.6635706914344686
+}

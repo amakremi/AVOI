@@ -1,0 +1,342 @@
+{
+ "domain": "iam",
+ "objective": "IAM-01-MFA-PRIV",
+ "model_id": "iam:IAM-01-MFA-PRIV:tan(alpha=0.5)+beta",
+ "decision": {
+  "model_id": "iam:IAM-01-MFA-PRIV:tan(alpha=0.5)+beta",
+  "status": "RESTRICTED",
+  "reason": "MODEL_ADEQUACY_RESTRICTED",
+  "discrimination_pass": true,
+  "calibration_pass": false,
+  "support_pass": true,
+  "failed_conditions": [
+   "calibration"
+  ],
+  "metrics": {
+   "n": 128,
+   "n_violated": 39,
+   "n_satisfied": 89,
+   "prevalence_violated": 0.3046875,
+   "AUROC": 0.9992797464707577,
+   "AUPRC": 0.9980917560654897,
+   "PR_skill": 0.9972555592851987,
+   "sensitivity_violated": 0.9487179487179487,
+   "specificity": 1.0,
+   "balanced_accuracy": 0.9743589743589743,
+   "MCC": 0.9632585347610899,
+   "Brier": 0.023826183769960894,
+   "Brier_reference": 0.21314453125000002,
+   "BSS": 0.888215833499313,
+   "log_loss": 0.08351125144557438,
+   "ECE": 0.04820052250077795,
+   "calibration_intercept": -3.4156937236201412,
+   "calibration_slope": 1.7006635040359481
+  },
+  "ci": {
+   "AUROC": [
+    0.9973269973269974,
+    1.0
+   ],
+   "AUPRC": [
+    0.9929354658614373,
+    1.0
+   ],
+   "PR_skill": [
+    0.9901002981672569,
+    1.0
+   ],
+   "MCC": [
+    0.9135783069871001,
+    1.0
+   ],
+   "Brier": [
+    0.008434459023910138,
+    0.04299933900538734
+   ],
+   "BSS": [
+    0.8109342707136403,
+    0.9575734287943877
+   ],
+   "ECE": [
+    0.02618578445218679,
+    0.07677683426537117
+   ],
+   "calibration_slope": [
+    1.3071266639202095,
+    49.46745547353266
+   ],
+   "calibration_intercept": [
+    -146.54996503143727,
+    -1.814275494290279
+   ]
+  },
+  "calibrator": "beta",
+  "policy_version": "stage2-adequacy-1.0"
+ },
+ "selection": {
+  "model_candidates": [
+   {
+    "kind": "tan",
+    "alpha": 0.5,
+    "oof_log_loss": 0.18423912229484926
+   },
+   {
+    "kind": "tan",
+    "alpha": 1.0,
+    "oof_log_loss": 0.19929349027241255
+   },
+   {
+    "kind": "tan",
+    "alpha": 2.0,
+    "oof_log_loss": 0.21284499202027912
+   },
+   {
+    "kind": "tan",
+    "alpha": 5.0,
+    "oof_log_loss": 0.22239374179066346
+   },
+   {
+    "kind": "nb",
+    "alpha": 0.5,
+    "oof_log_loss": 0.2059921915766707
+   },
+   {
+    "kind": "nb",
+    "alpha": 1.0,
+    "oof_log_loss": 0.204174770185619
+   },
+   {
+    "kind": "nb",
+    "alpha": 2.0,
+    "oof_log_loss": 0.20662881301688474
+   },
+   {
+    "kind": "nb",
+    "alpha": 5.0,
+    "oof_log_loss": 0.22139357018292327
+   }
+  ],
+  "selected_model": {
+   "kind": "tan",
+   "alpha": 0.5
+  },
+  "calibrator_cv_log_loss": {
+   "none": 0.18423912229484926,
+   "sigmoid": 0.18296879194127197,
+   "isotonic": 0.21253563547853074,
+   "beta": 0.18252842363074143
+  },
+  "selected_calibrator": "beta",
+  "calibrator_params": {
+   "c_intercept": -0.6320997782043629,
+   "a_logp": 0.903952186542974,
+   "b_log1mp": 1.5216830632941492
+  },
+  "oof_metrics_uncalibrated": {
+   "n": 320,
+   "n_violated": 86,
+   "n_satisfied": 234,
+   "prevalence_violated": 0.26875,
+   "AUROC": 0.9955774199960247,
+   "AUPRC": 0.9875185041400181,
+   "PR_skill": 0.9829312877128452,
+   "sensitivity_violated": 0.9651162790697675,
+   "specificity": 0.9700854700854701,
+   "balanced_accuracy": 0.9676008745776188,
+   "MCC": 0.9220984500840562,
+   "Brier": 0.021867545998249676,
+   "Brier_reference": 0.1965234375,
+   "BSS": 0.8887280505753943,
+   "log_loss": 0.06863495774609744,
+   "ECE": 0.024275874752968767,
+   "calibration_intercept": 0.12834023006605616,
+   "calibration_slope": 1.4547818347709316
+  },
+  "oof_metrics_calibrated": {
+   "n": 320,
+   "n_violated": 86,
+   "n_satisfied": 234,
+   "prevalence_violated": 0.26875,
+   "AUROC": 0.9955774199960247,
+   "AUPRC": 0.9875185041400178,
+   "PR_skill": 0.9829312877128449,
+   "sensitivity_violated": 0.9767441860465116,
+   "specificity": 0.9700854700854701,
+   "balanced_accuracy": 0.9734148280659909,
+   "MCC": 0.9304447060527473,
+   "Brier": 0.021344010833497705,
+   "Brier_reference": 0.1965234375,
+   "BSS": 0.8913920339221743,
+   "log_loss": 0.06502326604803169,
+   "ECE": 0.02226711034845626,
+   "calibration_intercept": 0.28672903137063976,
+   "calibration_slope": 1.1841470839069013
+  },
+  "model_structure": {
+   "type": "TAN",
+   "alpha": 0.5,
+   "parent": [
+    5,
+    2,
+    4,
+    2,
+    -1,
+    3,
+    3
+   ],
+   "prior_satisfied": 0.7305295950155763
+  }
+ },
+ "validation_uncalibrated": {
+  "metrics": {
+   "n": 128,
+   "n_violated": 39,
+   "n_satisfied": 89,
+   "prevalence_violated": 0.3046875,
+   "AUROC": 0.9992797464707577,
+   "AUPRC": 0.9980917560654897,
+   "PR_skill": 0.9972555592851987,
+   "sensitivity_violated": 0.9487179487179487,
+   "specificity": 1.0,
+   "balanced_accuracy": 0.9743589743589743,
+   "MCC": 0.9632585347610899,
+   "Brier": 0.027547071846263732,
+   "Brier_reference": 0.21314453125000002,
+   "BSS": 0.8707587209265368,
+   "log_loss": 0.09224971242126799,
+   "ECE": 0.06148182220912318,
+   "calibration_intercept": -3.8437963688091616,
+   "calibration_slope": 2.3621856431921473
+  },
+  "ci": {
+   "ci": {
+    "AUROC": [
+     0.9973269973269974,
+     1.0
+    ],
+    "AUPRC": [
+     0.9929354658614372,
+     1.0
+    ],
+    "PR_skill": [
+     0.9901002981672572,
+     1.0
+    ],
+    "MCC": [
+     0.9135783069871001,
+     1.0
+    ],
+    "Brier": [
+     0.011974051140184908,
+     0.04623730076312738
+    ],
+    "BSS": [
+     0.7998140295409755,
+     0.9387209464990386
+    ],
+    "ECE": [
+     0.03528620666053826,
+     0.09081707533787366
+    ],
+    "calibration_slope": [
+     1.8177848361243547,
+     70.67567958944052
+    ],
+    "calibration_intercept": [
+     -164.25472143749147,
+     -2.1519260968411733
+    ]
+   },
+   "n_resamples": 5000,
+   "skipped_single_class": 0,
+   "n_groups": 16
+  }
+ },
+ "validation_primary": {
+  "metrics": {
+   "n": 128,
+   "n_violated": 39,
+   "n_satisfied": 89,
+   "prevalence_violated": 0.3046875,
+   "AUROC": 0.9992797464707577,
+   "AUPRC": 0.9980917560654897,
+   "PR_skill": 0.9972555592851987,
+   "sensitivity_violated": 0.9487179487179487,
+   "specificity": 1.0,
+   "balanced_accuracy": 0.9743589743589743,
+   "MCC": 0.9632585347610899,
+   "Brier": 0.023826183769960894,
+   "Brier_reference": 0.21314453125000002,
+   "BSS": 0.888215833499313,
+   "log_loss": 0.08351125144557438,
+   "ECE": 0.04820052250077795,
+   "calibration_intercept": -3.4156937236201412,
+   "calibration_slope": 1.7006635040359481
+  },
+  "bootstrap": {
+   "ci": {
+    "AUROC": [
+     0.9973269973269974,
+     1.0
+    ],
+    "AUPRC": [
+     0.9929354658614373,
+     1.0
+    ],
+    "PR_skill": [
+     0.9901002981672569,
+     1.0
+    ],
+    "MCC": [
+     0.9135783069871001,
+     1.0
+    ],
+    "Brier": [
+     0.008434459023910138,
+     0.04299933900538734
+    ],
+    "BSS": [
+     0.8109342707136403,
+     0.9575734287943877
+    ],
+    "ECE": [
+     0.02618578445218679,
+     0.07677683426537117
+    ],
+    "calibration_slope": [
+     1.3071266639202095,
+     49.46745547353266
+    ],
+    "calibration_intercept": [
+     -146.54996503143727,
+     -1.814275494290279
+    ]
+   },
+   "n_resamples": 5000,
+   "skipped_single_class": 0,
+   "n_groups": 16
+  }
+ },
+ "masked_diagnostic_metrics": {
+  "n": 384,
+  "n_violated": 117,
+  "n_satisfied": 267,
+  "prevalence_violated": 0.3046875,
+  "AUROC": 0.9192995934568968,
+  "AUPRC": 0.8486352784943599,
+  "PR_skill": 0.7823069173851469,
+  "sensitivity_violated": 0.5641025641025641,
+  "specificity": 0.9775280898876404,
+  "balanced_accuracy": 0.7708153269951022,
+  "MCC": 0.6387166712858835,
+  "Brier": 0.10410261688138998,
+  "Brier_reference": 0.21314453125000002,
+  "BSS": 0.5115867328574024,
+  "log_loss": 0.31681320300245286,
+  "ECE": 0.0576245325912932,
+  "calibration_intercept": -0.3843553616733774,
+  "calibration_slope": 0.8368913764403039
+ },
+ "groups_with_violation": 15,
+ "prevalence_satisfied_dev": 0.73125
+}
