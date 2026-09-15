@@ -1,0 +1,13 @@
+**Stage 2. Model-adequacy boundary: a good acquisition strategy cannot compensate for an inadequate evidence model**
+
+| domain | model | discrimination | calibration | sample_support | adequacy_status | autonomous_AVOI_permitted | ungated_UAR | gated_UAR | ungated_coverage | gated_coverage |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Controlled IAM | IAM-01-MFA-PRIV | AUROC 0.999 [0.997, 1.000]; PR skill 0.997 [0.990, 1.000] | BSS 0.888; ECE 0.048; slope 1.70 | 39 violated / 16 groups | RESTRICTED | 0 | 0.017 | 0.000 | 1.000 | 0.000 |
+| Controlled IAM | IAM-02-TERM-DISABLED | AUROC 0.998 [0.994, 1.000]; PR skill 0.994 [0.979, 1.000] | BSS 0.937; ECE 0.024; slope 1.32 | 41 violated / 16 groups | VALIDATED | 1 | 0.000 | 0.000 | 0.812 | 0.812 |
+| Controlled IAM | IAM-03-PRIV-AUTHZ | AUROC 0.832 [0.787, 0.879]; PR skill 0.568 [0.482, 0.692] | BSS 0.316; ECE 0.089; slope 1.21 | 46 violated / 16 groups | VALIDATED | 1 | 0.000 | 0.000 | 0.422 | 0.422 |
+| Controlled IAM | IAM-04-DORMANT | AUROC 0.952 [0.922, 0.983]; PR skill 0.772 [0.634, 0.929] | BSS 0.779; ECE 0.018; slope 1.20 | 50 violated / 16 groups | VALIDATED | 1 | 0.000 | 0.000 | 1.000 | 1.000 |
+| Controlled IAM | IAM-05-BREAKGLASS | AUROC 0.993 [0.982, 0.999]; PR skill 0.983 [0.955, 0.998] | BSS 0.850; ECE 0.055; slope 4.65 | 57 violated / 16 groups | RESTRICTED | 0 | 0.038 | 0.000 | 1.000 | 0.000 |
+| Controlled IAM | IAM-06-ACCESS-REVIEW | AUROC 0.940 [0.893, 0.976]; PR skill 0.877 [0.791, 0.948] | BSS 0.598; ECE 0.049; slope 1.26 | 73 violated / 16 groups | VALIDATED | 1 | 0.010 | 0.010 | 0.474 | 0.474 |
+| AIT-LDS v2.0 | AIT-EXFIL | AUROC 0.024 [0.013, 0.038]; PR skill -0.350 [-0.464, -0.257] | BSS -0.451; ECE 0.587; slope -6.55 | 343 violated / 120 groups | UNSUPPORTED | 0 | 0.000 | 0.000 | 0.000 | 0.000 |
+| AIT-LDS v2.0 | AIT-INTRUSION | AUROC 0.686 [0.388, 0.807]; PR skill 0.021 [0.001, 0.084] | BSS -0.002; ECE 0.003; slope 0.63 | 9 violated / 120 groups | RESTRICTED | 0 | 0.600 | 0.000 | 0.983 | 0.000 |
+| CERT (r4.2 dev / r5.2 confirmation) | CERT-INSIDER | AUROC 0.764 [0.678, 0.848]; PR skill 0.451 [0.312, 0.596] | BSS 0.080; ECE 0.183; slope 0.28 | 202 violated / 140 groups | RESTRICTED | 0 | 0.000 | 0.000 | 0.000 | 0.000 |

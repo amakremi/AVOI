@@ -72,6 +72,13 @@ def status_of(domain, objective):
     return decisions()[f"{domain}|{objective}"]["status"]
 
 
+def _safe_status(domain, objective):
+    try:
+        return status_of(domain, objective)
+    except (KeyError, FileNotFoundError):
+        return None
+
+
 def cold(df, experiment="primary", condition=PRIMARY_COND):
     return df[(df["experiment"] == experiment) & (df["condition"] == condition) & (df["start"] == "cold") & (df["shift"] == "none")]
 
@@ -101,7 +108,7 @@ def _indicators(x: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame({"group": x["group"].astype(str), "n": 1.0, "viol": v, "unsafe": x["assured_f"] * v, "assured": x["assured_f"],
                          "auto": 1 - x["hr_f"], "hr": x["hr_f"], "loss": x["loss"], "nacq": x["n_acq"], "cost": x["cost"], "privacy": x["privacy"],
                          "tp": ((b < 0.5) & (x["y"] == 0)).astype(float), "tn": ((b >= 0.5) & (x["y"] == 1)).astype(float),
-                         "sat": (x["y"] == 1).astype(float)})
+                         "sat": (x["y"] == 1).astype(float), "sat_assured": x["assured_f"] * (x["y"] == 1).astype(float)})
 
 
 def _div(a, b):
@@ -115,7 +122,8 @@ def _metrics_from_sums(S: dict) -> dict:
     return {"UAR": _div(S["unsafe"], S["viol"]), "FAA": _div(S["unsafe"], S["assured"]), "coverage": _div(S["auto"], S["n"]),
             "human_review_rate": _div(S["hr"], S["n"]), "expected_loss": _div(S["loss"], S["n"]), "mean_acquisitions": _div(S["nacq"], S["n"]),
             "normalized_cost": _div(S["cost"], S["n"]), "privacy_exposure": _div(S["privacy"], S["n"]),
-            "balanced_accuracy": 0.5 * (_div(S["tp"], S["viol"]) + _div(S["tn"], S["sat"]))}
+            "balanced_accuracy": 0.5 * (_div(S["tp"], S["viol"]) + _div(S["tn"], S["sat"])),
+            "assurance_recall": _div(S["sat_assured"], S["sat"])}
 
 
 def boot_summary(x: pd.DataFrame, n_boot: int = N_BOOT, seed: int = 20261103) -> dict:
@@ -250,7 +258,9 @@ def gate_effect(raw, enf) -> pd.DataFrame:
                          "gated_expected_loss": ci_str(be["point"]["expected_loss"], *be["ci"]["expected_loss"]),
                          "raw_human_review_rate": br["point"]["human_review_rate"], "gated_human_review_rate": be["point"]["human_review_rate"],
                          "interpretation": ("gate inactive (VALIDATED)" if st == AQ.VALIDATED else
-                                            "autonomy withheld: any UAR reduction is caused by abstention, not by better acquisition")})
+                                            ("raw AVOI already escalated every episode at the validation-tuned threshold; gate changes nothing"
+                                             if br["point"]["coverage"] == 0 else
+                                             "autonomy withheld: any UAR reduction is caused by abstention, not by better acquisition"))})
     return pd.DataFrame(rows)
 
 
@@ -279,39 +289,73 @@ def boundary_table(raw, enf) -> pd.DataFrame:
 def matched_tables(raw) -> tuple[pd.DataFrame, pd.DataFrame]:
     tun = aux("tuning")
     cov_rows, safe_rows = [], []
+    """Per evidence model (no pooling across objectives that different methods achieved). Operating points are selected on the
+    adequacy-validation partition; 'not achieved' when no validation threshold met the target (no interpolation)."""
     p = raw[(raw["experiment"] == "primary") & (raw["condition"] == PRIMARY_COND) & (raw["start"] == "cold")]
+    tun = tun[(tun["experiment"] == "primary") & tun["target"].notna()] if "target" in tun else tun.iloc[0:0]
+    targets = sorted(tun["target"].unique())
+    p = p[p["shift"].astype(str).str.startswith("target:")]
+    groups = {k: g for k, g in p.groupby(["domain", "objective", "method", "shift"])}
+    tun_idx = {k: g for k, g in tun.groupby(["domain", "objective", "method", "target"])}
     for dom in DOMAINS:
-        for mth in [m for m in METHODS if m != "B2-Random"] + ["B2-Random[s0]"]:
-            for tgt in sorted(p["shift"].unique()):
-                if not str(tgt).startswith("target:"):
-                    continue
-                sub = p[(p["domain"] == dom) & (p["method"] == mth) & (p["shift"] == tgt)]
-                t = tun[(tun["domain"] == dom) & (tun["method"] == mth) & (tun.get("target") == tgt) & (tun["experiment"] == "primary")] if "target" in tun else pd.DataFrame()
-                n_all = t["objective"].nunique() if not t.empty else 0
-                n_ok = int(t["target_achieved_validation"].fillna(False).astype(bool).sum()) if not t.empty else 0
-                base = {"domain": DOM_LABEL[dom], "method": DISPLAY.get(mth.replace("[s0]", ""), mth), "target": tgt.replace("target:", ""),
-                        "models_achieving_target_on_validation": f"{n_ok}/{n_all}"}
-                if sub.empty:
-                    row = {**base, "status": "not achieved (validation)"}
-                else:
-                    s = boot_summary(sub)
-                    row = {**base, "status": "achieved" if n_ok == n_all else "partially achieved",
-                           "confirmation_UAR": ci_str(s["point"]["UAR"], *s["ci"]["UAR"]), "confirmation_coverage": ci_str(s["point"]["coverage"], *s["ci"]["coverage"]),
-                           "confirmation_cost": ci_str(s["point"]["normalized_cost"], *s["ci"]["normalized_cost"], 4),
-                           "confirmation_acquisitions": ci_str(s["point"]["mean_acquisitions"], *s["ci"]["mean_acquisitions"]),
-                           "episodes": s["n"]}
-                (cov_rows if "coverage=" in tgt and "uar" not in tgt else safe_rows).append(row)
+        for o in sorted(p[p["domain"] == dom]["objective"].unique()):
+            st_ = _safe_status(dom, o)
+            for tgt in targets:
+                for mth in [m for m in METHODS if m != "B2-Random"] + ["B2-Random[s0]"]:
+                    t = tun_idx.get((dom, o, mth, tgt), tun.iloc[0:0])
+                    ok = bool(len(t)) and str(t["target_achieved_validation"].iloc[0]) == "True"
+                    base = {"domain": DOM_LABEL[dom], "objective": o, "adequacy_status": st_, "target": tgt.replace("target:", ""),
+                            "method": DISPLAY.get(mth.replace("[s0]", ""), mth) + (" (seed 0)" if mth.endswith("[s0]") else "")}
+                    sub = groups.get((dom, o, mth, tgt), p.iloc[0:0])
+                    if not ok or sub.empty:
+                        row = {**base, "validation": "not achieved"}
+                    else:
+                        s = boot_summary(sub, 2000)
+                        row = {**base, "validation": "achieved", "confirmation_UAR": ci_str(s["point"]["UAR"], *s["ci"]["UAR"]),
+                               "confirmation_coverage": ci_str(s["point"]["coverage"], *s["ci"]["coverage"]),
+                               "confirmation_cost": ci_str(s["point"]["normalized_cost"], *s["ci"]["normalized_cost"], 4),
+                               "confirmation_acquisitions": ci_str(s["point"]["mean_acquisitions"], *s["ci"]["mean_acquisitions"]),
+                               "UAR_point": s["point"]["UAR"], "coverage_point": s["point"]["coverage"], "cost_point": s["point"]["normalized_cost"],
+                               "acquisitions_point": s["point"]["mean_acquisitions"], "episodes": s["n"],
+                               "assurance_recall_Y1": s["point"]["assurance_recall"],
+                               "degenerate_no_correct_assurance": bool(s["point"]["assurance_recall"] == 0)}
+                        if "uar" in tgt:
+                            eta, gam = float(tgt.split("uar<=")[1].split("&")[0]), float(tgt.split("coverage>=")[1])
+                            u = s["point"]["UAR"]
+                            row["joint_target_met_on_confirmation"] = bool((np.isnan(u) or u <= eta) and s["point"]["coverage"] >= gam)
+                        else:
+                            row["coverage_within_0.05_on_confirmation"] = bool(abs(s["point"]["coverage"] - float(tgt.split("=")[1])) <= 0.05)
+                    (safe_rows if "uar" in tgt else cov_rows).append(row)
     return pd.DataFrame(cov_rows), pd.DataFrame(safe_rows)
 
 
+def budget_filled() -> pd.DataFrame:
+    """Budget rows with every objective carried forward to the domain's maximum K: for k >= m (the objective's action count)
+    an at-most-k budget cannot bind, so the k = m rows are replicated. Avoids composition artefacts when objectives with
+    fewer actions would otherwise drop out of the pooled mean at large k."""
+    b = aux("budget").copy()
+    out = [b]
+    for dom, gd in b.groupby("domain"):
+        kmax = int(gd["budget"].max())
+        for o, go in gd.groupby("objective"):
+            m = int(go["budget"].max())
+            last = go[go["budget"] == m]
+            for k in range(m + 1, kmax + 1):
+                out.append(last.assign(budget=k, carried_forward=True))
+    return pd.concat(out, ignore_index=True)
+
+
 def budget_table() -> pd.DataFrame:
-    b = aux("budget")
+    b = budget_filled()
+    b["mf"] = b["method"].str.replace(r"\[s\d+\]", "", regex=True)
+    b["validated"] = [_safe_status(d, o) == AQ.VALIDATED for d, o in zip(b["domain"], b["objective"])]
     rows = []
-    for (dom, mth, k), g in b.groupby(["domain", b["method"].str.replace(r"\[s\d+\]", "", regex=True), "budget"]):
+    for scope, bb in (("all evidence models (raw)", b), ("VALIDATED models only", b[b["validated"]])):
+      for (dom, mth, k), g in bb.groupby(["domain", "mf", "budget"]):
         if mth not in METHODS:
             continue
         r = SA.rates(g)
-        rows.append({"domain": dom, "method": DISPLAY.get(mth, mth), "max_acquisitions_k": int(k), "expected_loss": float(g["loss"].mean()),
+        rows.append({"scope": scope, "domain": dom, "method": DISPLAY.get(mth, mth), "max_acquisitions_k": int(k), "expected_loss": float(g["loss"].mean()),
                      "UAR": r["UAR"], "FAA": r["FAA"], "coverage": r["coverage"], "mean_acquisitions": float(g["n_acq"].mean()),
                      "max_observed_acquisitions": int(g["n_acq"].max()), "share_stopping_before_k": float((g["n_acq"] < k).mean()),
                      "episodes": len(g)})
@@ -364,19 +408,22 @@ def ablation_table(raw) -> pd.DataFrame:
 def asymmetric_ablation(raw) -> pd.DataFrame:
     rows = []
     for dom in DOMAINS:
-        d = cold(raw[raw["domain"] == dom], "ablation")
-        a, s = per_method(d, "AVOI"), per_method(d, "A1-NoAsymmetricLoss")
-        if a.empty or s.empty:
-            continue
-        for metric in ("UAR", "FAA", "expected_loss", "mean_acquisitions", "coverage", "human_review_rate"):
-            est, lo, hi = boot_diff(a, s, metric)
-            ra, rs = boot_summary(a)["point"][metric], boot_summary(s)["point"][metric]
-            rows.append({"domain": DOM_LABEL[dom], "metric": metric, "AVOI_asymmetric_10_2_1": ra, "symmetric_2_2_1": rs,
-                         "difference_asymmetric_minus_symmetric": ci_str(est, lo, hi, 4)})
-        va = a[a["y"] == 0].merge(s[s["y"] == 0], on=["objective", "episode_id", "group"], suffixes=("_a", "_s"))
-        mc = MT.mcnemar_exact((va["decision_a"] == "Assured").to_numpy(), (va["decision_s"] == "Assured").to_numpy())
-        rows.append({"domain": DOM_LABEL[dom], "metric": "McNemar exact (unsafe assurance, Y=0)", "AVOI_asymmetric_10_2_1": mc["discordant_method_only"],
-                     "symmetric_2_2_1": mc["discordant_comparator_only"], "difference_asymmetric_minus_symmetric": f"p={mc['p']:.3g}"})
+        dall = cold(raw[raw["domain"] == dom], "ablation")
+        valid = [o for o in dall["objective"].unique() if _safe_status(dom, o) == AQ.VALIDATED]
+        for scope, d in (("all evidence models (raw)", dall), ("VALIDATED models only", dall[dall["objective"].isin(valid)])):
+            a, s = per_method(d, "AVOI"), per_method(d, "A1-NoAsymmetricLoss")
+            if a.empty or s.empty:
+                continue
+            for metric in ("UAR", "FAA", "expected_loss", "mean_acquisitions", "coverage", "human_review_rate"):
+                est, lo, hi = boot_diff(a, s, metric)
+                ra, rs = boot_summary(a)["point"][metric], boot_summary(s)["point"][metric]
+                rows.append({"domain": DOM_LABEL[dom], "scope": scope, "metric": metric, "AVOI_asymmetric_10_2_1": ra, "symmetric_2_2_1": rs,
+                             "difference_asymmetric_minus_symmetric": ci_str(est, lo, hi, 4)})
+            va = a[a["y"] == 0].merge(s[s["y"] == 0], on=["objective", "episode_id", "group"], suffixes=("_a", "_s"))
+            mc = MT.mcnemar_exact((va["decision_a"] == "Assured").to_numpy(), (va["decision_s"] == "Assured").to_numpy())
+            rows.append({"domain": DOM_LABEL[dom], "scope": scope, "metric": "McNemar exact: unsafe assurances only under asymmetric / only under symmetric (Y=0)",
+                         "AVOI_asymmetric_10_2_1": mc["discordant_method_only"], "symmetric_2_2_1": mc["discordant_comparator_only"],
+                         "difference_asymmetric_minus_symmetric": f"p={mc['p']:.3g}"})
     return pd.DataFrame(rows)
 
 
@@ -389,7 +436,7 @@ def escalation_table(raw, enf) -> pd.DataFrame:
             ev = SA.escalation_breakdown(r, LOSS)
             gt = SA.gate_breakdown(r, e)
             rows.append({"domain": dom, "objective": o, "adequacy_status": status_of(dom, o), "type": "evidence-uncertainty escalation (raw AVOI)",
-                         **{k: v for k, v in ev.items()}})
+                         **{k: v for k, v in ev.items()}, "decisions_changed": ev["escalations"]})
             rows.append({"domain": dom, "objective": o, "adequacy_status": status_of(dom, o), "type": "model-adequacy escalation (gate)",
                          "escalations": gt["gated_episodes"], "Y0": gt["Y0"], "Y1": gt["Y1"], "false_assurances_prevented": gt["false_assurances_prevented"],
                          "false_non_assurances_prevented": gt["false_non_assurances_prevented"], "correct_autonomous_withheld": gt["correct_autonomous_withheld"],
@@ -408,11 +455,16 @@ def zero_acq_table(raw) -> pd.DataFrame:
             if x.empty:
                 continue
             n = x["n_acq"]
-            req = x[x["acquisition_required"] == True]
+            # secondary analysis (predefined): acquisition-required = initial evidence insufficient for autonomous termination,
+            # computed only for VALIDATED evidence models
+            valid = [o for o in x["objective"].unique() if _safe_status(dom, o) == AQ.VALIDATED]
+            req = x[(x["acquisition_required"] == True) & x["objective"].isin(valid)]
+            nv = int(x["objective"].isin(valid).sum())
             rr = SA.rates(req) if len(req) else {}
             rows.append({"domain": dom, "method": DISPLAY.get(mth, mth), "P(N_acq=0)": float((n == 0).mean()), "P(N_acq>0)": float((n > 0).mean()),
                          "E[N_acq]": float(n.mean()), "E[N_acq | N_acq>0]": float(n[n > 0].mean()) if (n > 0).any() else np.nan,
-                         "acquisition_required_share": float(len(req) / len(x)), "acq_required_UAR": rr.get("UAR", np.nan),
+                         "validated_model_episodes": nv,
+                         "acquisition_required_share_validated": float(len(req) / nv) if nv else np.nan, "acq_required_UAR": rr.get("UAR", np.nan),
                          "acq_required_coverage": rr.get("coverage", np.nan), "acq_required_expected_loss": float(req["loss"].mean()) if len(req) else np.nan,
                          "acq_required_mean_acquisitions": float(req["n_acq"].mean()) if len(req) else np.nan})
     return pd.DataFrame(rows)
@@ -503,9 +555,11 @@ def adequacy_sensitivity(raw) -> pd.DataFrame:
 
 def risk_coverage_table() -> pd.DataFrame:
     rows = []
-    for mode in ("raw", "enforced"):
-        c = aux("curves", mode)
-        c = c[(c["experiment"] == "primary")]
+    for mode in ("raw", "raw_validated_models_only", "enforced"):
+        c = aux("curves", "enforced" if mode == "enforced" else "raw")
+        c = c[(c["experiment"] == "primary")].copy()
+        if mode == "raw_validated_models_only":
+            c = c[[_safe_status(d, o) == AQ.VALIDATED for d, o in zip(c["domain"], c["objective"])]]
         c["method_family"] = c["method"].str.replace(r"\[s\d+\]", "", regex=True)
         for (dom, mth), g in c.groupby(["domain", "method_family"]):
             p = g.groupby("tau", dropna=False)[["n", "n_viol", "n_hr", "n_unsafe", "loss_sum", "cost_sum"]].sum().reset_index()

@@ -14,7 +14,8 @@
   asymmetric loss lowered unsafe assurance vs generic symmetric VOI; confidence-threshold stopping weaker than AVOI on
   IAM and CERT; AIT showed poor cross-testbed transfer/calibration; H1 not supported as registered (degenerate matched-
   safety definition; post-hoc correction exploratory); H2 not supported; H3 supported on IAM and CERT; H4 supported;
-  H5 mixed / context-dependent (escalation mainly prevented false non-assurance).
+  H3 not supported on AIT; H5 supported as registered on all three datasets, with the recorded caveat that escalation
+  mainly prevented false NON-assurance and did not reduce false assurance relative to the no-escalation variant.
 
 ## Why Stage 2 exists
 Stage-1 AIT results exposed that the fitted evidence model transferred poorly between testbeds (full-evidence ECE ≈ 0.26,

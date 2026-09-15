@@ -1,0 +1,10 @@
+**Stage 2 (secondary). LLM-only planner gemma4:e4b vs AVOI**
+
+| adequacy_mode | method | episodes | UAR | expected_loss | mean_acquisitions | coverage | note |
+|---|---|---|---|---|---|---|---|
+| enforced | AVOI | 384 | 0.000 [0.000, 0.000] | 0.641 [0.609, 0.677] | 0.958 [0.938, 0.979] | 0.438 [0.409, 0.469] | secondary; gemma4:e4b; IAM confirmation families 16-23, 6 objectives; invalid responses 0 |
+| enforced | AVOI(value-stop,bayes) | 384 | 0.000 [0.000, 0.000] | 0.638 [0.596, 0.682] | 1.154 [1.138, 1.169] | 0.503 [0.482, 0.523] | secondary; gemma4:e4b; IAM confirmation families 16-23, 6 objectives; invalid responses 0 |
+| enforced | B8-LLMPlanner(gemma4:e4b) | 384 | 0.000 [0.000, 0.000] | 0.620 [0.576, 0.667] | 2.938 [2.878, 2.990] | 0.510 [0.487, 0.537] | secondary; gemma4:e4b; IAM confirmation families 16-23, 6 objectives; invalid responses 0 |
+| raw | AVOI | 384 | 0.000 [0.000, 0.000] | 0.375 [0.323, 0.432] | 1.453 [1.411, 1.500] | 0.771 [0.742, 0.802] | secondary; gemma4:e4b; IAM confirmation families 16-23, 6 objectives; invalid responses 0 |
+| raw | AVOI(value-stop,bayes) | 384 | 0.000 [0.000, 0.000] | 0.372 [0.331, 0.419] | 1.654 [1.617, 1.695] | 0.836 [0.815, 0.857] | secondary; gemma4:e4b; IAM confirmation families 16-23, 6 objectives; invalid responses 0 |
+| raw | B8-LLMPlanner(gemma4:e4b) | 384 | 0.007 [0.000, 0.021] | 0.357 [0.299, 0.414] | 5.104 [5.044, 5.156] | 0.841 [0.815, 0.870] | secondary; gemma4:e4b; IAM confirmation families 16-23, 6 objectives; invalid responses 0 |

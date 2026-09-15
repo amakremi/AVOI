@@ -86,11 +86,21 @@ def fig_model_adequacy_diagnostics():
             v = r["validation_primary"]["metrics"][mt]
             lo, hi = r["validation_primary"]["bootstrap"]["ci"][mt]
             col = STATUS_COL[r["decision"]["status"]]
-            ax.errorbar(v, i, xerr=[[max(v - lo, 0)], [max(hi - v, 0)]], fmt="o", color=col, ms=4, capsize=1.5, lw=1)
+            if mt == "calibration_slope":          # near-separated models give unbounded slope CIs: clip and mark
+                XL = (-8.0, 6.0)
+                vc, loc, hic = np.clip([v, lo, hi], *XL)
+                ax.errorbar(vc, i, xerr=[[max(vc - loc, 0)], [max(hic - vc, 0)]], fmt="o", color=col, ms=4, capsize=1.5, lw=1)
+                if hi > XL[1]:
+                    ax.annotate(f"→ {hi:.0f}", (XL[1], i), xytext=(-2, 4), textcoords="offset points", fontsize=5.5, color=INK2, ha="right")
+                if lo < XL[0] or v < XL[0]:
+                    ax.annotate(f"{lo:.1f} ←", (XL[0], i), xytext=(2, 4), textcoords="offset points", fontsize=5.5, color=INK2)
+                ax.set_xlim(*XL)
+            else:
+                ax.errorbar(v, i, xerr=[[max(v - lo, 0)], [max(hi - v, 0)]], fmt="o", color=col, ms=4, capsize=1.5, lw=1)
         if thr is not None:
             ax.axvline(thr, color=INK2, lw=0.8, ls="--")
         if mt == "calibration_slope":
-            ax.axvspan(0.5, 1.5, color="#e1e0d9", alpha=0.5, lw=0)
+            ax.axvspan(0.5, 1.5, color="#c3c2b7", alpha=0.5, lw=0, label="eligible 0.5–1.5")
         ax.set_title(lab)
     axes[0].set_yticks(range(len(keys)), ylab, fontsize=6)
     axes[0].invert_yaxis()
@@ -127,7 +137,7 @@ def fig_calibration():
             m = AQ.point_metrics(y, p, ref)
             R = reliability(y, p)
             ax.plot(R[:, 0], R[:, 1], color=col, marker=mk, lw=1.4,
-                    label=f"{lab}: BSS {m['BSS']:.2f}, ECE {m['ECE']:.3f}, slope {m['calibration_slope']:.2f}, int. {m['calibration_intercept']:.2f}")
+                    label=f"{lab}: Brier {m['Brier']:.3f}, BSS {m['BSS']:.2f}, ECE {m['ECE']:.3f}, slope {m['calibration_slope']:.2f}, int. {m['calibration_intercept']:.2f}")
             if col_p == "p_calibrated":
                 for x_, y_, n_ in R:
                     ax.annotate(f"{n_}", (x_, y_), textcoords="offset points", xytext=(2, -8), fontsize=5, color=INK2)
@@ -165,6 +175,7 @@ def fig_roc_pr():
     axes[0][0].set_ylabel("True-positive rate (violation)"); axes[1][0].set_ylabel("Precision (dotted = prevalence)")
     fig.suptitle("ROC and precision-recall of the calibrated evidence models (adequacy validation; colour = adequacy status)", y=1.01, color=INK)
     fig.tight_layout()
+    fig.text(0.5, -0.02, "ROC/PR metrics assess the underlying evidence model, not the AVOI acquisition policy.", ha="center", fontsize=7, color=INK2)
     return save(fig, "roc_pr_curves")
 
 
@@ -183,14 +194,20 @@ def _risk_cov(mode, name, title):
             else:
                 ax.plot(q["coverage"], q["UAR"], color=col, marker=mk, ls="none", ms=7, label=lab, markeredgecolor="#fcfcfb")
         sts = statuses(dom)
-        ax.set_title(DT[dom] + "\n" + ", ".join(f"{k}:{v[0]}" for k, v in sorted(sts.items())), fontsize=7)
+        if mode == "enforced" and sts and all(v != AQ.VALIDATED for v in sts.values()):
+            ax.annotate("complete abstention /\nwithheld autonomy\n(UAR = 0 at coverage = 0)", (0.0, 0.0), xytext=(0.25, 0.5),
+                        textcoords="axes fraction", fontsize=6.5, color=INK2, arrowprops={"arrowstyle": "->", "color": INK2, "lw": 0.7})
+        codes = [f"{k.split('-')[0]}-{k.split('-')[1]}:{v[0]}" for k, v in sorted(sts.items())]
+        lines_ = [", ".join(codes[i:i + 3]) for i in range(0, len(codes), 3)]
+        ax.set_title(DT[dom] + "\n" + "\n".join(lines_), fontsize=7)
         ax.set_xlim(-0.02, 1.02)
         ax.set_xlabel("Autonomous coverage")
-    axes[0].set_ylabel("UAR = #(Assured ∧ Y=0) / #(Y=0)")
+    axes[0].set_ylabel("Unsafe Assurance Rate (UAR)")
     F1.shared_legend(fig, axes[None, :])
-    fig.suptitle(title, y=1.08, color=INK)
-    fig.text(0.5, -0.16, "Status letters: V = VALIDATED, R = RESTRICTED, U = UNSUPPORTED. The UAR denominator (all Y=0 episodes) is constant along each curve; "
-             "curves reaching coverage = 1 are thresholds at which no episode escalates.", ha="center", fontsize=6.5, color=INK2, wrap=True)
+    fig.suptitle(title, y=1.12, color=INK)
+    fig.text(0.5, -0.25, "UAR = #(Assured ∧ Y=0) / #(Y=0); denominator constant along each curve. V/R/U = VALIDATED/RESTRICTED/UNSUPPORTED.\n"
+             "At coverage = 1 no episode escalates; under the 10:2 loss the autonomous decision is then mostly NotAssured, so UAR can fall to 0.",
+             ha="center", fontsize=6.5, color=INK2)
     return save(fig, name)
 
 
@@ -239,7 +256,7 @@ def fig_frontier():
 
 # ------------------------------------------------------------------------------------------------ 7
 def fig_budget():
-    b = T.aux("budget")
+    b = T.budget_filled()
     b["mf"] = b["method"].str.replace(r"\[s\d+\]", "", regex=True)
     fig, axes = plt.subplots(3, 3, figsize=(9.2, 7.4), sharex="col")
     for j, dom in enumerate(DOMS):
@@ -417,11 +434,12 @@ def fig_action_frequency():
         im = ax.imshow(M, aspect="auto", cmap="Blues", vmin=0, vmax=1)
         ax.set_yticks(range(len(acts)), acts, fontsize=5.5)
         ax.set_xticks(range(len(steps)), [f"{t}\nn={freq[(obj, t)]['n_t']}" for t in steps], fontsize=6)
-        ax.set_title(obj + ("  [single-action objective]" if obj in single else ""), fontsize=7)
+        ax.set_title(obj + ("  [single action selected in every episode; not evidence of adaptive selection]" if obj in single else ""), fontsize=6.5)
         ax.set_xlabel("Step t (n_t = episodes reaching t)"); ax.grid(False)
     if im is not None:
         fig.colorbar(im, ax=axes, fraction=0.02, label="P(A_t = a | N_acq ≥ t)")
-    fig.suptitle("AVOI action selection frequency, conditional on reaching step t (IAM confirmation, raw policy)", color=INK)
+    fig.suptitle("AVOI action selection frequency, conditional on reaching step t (IAM confirmation, raw policy)\n"
+                 "Each objective offers 5–7 admissible actions; flagged panels show no adaptive choice among them", color=INK)
     return save(fig, "action_frequency_heatmap")
 
 
