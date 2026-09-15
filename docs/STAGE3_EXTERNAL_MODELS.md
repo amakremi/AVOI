@@ -44,6 +44,16 @@ Consequences for Stage 3 (development-only, frozen before validation):
 Stage-2 AIT-INTRUSION: violation prevalence is 0.7–1.4% of 10-minute windows per testbed (≈ 5–10 windows); any single
 new testbed partition is expected to fail the unchanged sample-support rule mechanically.
 
+## 2a. Candidate model scope
+
+Development candidates evaluated: TAN and Naive Bayes (`src/avoi/models/tan.py`, reused unchanged) at α ∈
+{0.5, 1, 2, 5}, and a HistGradientBoostingClassifier (`stage3_wp2.HGBEvidenceModel`, new — the only new model class,
+not a large neural model). `avoi.models.discriminative.CalibratedLogisticModel` (Stage-1/2 regularized-logistic
+evidence model) is available and interface-compatible but was **not** included in the Stage-3 candidate pool, since
+TAN/NB/HGB already span the linear-vs-tree-ensemble range and no candidate-selection result in this run was close
+enough (worst-fold AUROC within 0.01) for a fourth candidate class to plausibly change the selected model. This is a
+scope limitation, noted for completeness rather than silently omitted.
+
 ## 3a. Stage-3 outcome on the pre-committed target testbed (honest, not worked around)
 
 The role rule (Section 3, fixed before any Stage-3 label was read: smallest untouched archive by size → target A) chose
