@@ -35,6 +35,9 @@ class PolicyConfig:
     decision_rule: str = "bayes_hr"     # bayes_hr | bayes_argmin | argmax | confidence_hr | autonomous_argmin
     seed: int = 0
     external_selector: object = None    # callable(state) -> action index or None (e.g. LLM planner)
+    frozen_order: bool = False          # Stage 3 ablation (selector 'avoi' only): rank once at the first decision point,
+                                        # then acquire the highest-ranked REMAINING action of that frozen ranking; values,
+                                        # stopping, decisions and HumanReview are identical to adaptive AVOI
 
     def describe(self) -> dict:
         d = asdict(self)
@@ -113,6 +116,7 @@ class SequentialAssuranceAgent:
         order = _order(cfg, env, cost) if cfg.selector in ("fixed", "random", "cheapest", "all") else None
         reason = None
         t = 0
+        frozen_rank = None                                          # initial AVOI ranking (Stage-3 ranking trace / frozen order)
         while True:
             if cfg.selector != "all" and threshold_met(cfg, b):
                 reason = "threshold"
@@ -133,12 +137,19 @@ class SequentialAssuranceAgent:
                                                cfg.lam, cfg.mu, cfg.nu, criterion=crit)   # (5)(6)
                 best = max(cands, key=lambda c: (c.value, -c.action))
                 candidates = cands
+                ranking = [c.action for c in sorted(cands, key=lambda c: (-c.value, c.action))]
+                if frozen_rank is None:
+                    frozen_rank = ranking
                 if cfg.value_stop and best.value <= cfg.value_eps:
                     reason = "no_positive_value"
                     if self.record_candidates:
                         trace["final_candidates"] = [asdict(c) for c in cands]
                     break
-                a_star = best.action                                # (7)
+                frozen_next = next(a for a in frozen_rank if a in available)
+                a_star = frozen_next if (cfg.frozen_order and cfg.selector == "avoi") else best.action   # (7)
+                rank_info = {"ranking": [int(a) for a in ranking], "adaptive_next_action": int(best.action),
+                             "frozen_next_action": int(frozen_next), "rank_reversal": bool(best.action != frozen_next),
+                             "history": [list(e) for e in evidence]}
             elif cfg.selector == "lookahead2":
                 _, vals = lookahead2_values(self.model, evidence, available, cfg.loss, cost.C, cost.P, cost.D,
                                             cfg.lam, cfg.mu, cfg.nu)
@@ -166,6 +177,8 @@ class SequentialAssuranceAgent:
                     "provenance": obs.provenance, "raw_artifact_ref": obs.raw_artifact_ref, "parser": obs.parser}
             if self.record_candidates and candidates:
                 step["candidates"] = [asdict(c) if hasattr(c, "__dataclass_fields__") else c for c in candidates]
+            if cfg.selector in ("avoi", "myopic_cs", "generic_voi", "entropy") and candidates:
+                step.update(rank_info)
             trace["steps"].append(step)
             trace["states"].append({"t": t, "belief": b_new, "risk": cfg.loss.risk(b_new)})
             b = b_new

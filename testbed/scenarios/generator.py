@@ -40,8 +40,25 @@ def family_latents(family_id: int, cfg: dict) -> dict:
     return {"hygiene": h, "doc_maturity": m}
 
 
+def branching_mechanisms(scenario_index: int, cfg: dict) -> dict:
+    """STAGE 3 (optional): balanced latent mechanism per branching objective. World construction and post-hoc analysis
+    only - the mechanism is never written to the evidence store and is invisible to acquisition policies.
+    Balanced assignment: within consecutive blocks of n scenarios every mechanism occurs once (seeded permutation)."""
+    br = cfg.get("branching")
+    if not br:
+        return {}
+    out = {}
+    for key, mechs in br["mechanisms"].items():
+        n = len(mechs)
+        block = scenario_index // n
+        perm = _rng(cfg["master_seed"], "branch", key, block).permutation(n)
+        out[key] = mechs[int(perm[scenario_index % n])]
+    return out
+
+
 def generate_spec(scenario_index: int, cfg: dict | None = None, id_prefix: str = "scn") -> dict:
     cfg = cfg or load_cfg()
+    forced = branching_mechanisms(scenario_index, cfg)
     spf = cfg["scenarios_per_family"]
     family_id = scenario_index // spf
     fam = family_latents(family_id, cfg)
@@ -90,15 +107,25 @@ def generate_spec(scenario_index: int, cfg: dict | None = None, id_prefix: str =
     # ------------------------------------------------------------------ terminations (O2)
     tm = mech["termination"]
     n_term = int(r.choice(len(tm["n_terminations_probs"]), p=tm["n_terminations_probs"]))
+    fz_t = forced.get("termination")
+    if fz_t == "no_terminations":
+        n_term = 0
+    elif fz_t is not None:
+        n_term = max(1, n_term)
     human_names = [a["username"] for a in accounts]
     order = list(r.permutation(human_names))
     terminated = order[:n_term]
-    for u in terminated:
+    for k_t, u in enumerate(terminated):
         a = acc[u]
         pr = per[a["person_id"]]
         pr["status"] = "terminated"
         pr["term_days_ago"] = ri(3, 180)
-        if bern(p(tm["left_enabled_base"])):
+        left = bern(p(tm["left_enabled_base"]))
+        if fz_t is not None:
+            left = fz_t.startswith("left_enabled") and k_t == 0
+            if left:
+                pr["term_days_ago"] = ri(cfg["branching"]["termination_grace_days"] + 2, 180)
+        if left:
             a["enabled"] = True
             a["term_left_enabled"] = True
         elif bern(tm["deleted_prob"]):
@@ -109,6 +136,12 @@ def generate_spec(scenario_index: int, cfg: dict | None = None, id_prefix: str =
     for a in accounts:
         if bern(p(tm["unlinked_account_base"])):
             a["employee_id_attr"] = False
+    if fz_t is not None and terminated:
+        a0 = acc[terminated[0]]
+        if fz_t == "left_enabled_unlinked":
+            a0["employee_id_attr"] = False
+        elif fz_t in ("left_enabled_linked", "left_enabled_active"):
+            a0["employee_id_attr"] = True
     active_humans = [u for u in order[n_term:]]
 
     # ------------------------------------------------------------------ privileged membership (O3)
@@ -131,7 +164,11 @@ def generate_spec(scenario_index: int, cfg: dict | None = None, id_prefix: str =
         d = ri(100, 900)
         add_grant(u, "direct" if bern(0.5) else "group", d)
         approvals.append({"username": u, "approved_days_ago": d + ri(0, 5), "expires_in_days": ri(30, 700)})
-    if priv_humans and bern(p(pa["expired_approval_base"])):
+    fz_a = forced.get("privileged_authz")
+    expire = bern(p(pa["expired_approval_base"])) if priv_humans else False
+    if fz_a is not None:
+        expire = fz_a == "expired_approval"
+    if priv_humans and expire:
         approvals[int(r.integers(len(approvals)))]["expires_in_days"] = -ri(1, 200)
     if others and bern(pa["recent_legit_grant_prob"]):
         u = others.pop(0)
@@ -141,16 +178,24 @@ def generate_spec(scenario_index: int, cfg: dict | None = None, id_prefix: str =
         priv_humans.append(u)
     unapproved = []
     for path, base in (("direct", pa["unapproved_direct_base"]), ("group", pa["unapproved_group_base"])):
-        if others and bern(p(base)):
+        hit = bern(p(base)) if others else False
+        if fz_a is not None:
+            hit = fz_a == f"unapproved_{path}"
+        if others and hit:
             u = others.pop(0)
             add_grant(u, path, ri(1, 400))
             unapproved.append(u)
     composite_exists = bern(pa["composite_role_prob"])
+    if fz_a == "unapproved_composite":
+        composite_exists = True
     if composite_exists and others:
         u = others.pop(0)
         d = ri(1, 600)
         add_grant(u, "composite", d)
-        if bern(pa["unapproved_composite_base"] * g):
+        unappr_c = bern(pa["unapproved_composite_base"] * g)
+        if fz_a is not None:
+            unappr_c = fz_a == "unapproved_composite"
+        if unappr_c:
             unapproved.append(u)
         else:
             approvals.append({"username": u, "approved_days_ago": d + ri(0, 5), "expires_in_days": ri(30, 700)})
@@ -211,9 +256,15 @@ def generate_spec(scenario_index: int, cfg: dict | None = None, id_prefix: str =
         flow_mode = "wrong_role"
     else:
         flow_mode = "role_required"
+    fz_m = forced.get("mfa")
+    if fz_m is not None:
+        flow_mode = {"flow_disabled": "disabled", "flow_wrong_role": "wrong_role"}.get(fz_m, "role_required")
     clients = [{"clientId": "portal", "override": None}]
-    if bern(mm["legacy_client_prob"]):
-        clients.append({"clientId": "legacy-portal", "override": "nonotp" if bern(p(mm["legacy_override_nonotp_base"])) else None})
+    if fz_m is not None and fz_m.startswith("legacy_override"):
+        clients.append({"clientId": "legacy-portal", "override": "nonotp"})
+    elif bern(mm["legacy_client_prob"]):
+        ov = "nonotp" if bern(p(mm["legacy_override_nonotp_base"])) else None
+        clients.append({"clientId": "legacy-portal", "override": None if fz_m is not None else ov})
     if bern(mm["kiosk_client_prob"]):
         clients.append({"clientId": "kiosk", "override": "benign_otp"})
     nondefault = [c["clientId"] for c in clients if c["clientId"] != "portal"]
@@ -227,7 +278,10 @@ def generate_spec(scenario_index: int, cfg: dict | None = None, id_prefix: str =
         a["created_days_ago"] = ri(120, 900) if bern(dm["old_account_prob"]) else ri(10, 85)
         if pr["status"] == "terminated":
             last_possible = pr["term_days_ago"]
-            if a.get("term_left_enabled") and bern(tm["post_termination_login_prob"]):
+            post_login = bern(tm["post_termination_login_prob"]) if a.get("term_left_enabled") else False
+            if a.get("term_left_enabled") and fz_t is not None:
+                post_login = fz_t == "left_enabled_active"
+            if post_login:
                 a["logins"].append({"days_ago": ri(0, max(0, last_possible - 1)), "client": "portal", "post_termination": True})
             if last_possible + 1 < a["created_days_ago"]:
                 a["logins"].append({"days_ago": ri(last_possible + 1, min(a["created_days_ago"] - 1, last_possible + 60)), "client": "portal"})
@@ -315,8 +369,13 @@ def generate_spec(scenario_index: int, cfg: dict | None = None, id_prefix: str =
     exc_reg_present = bern(docs["exception_register_intercept"] + docs["exception_register_slope"] * m)
     override_nonotp = any(c["override"] == "nonotp" for c in clients)
     exc_rows = []
+    if fz_m == "legacy_override_documented":
+        exc_reg_present = True
     if exc_reg_present:
-        if override_nonotp and bern(docs["exception_listed_given_override"]):
+        listed = override_nonotp and bern(docs["exception_listed_given_override"])
+        if fz_m is not None and fz_m.startswith("legacy_override"):
+            listed = fz_m == "legacy_override_documented"
+        if listed:
             exc_rows.append({"exception": "legacy-portal client uses standard browser flow", "approved_by": "CISO"})
         if bern(docs["spurious_exception_prob"]):
             exc_rows.append({"exception": "vendor support account uses hardware token", "approved_by": "IT manager"})
@@ -336,9 +395,12 @@ def generate_spec(scenario_index: int, cfg: dict | None = None, id_prefix: str =
         "siem_export": {"present": bern(dm["siem_export_intercept"] + dm["siem_export_slope"] * m),
                         "lag_days": ri(*dm["siem_lag_days"])},
     }
+    latent = {"hygiene": h, "doc_maturity": m, "family_hygiene": fam["hygiene"], "family_doc_maturity": fam["doc_maturity"]}
+    if forced:
+        latent["branching_mechanisms"] = forced          # Stage 3 world construction / post-hoc analysis only
     return {
         "scenario_id": sid, "scenario_index": scenario_index, "family_id": family_id, "seed": seed,
-        "latent": {"hygiene": h, "doc_maturity": m, "family_hygiene": fam["hygiene"], "family_doc_maturity": fam["doc_maturity"]},
+        "latent": latent,
         "persons": persons, "accounts": accounts, "grants": grants, "removals": removals,
         "approvals": approvals, "approval_register": register, "composite_role": composite_exists,
         "flow_mode": flow_mode, "clients": clients, "host": host, "tickets": tickets, "review": review,

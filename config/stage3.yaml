@@ -1,0 +1,86 @@
+# STAGE 3 protocol: adaptive next-evidence selection (WP1) and external-domain adequacy (WP2).
+# Written before any Stage-3 validation or confirmation label is used; frozen in results/stage3/EXPERIMENT_FREEZE_STAGE3.json.
+# The adequacy policy is NOT repeated here: it is loaded unchanged from config/model_adequacy.yaml (Stage 2).
+
+hypotheses:
+  A1: "Within the same assurance objective and same available action set, AVOI's selected next action depends on previously observed evidence."
+  A2: "Adaptive AVOI achieves lower expected decision loss than Frozen-Order AVOI under equal fixed evidence horizons."
+  E1: "At least one external-domain evidence model passes the unchanged adequacy policy on independent validation data (reported also as E1-AIT and E1-CERT)."
+  E2: "On externally VALIDATED evidence models, AVOI retains an acquisition-efficiency advantage relative to fixed/exhaustive evidence collection."
+
+seeds:
+  analysis: 20270401
+  bootstrap: 20270401
+  permutation: 20270402
+
+loss: {false_assurance: 10.0, false_non_assurance: 2.0, human_review: 1.0}   # identical to config/loss_matrix.yaml primary
+weights: {lambda_cost: 0.05, mu_privacy: 0.02, nu_delay: 0.02}               # identical to Stage 2 primary
+
+wp1:
+  objectives: [IAM-01-MFA-PRIV, IAM-02-TERM-DISABLED, IAM-03-PRIV-AUTHZ]
+  mechanism_keys: {IAM-01-MFA-PRIV: mfa, IAM-02-TERM-DISABLED: termination, IAM-03-PRIV-AUTHZ: privileged_authz}
+  data:
+    development:
+      historical: [{store: data/processed/iam/evidence_store, labels: iam, source: stage1},
+                   {store: data/processed/iam_stage2/evidence_store, labels: iam_stage2, source: stage2}]
+      new: {store: data/processed/iam_stage3_dev/evidence_store, labels: iam_stage3_dev, source: s3dev,
+            generator: config/scenario_generator_stage3_dev.yaml, scenarios: 512}
+    validation: {store: data/processed/iam_stage3_val/evidence_store, labels: iam_stage3_val, source: s3val,
+                 generator: config/scenario_generator_stage3_val.yaml, scenarios: 256}
+    confirmation: {store: data/processed/iam_stage3_conf/evidence_store, labels: iam_stage3_conf, source: s3conf,
+                   generator: config/scenario_generator_stage3_conf.yaml, scenarios: 256}
+  groups: "source:family_id"
+  evidence_model: "Stage-2 development rule reused: TAN / Naive Bayes x alpha grid selected by grouped out-of-fold log loss; calibrator by grouped CV log loss among monotone maps"
+  adequacy_partition: validation
+  threshold_tuning_partition: validation
+  fixed_horizons: [2, 3]
+  fixed_horizon_policy: "value_stop off, no threshold stop, acquire exactly k actions (all objectives have >= 6), terminal Bayes decision with HumanReview option (bayes_argmin)"
+  frozen_order: "rank all actions by AVOI at the first decision point, then always acquire the highest-ranked remaining action of that frozen ranking; all other components identical"
+  normal_operation_methods: [AVOI, Frozen-Order AVOI, B0-AllEvidence, B1-FixedChecklist, B2-Random, B3-CheapestFirst, B4-InformationGain, B5-GenericVOI, B6-ConfidenceThreshold, B7-MyopicCostSensitiveVOI, B7b-Lookahead2VOI]
+  random_seeds: 20
+  a1_rule: "SUPPORTED iff for at least one branching objective: same action set (tested), >= 2 distinct actions selected at some step t >= 2 across confirmation episodes, next action varies with the observed history, and the group-aware permutation test (history labels permuted within scenario family; statistic = conditional mutual information I(A_t; H_t | t); 10,000 permutations) gives Holm-adjusted p < 0.05 across the three objectives"
+  a2_rule: "primary metric expected decision loss (10:2:1 with HumanReview=1); pooled over the three objectives on confirmation; SUPPORTED iff Adaptive - Frozen loss difference has a 95% paired group-bootstrap CI (families, 5,000 resamples) entirely below 0 AND the paired sign-flip permutation test is Holm-significant (p < 0.05 over k in {2,3}) for at least one k, with no k showing a significant loss increase; per-objective results reported descriptively"
+
+wp2:
+  ait:
+    claims: [AIT-EXFIL, AIT-INTRUSION]
+    development_testbeds: [russellmitchell, santos, fox, harrison, wardbeck]   # all previously examined
+    development_validation: leave-one-development-testbed-out
+    target_testbed_A: shaw           # smallest untouched archive (17.6 GB)
+    confirmation_testbeds: [wheeler, wilson]
+    target_split: {unit: "testbed x 60-minute block", rule: "sha256(seed|testbed|block) mod 100 < 40 -> calibration else adequacy_validation", seed: 20270403}
+    bootstrap_groups: "testbed x 60-minute block"
+  cert:
+    claim: CERT-INSIDER
+    development_releases: [r4.2, r5.2]          # all previously examined users
+    development_validation: "train r4.2 -> evaluate r5.2 and train r5.2 -> evaluate r4.2"
+    new_releases: [r4.1, r5.1, r6.1, r6.2]      # untouched, pooled (public insider counts 3/4/5/5)
+    episode_sampling: "Stage-1 rule per release (all answer-key insider user-weeks with >= 4 prior weeks + 2 clean active weeks per insider + 2 active weeks for 250 random non-insiders), seed 20270404"
+    user_split: {unit: "release:user", rule: "sha256(seed|release|user) mod 100: < 20 calibration, < 60 adequacy_validation, else confirmation", seed: 20270405}
+    bootstrap_groups: "release:user"
+  candidates:
+    tan: {alpha: [0.5, 1.0, 2.0, 5.0]}
+    naive_bayes: {alpha: [0.5, 1.0, 2.0, 5.0]}
+    calibrated_logistic: {C: [0.1, 1.0]}
+    hist_gradient_boosting: {max_depth: [3], learning_rate: [0.1], max_iter: [200]}
+  discretisation: "pooled development 50th/90th percentile thresholds (Stage-1 Discretizer, unchanged)"
+  feature_stability: "development only: per source, violation-AUROC of the raw statistic per development testbed/release; flag if the sign of (AUROC - 0.5) reverses with |AUROC - 0.5| >= 0.1 in both directions; flagged sources are REPORTED; a source is removed only if flagged AND removal improves worst-development-fold AUROC (decided before touching Stage-3 data)"
+  selection_rule:
+    - "exclude semantically invalid models (non-finite outputs; calibration map decreasing in P(Y=1|E))"
+    - "rank by worst leave-one-development-fold AUROC (descending)"
+    - "require median development PR skill > 0"
+    - "tie-break (within 0.01 worst-fold AUROC): mean log loss, then Brier, then ECE"
+  variants:
+    zero_shot: "selected structure refitted on all development data; calibrator selected on development out-of-fold predictions (monotone maps only)"
+    target_calibrated: "same fitted structure; calibrator (none/sigmoid/isotonic/beta, monotone) selected by grouped CV log loss on the target CALIBRATION partition only"
+    target_adapted: "not used"
+  primary_variant: target_calibrated
+  primary_variant_rule: "adequacy status per claim is decided on the primary variant; the zero-shot variant is reported as a diagnostic and is not used to gate"
+  e1_rule: "SUPPORTED iff at least one external claim (AIT-EXFIL, AIT-INTRUSION, CERT-INSIDER) is VALIDATED under config/model_adequacy.yaml on its adequacy-validation partition"
+  e2_rule: "only for VALIDATED external claims: AVOI vs All Evidence, Checklist and Information Gain on confirmation (paired Wilcoxon on acquisitions and normalized cost, Holm within metric; group bootstrap CI); efficiency claimed only if coverage is not below the comparator's by more than 0.10 (no trivial abstention)"
+
+tests_and_metrics:
+  metrics: [UAR, FAA, expected_loss, balanced_accuracy, MCC, coverage, human_review_rate, mean_acquisitions, median_acquisitions, normalized_cost, privacy_exposure]
+  statistics: [group bootstrap 95% CI (5000), paired group bootstrap, Wilcoxon signed-rank, exact McNemar, sign-flip permutation, group-aware history permutation test, Holm]
+  tables: [table_adaptive_selection_stage3, table_external_adequacy_stage3, table_external_avoi_stage3, table_fixed_horizon_stage3, table_normal_operation_stage3, table_feature_stability_stage3, table_zero_shot_vs_target_stage3]
+  figures: [adaptive_next_evidence_selection, external_model_adequacy_stage3, external_model_transfer_stage3, cross_stage_summary]

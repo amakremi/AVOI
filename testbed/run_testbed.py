@@ -92,6 +92,7 @@ def main():
     ap.add_argument("--gen-config", default="config/scenario_generator.yaml")
     ap.add_argument("--out-dir", default="data/processed/iam")
     ap.add_argument("--id-prefix", default="scn")
+    ap.add_argument("--quiet-labels", action="store_true", help="do not print label counts (Stage-3 confirmation runs)")
     args = ap.parse_args()
     global OUT
     OUT = ROOT / args.out_dir
@@ -117,7 +118,7 @@ def main():
                 log.write(json.dumps(rec) + "\n")
                 log.flush()
                 print(f"{realm} ok apply={rec['apply_s']}s collect={rec['collect_s']}s oracle={rec['oracle_s']}s "
-                      f"warnings={len(rec['setup_log'])} sat={sum(labels.values())}/6", flush=True)
+                      f"warnings={len(rec['setup_log'])}" + ("" if args.quiet_labels else f" sat={sum(labels.values())}/6"), flush=True)
                 break
             except Exception as exc:
                 print(f"{realm} attempt {attempt + 1} FAILED: {exc}", flush=True)

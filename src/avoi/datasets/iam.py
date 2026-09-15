@@ -27,7 +27,7 @@ def action_catalogue() -> dict:
 def load_iam(store_dir: str | None = None, domain: str = "iam") -> dict[str, ObjectiveData]:
     cfg, cat = objective_config(), action_catalogue()
     store = ROOT / store_dir if store_dir else STORE
-    files = sorted(p for p in store.glob("*.json") if p.stem.startswith(("scn-", "s2scn-")))
+    files = sorted(p for p in store.glob("*.json") if p.stem.startswith(("scn-", "s2scn-", "s3dev-", "s3val-", "s3conf-")))
     stores = [json.loads(f.read_text(encoding="utf-8")) for f in files]
     out = {}
     for obj in cfg["objectives"]:

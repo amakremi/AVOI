@@ -1,0 +1,84 @@
+# Stage 3 — external evidence models (AIT-LDS v2.0, CERT)
+
+## 1. Class semantics (verified before any Stage-3 model training)
+
+| Item | Definition (all domains) | Code |
+|---|---|---|
+| Y = 1 | assurance claim **holds** (AIT: no labelled activity of the micro-claim's type in the 10-minute window; CERT: no answer-key insider activity in the user-week) | `ait_episodes.build`, `cert.build` |
+| Y = 0 | claim **refuted** (violation) | same |
+| Assurance posterior | P(Y = 1 \| E) returned by every evidence model (`posterior`) | `models/tan.py`, `models/discriminative.py` |
+| Violation class for ROC/PR | positive class = Y = 0 | `adequacy.point_metrics`: `viol = (y == 0)` |
+| Score for AUROC / AUPRC | 1 − P(Y = 1 \| E) = P(violation \| E) | `roc_auc_score(viol, 1 - p)`, `average_precision_score(viol, 1 - p)` |
+| PR skill | (AUPRC − prevalence_violated) / (1 − prevalence_violated) | same |
+
+Tests: `tests/test_stage3.py::test_ait_class_orientation`, `::test_cert_class_orientation`.
+
+## 2. Stage-2 AIT-EXFIL AUROC 0.024 — diagnosis (historical results unchanged)
+
+Question: genuine inversion under transfer, or class-score orientation error?
+
+Finding: **neither a metric orientation error nor an inversion of the uncalibrated model on new testbeds; it was a
+non-monotone calibration map learned from inverted development cross-testbed predictions.** Evidence (development data
+only — all five testbeds are Stage-3 development data):
+
+1. The metric orientation is correct (Section 1).
+2. The raw DNS statistic separates EXFIL windows perfectly within **every** testbed and in the same direction
+   (violation-AUROC of the raw count = 1.00 on russellmitchell, santos, fox, harrison and wardbeck; violated windows have
+   DNS counts 64–118, satisfied windows 0 (median)).
+3. Stage-2 development used leave-one-testbed-out predictions over only two testbeds with pooled 50th/90th-percentile
+   discretisation thresholds. Those out-of-fold posteriors were **inverted** (development OOF AUROC 0.249, calibration
+   slope −0.42), because the absolute scale of the DNS counts differs between testbeds and a secondary source
+   (monitoring) reverses its association (violation-AUROC 0.72 on russellmitchell, 0.26 on fox).
+4. The development-selected Platt calibrator was fitted on those inverted predictions and learned a **negative slope**
+   (b = −0.46). Applied to the final model — whose uncalibrated validation AUROC on fox was **0.976** — it inverted the
+   ranking, giving AUROC 0.024.
+
+Consequences for Stage 3 (development-only, frozen before validation):
+* calibration maps that are decreasing in P(Y = 1 | E) are **semantically invalid** and excluded from calibrator selection
+  (the adequacy gate itself is unchanged);
+* AIT development uses all five historical testbeds with leave-one-testbed-out validation;
+* candidate selection ranks by worst-development-testbed AUROC (robustness), requires positive median PR skill, and
+  tie-breaks on log loss / Brier / ECE;
+* a feature-stability analysis flags sources whose violation association reverses across development testbeds.
+
+Stage-2 AIT-INTRUSION: violation prevalence is 0.7–1.4% of 10-minute windows per testbed (≈ 5–10 windows); any single
+new testbed partition is expected to fail the unchanged sample-support rule mechanically.
+
+## 3a. Stage-3 outcome on the pre-committed target testbed (honest, not worked around)
+
+The role rule (Section 3, fixed before any Stage-3 label was read: smallest untouched archive by size → target A) chose
+**shaw**. After building shaw's episodes, its label prevalence turned out to be:
+
+| testbed | role | AIT-EXFIL violated | AIT-INTRUSION violated |
+|---|---|---|---|
+| shaw | target A (calibration + adequacy validation) | **0.12%** (1/864) | 0.69% (6/864) |
+| wheeler | confirmation | 64.6% (465/720) | 0.56% (4/720) |
+| wilson | confirmation | 57.5% (497/864) | 0.69% (6/864) |
+
+Shaw genuinely contains almost no labelled DNS-exfiltration activity — AIT-LDS v2.0 testbeds do not all carry the same
+mix of injected attacks. On shaw's adequacy-validation split (504 episodes after the 40/60 calibration split), AIT-EXFIL
+has **0 violated episodes** and AIT-INTRUSION has 6 (2 groups with a violation). Both claims are therefore **RESTRICTED**
+(`INSUFFICIENT_ADEQUACY_SAMPLE_SUPPORT`) under the unchanged policy — **not** because the model discriminates poorly
+(leave-one-development-testbed-out and zero-shot AUROC on shaw were both ≈0.998 for AIT-EXFIL), but because the
+pre-committed target testbed happens to carry too few positive cases to certify that discrimination statistically.
+
+This is reported as the actual outcome: **E1-AIT is not achieved by the frozen size-based role rule**, even though the
+underlying evidence model shows strong descriptive discrimination on the confirmation testbeds (Section 11 of
+`results/final_report_v3/RESULTS.md`). The rule is not changed post hoc; a different pre-registered role assignment
+(e.g. rotating which testbed serves as target A, or a label-blind stratified choice) is left as future work, since
+choosing it now would use confirmation-adjacent information not available before the freeze.
+
+## 3. Untouched external data (verified against official sources on 2026-09-15)
+
+* AIT-LDS v2.0 (Zenodo record 5789064) has eight testbeds. Used before Stage 3: russellmitchell, santos (Stage 1); fox,
+  harrison, wardbeck (Stage 2). **Untouched: shaw (17.6 GB), wheeler (19.6 GB), wilson (26.5 GB).**
+  Role rule (fixed before any Stage-3 label is read, same size rule as Stage 2): smallest (shaw) → testbed A
+  (target calibration 40% / adequacy validation 60%, label-blind split by hour block); wheeler and wilson → confirmation.
+* CERT (figshare article 12841247): releases used before Stage 3: r4.2 (Stage 1), r5.2 (Stage 2). Untouched releases with
+  the logon/device/file/http/email/LDAP/psychometric schema family: r4.1, r5.1, r6.1, r6.2 (r1–r3.x have a different
+  schema and are excluded). The public answer-key index `insiders.csv` lists 3, 4, 5 and 5 insider users for these
+  releases (17 in total) — a single release cannot meet the unchanged support rule (≥ 5 groups with a violation in the
+  validation partition). Design fixed before downloading: **pool r4.1 + r5.1 + r6.1 + r6.2**, reuse the Stage-1 episode
+  sampling rule per release, and split users label-blind by hash of `release:user` into calibration 20% / adequacy
+  validation 40% / confirmation 40%. The larger-than-recommended validation share is a pre-specified response to the
+  public insider count, not to observed class counts.

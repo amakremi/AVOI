@@ -115,9 +115,13 @@ def subset(tb: str) -> dict:
 
 
 if __name__ == "__main__":
-    man_path = ROOT / "data" / "manifests" / "ait_stage2_subsets.json"
+    args = sys.argv[1:]
+    man_name = "ait_stage2_subsets.json"
+    if args and args[0].startswith("--manifest="):          # Stage 3: separate manifest for untouched testbeds
+        man_name, args = args[0].split("=", 1)[1], args[1:]
+    man_path = ROOT / "data" / "manifests" / man_name
     man = json.loads(man_path.read_text()) if man_path.exists() else {}
-    for tb in sys.argv[1:] or ["fox", "harrison", "wardbeck"]:
+    for tb in args or ["fox", "harrison", "wardbeck"]:
         if tb in man:
             print("present", tb)
             continue
