@@ -1,0 +1,372 @@
+{
+ "frozen_utc": "2026-09-15T13:42:54+00:00",
+ "statement": "Stage-3 protocol frozen before any Stage-3 adequacy validation or confirmation evaluation.",
+ "pre_stage3_snapshot_commit": "b33ac34367f54a296f9999094e9bf7b527cc5b12",
+ "stage2_freeze_sha256": "6a99f0fa797c93cf85e77f2850702adbb146ff2f28d1478458cb7414b44300e9",
+ "stage2_decisions_sha256": "feec3a9da1b8ea97de2ad2ac6b0e88d7fd82fda212ade98ef1c6d946b0d1368e",
+ "model_adequacy_yaml_sha256_unchanged": "788ce4c6ed360cbd5ab6e4cd2b20e728dac8927afb00f7f5f3be7caf2512f8ae",
+ "stage3_protocol": {
+  "hypotheses": {
+   "A1": "Within the same assurance objective and same available action set, AVOI's selected next action depends on previously observed evidence.",
+   "A2": "Adaptive AVOI achieves lower expected decision loss than Frozen-Order AVOI under equal fixed evidence horizons.",
+   "E1": "At least one external-domain evidence model passes the unchanged adequacy policy on independent validation data (reported also as E1-AIT and E1-CERT).",
+   "E2": "On externally VALIDATED evidence models, AVOI retains an acquisition-efficiency advantage relative to fixed/exhaustive evidence collection."
+  },
+  "seeds": {
+   "analysis": 20270401,
+   "bootstrap": 20270401,
+   "permutation": 20270402
+  },
+  "loss": {
+   "false_assurance": 10.0,
+   "false_non_assurance": 2.0,
+   "human_review": 1.0
+  },
+  "weights": {
+   "lambda_cost": 0.05,
+   "mu_privacy": 0.02,
+   "nu_delay": 0.02
+  },
+  "wp1": {
+   "objectives": [
+    "IAM-01-MFA-PRIV",
+    "IAM-02-TERM-DISABLED",
+    "IAM-03-PRIV-AUTHZ"
+   ],
+   "mechanism_keys": {
+    "IAM-01-MFA-PRIV": "mfa",
+    "IAM-02-TERM-DISABLED": "termination",
+    "IAM-03-PRIV-AUTHZ": "privileged_authz"
+   },
+   "data": {
+    "development": {
+     "historical": [
+      {
+       "store": "data/processed/iam/evidence_store",
+       "labels": "iam",
+       "source": "stage1"
+      },
+      {
+       "store": "data/processed/iam_stage2/evidence_store",
+       "labels": "iam_stage2",
+       "source": "stage2"
+      }
+     ],
+     "new": {
+      "store": "data/processed/iam_stage3_dev/evidence_store",
+      "labels": "iam_stage3_dev",
+      "source": "s3dev",
+      "generator": "config/scenario_generator_stage3_dev.yaml",
+      "scenarios": 512
+     }
+    },
+    "validation": {
+     "store": "data/processed/iam_stage3_val/evidence_store",
+     "labels": "iam_stage3_val",
+     "source": "s3val",
+     "generator": "config/scenario_generator_stage3_val.yaml",
+     "scenarios": 256
+    },
+    "confirmation": {
+     "store": "data/processed/iam_stage3_conf/evidence_store",
+     "labels": "iam_stage3_conf",
+     "source": "s3conf",
+     "generator": "config/scenario_generator_stage3_conf.yaml",
+     "scenarios": 256
+    }
+   },
+   "groups": "source:family_id",
+   "evidence_model": "Stage-2 development rule reused: TAN / Naive Bayes x alpha grid selected by grouped out-of-fold log loss; calibrator by grouped CV log loss among monotone maps",
+   "adequacy_partition": "validation",
+   "threshold_tuning_partition": "validation",
+   "fixed_horizons": [
+    2,
+    3
+   ],
+   "fixed_horizon_policy": "value_stop off, no threshold stop, acquire exactly k actions (all objectives have >= 6), terminal Bayes decision with HumanReview option (bayes_argmin)",
+   "frozen_order": "rank all actions by AVOI at the first decision point, then always acquire the highest-ranked remaining action of that frozen ranking; all other components identical",
+   "normal_operation_methods": [
+    "AVOI",
+    "Frozen-Order AVOI",
+    "B0-AllEvidence",
+    "B1-FixedChecklist",
+    "B2-Random",
+    "B3-CheapestFirst",
+    "B4-InformationGain",
+    "B5-GenericVOI",
+    "B6-ConfidenceThreshold",
+    "B7-MyopicCostSensitiveVOI",
+    "B7b-Lookahead2VOI"
+   ],
+   "random_seeds": 20,
+   "a1_rule": "SUPPORTED iff for at least one branching objective: same action set (tested), >= 2 distinct actions selected at some step t >= 2 across confirmation episodes, next action varies with the observed history, and the group-aware permutation test (history labels permuted within scenario family; statistic = conditional mutual information I(A_t; H_t | t); 10,000 permutations) gives Holm-adjusted p < 0.05 across the three objectives",
+   "a2_rule": "primary metric expected decision loss (10:2:1 with HumanReview=1); pooled over the three objectives on confirmation; SUPPORTED iff Adaptive - Frozen loss difference has a 95% paired group-bootstrap CI (families, 5,000 resamples) entirely below 0 AND the paired sign-flip permutation test is Holm-significant (p < 0.05 over k in {2,3}) for at least one k, with no k showing a significant loss increase; per-objective results reported descriptively"
+  },
+  "wp2": {
+   "ait": {
+    "claims": [
+     "AIT-EXFIL",
+     "AIT-INTRUSION"
+    ],
+    "development_testbeds": [
+     "russellmitchell",
+     "santos",
+     "fox",
+     "harrison",
+     "wardbeck"
+    ],
+    "development_validation": "leave-one-development-testbed-out",
+    "target_testbed_A": "shaw",
+    "confirmation_testbeds": [
+     "wheeler",
+     "wilson"
+    ],
+    "target_split": {
+     "unit": "testbed x 60-minute block",
+     "rule": "sha256(seed|testbed|block) mod 100 < 40 -> calibration else adequacy_validation",
+     "seed": 20270403
+    },
+    "bootstrap_groups": "testbed x 60-minute block"
+   },
+   "cert": {
+    "claim": "CERT-INSIDER",
+    "development_releases": [
+     "r4.2",
+     "r5.2"
+    ],
+    "development_validation": "train r4.2 -> evaluate r5.2 and train r5.2 -> evaluate r4.2",
+    "new_releases": [
+     "r4.1",
+     "r5.1"
+    ],
+    "episode_sampling": "Stage-1 rule per release (all answer-key insider user-weeks with >= 4 prior weeks + 2 clean active weeks per insider + 2 active weeks for 250 random non-insiders), seed 20270404",
+    "user_split": {
+     "unit": "release:user",
+     "rule": "sha256(seed|release|user) mod 100: < 20 calibration, < 60 adequacy_validation, else confirmation",
+     "seed": 20270405
+    },
+    "bootstrap_groups": "release:user"
+   },
+   "candidates": {
+    "tan": {
+     "alpha": [
+      0.5,
+      1.0,
+      2.0,
+      5.0
+     ]
+    },
+    "naive_bayes": {
+     "alpha": [
+      0.5,
+      1.0,
+      2.0,
+      5.0
+     ]
+    },
+    "calibrated_logistic": {
+     "C": [
+      0.1,
+      1.0
+     ]
+    },
+    "hist_gradient_boosting": {
+     "max_depth": [
+      3
+     ],
+     "learning_rate": [
+      0.1
+     ],
+     "max_iter": [
+      200
+     ]
+    }
+   },
+   "discretisation": "pooled development 50th/90th percentile thresholds (Stage-1 Discretizer, unchanged)",
+   "feature_stability": "development only: per source, violation-AUROC of the raw statistic per development testbed/release; flag if the sign of (AUROC - 0.5) reverses with |AUROC - 0.5| >= 0.1 in both directions; flagged sources are REPORTED; a source is removed only if flagged AND removal improves worst-development-fold AUROC (decided before touching Stage-3 data)",
+   "selection_rule": [
+    "exclude semantically invalid models (non-finite outputs; calibration map decreasing in P(Y=1|E))",
+    "rank by worst leave-one-development-fold AUROC (descending)",
+    "require median development PR skill > 0",
+    "tie-break (within 0.01 worst-fold AUROC): mean log loss, then Brier, then ECE"
+   ],
+   "variants": {
+    "zero_shot": "selected structure refitted on all development data; calibrator selected on development out-of-fold predictions (monotone maps only)",
+    "target_calibrated": "same fitted structure; calibrator (none/sigmoid/isotonic/beta, monotone) selected by grouped CV log loss on the target CALIBRATION partition only",
+    "target_adapted": "not used"
+   },
+   "primary_variant": "target_calibrated",
+   "primary_variant_rule": "adequacy status per claim is decided on the primary variant; the zero-shot variant is reported as a diagnostic and is not used to gate",
+   "e1_rule": "SUPPORTED iff at least one external claim (AIT-EXFIL, AIT-INTRUSION, CERT-INSIDER) is VALIDATED under config/model_adequacy.yaml on its adequacy-validation partition",
+   "e2_rule": "only for VALIDATED external claims: AVOI vs All Evidence, Checklist and Information Gain on confirmation (paired Wilcoxon on acquisitions and normalized cost, Holm within metric; group bootstrap CI); efficiency claimed only if coverage is not below the comparator's by more than 0.10 (no trivial abstention)"
+  },
+  "tests_and_metrics": {
+   "metrics": [
+    "UAR",
+    "FAA",
+    "expected_loss",
+    "balanced_accuracy",
+    "MCC",
+    "coverage",
+    "human_review_rate",
+    "mean_acquisitions",
+    "median_acquisitions",
+    "normalized_cost",
+    "privacy_exposure"
+   ],
+   "statistics": [
+    "group bootstrap 95% CI (5000)",
+    "paired group bootstrap",
+    "Wilcoxon signed-rank",
+    "exact McNemar",
+    "sign-flip permutation",
+    "group-aware history permutation test",
+    "Holm"
+   ],
+   "tables": [
+    "table_adaptive_selection_stage3",
+    "table_external_adequacy_stage3",
+    "table_external_avoi_stage3",
+    "table_fixed_horizon_stage3",
+    "table_normal_operation_stage3",
+    "table_feature_stability_stage3",
+    "table_zero_shot_vs_target_stage3"
+   ],
+   "figures": [
+    "adaptive_next_evidence_selection",
+    "external_model_adequacy_stage3",
+    "external_model_transfer_stage3",
+    "cross_stage_summary"
+   ]
+  }
+ },
+ "wp1_objectives": [
+  "IAM-01-MFA-PRIV",
+  "IAM-02-TERM-DISABLED",
+  "IAM-03-PRIV-AUTHZ"
+ ],
+ "wp2_ait_claims": [
+  "AIT-EXFIL",
+  "AIT-INTRUSION"
+ ],
+ "wp2_cert_claim": "CERT-INSIDER",
+ "required_tables": [
+  "table_adaptive_selection_stage3",
+  "table_external_adequacy_stage3",
+  "table_external_avoi_stage3",
+  "table_fixed_horizon_stage3",
+  "table_normal_operation_stage3",
+  "table_feature_stability_stage3",
+  "table_zero_shot_vs_target_stage3"
+ ],
+ "required_figures": [
+  "adaptive_next_evidence_selection",
+  "external_model_adequacy_stage3",
+  "external_model_transfer_stage3",
+  "cross_stage_summary"
+ ],
+ "analysis_code_note": "table/figure/report generation code is not hashed so presentation bugs can be fixed; it reads only saved raw outputs and cannot change them",
+ "hashes": {
+  "files": {
+   "config/stage3.yaml": "7cfde1b9bcdbfb8b95c095d9021bcbfdc65088dc3d3fa6b524dc6693876efb25",
+   "config/model_adequacy.yaml": "788ce4c6ed360cbd5ab6e4cd2b20e728dac8927afb00f7f5f3be7caf2512f8ae",
+   "config/loss_matrix.yaml": "6e59e6b74908e668d1ed6b28d7fcb650b2f622861a97ab64ed1cb948ecef423e",
+   "config/hyperparameters.yaml": "55a9570e310a3ae2f056963374f4bcf6c0c7542149f0b6770d4426d6e9c626b6",
+   "config/assurance_objectives.yaml": "1218883f9d3a3a8bea62c8db5f5c45cd5837c21e528db7da34298fcb7d963feb",
+   "config/evidence_actions.yaml": "733cd07f3b86b570471e152c0a291f876f3dbc03a1cb2b59c46a5633a01a41ca",
+   "config/scenario_generator_stage3_dev.yaml": "099215286b4305b9cde8b1b638943d0a9d0cf6193062e3f8fc1ba3cb4084c8e8",
+   "config/scenario_generator_stage3_val.yaml": "54c533d9059608a775d60256bd7aaf4dc9c3e1d2930f4566831d23673b7e561f",
+   "config/scenario_generator_stage3_conf.yaml": "6502b841219a46690148023cacf6b26bb7fb8a5b384d0731ab86112d442d1708",
+   "docs/STAGE3_REUSE_MAP.md": "0760faa3cdb3ddfd484b61b528dbe19a4dbc1692820fac63bce918ab95e7954f",
+   "docs/STAGE3_EXTERNAL_MODELS.md": "74ecc68c97a4e10ce5c34cd380798d588435f4a14764e6b208e2f6e48c63ea0a",
+   "src/avoi/adequacy.py": "a34b687a582377f222bcb4457b993e845135b1acd169b90532ea25e669ce8fdf",
+   "src/avoi/agent.py": "81def15a89b5645d1f68fc342de90f3238e5335ca5018b1023bb54fca676b223",
+   "src/avoi/avoi.py": "83d1505efef7b794f1fd1fa342c56f0895675cb5f84414b8a131b96dccd12e2e",
+   "src/avoi/bayes_risk.py": "e5c8c96e0f4f521ecf2986e3286be43b35b2d130ebc298697354cbb167e15a3e",
+   "src/avoi/costs.py": "eab09d1724538185f1d9b286b39ce9fc1179001603a628cfbbe6e2c9c29ec0d5",
+   "src/avoi/models/tan.py": "d36b4b1af85803ae148fba22cff1b67a04834d908a107d202bafb8b7bdb05d83",
+   "src/avoi/models/discriminative.py": "ba02cbf4b8a0c1aba14174934ae3322b385b401c9d9faee088429e7b34520cf6",
+   "src/avoi/datasets/common.py": "fd2b9bfb1242805d0c16f0ab88c3bfd7d109f03c4b9aa14050a177551beb4ad5",
+   "src/avoi/datasets/iam.py": "4759d87eafe6a460d9e52627425cad3ae19d6dd322101910db1bf3fa1e394041",
+   "src/avoi/datasets/ait.py": "8c937d554b8b8b0ecb030e051156fb701e41bfde6667b9d8969f80cdc3762e4e",
+   "src/avoi/datasets/ait_episodes.py": "74c132be0e254f4eb8c8bbc65ff234429619f2027988c141b8277ec29aaad416",
+   "src/avoi/datasets/cert.py": "510b3ecb9fe0f1ac74f996d9e26280643719265dc5cc6fa9109f40d7a91980ac",
+   "src/avoi/evaluation/engine.py": "7b5a938914e3119596bbccbbe1cf9c259b3b40211995577f0b42736a4e8bacab",
+   "src/avoi/evaluation/stage2.py": "a3810a8975603767b2a8bb8bf5e1095f64c09dbe0cb736f81d222ac9bbbb6bb5",
+   "src/avoi/evaluation/stage3.py": "c10a47c0a03ce16ab357372db93e56b2cbb7583f73fbc9a549a91326aefeac65",
+   "src/avoi/evaluation/stage3_wp1.py": "5e33fc3e2665e7aea82a7e897a0e54d4892c7168c37714a1b4f7fb4f79775852",
+   "src/avoi/evaluation/stage3_wp2.py": "a597106180654e018b2acd08e0bc71b7c8b11e05da16c1548ab4feebda85941c",
+   "src/avoi/evaluation/labels.py": "f3680d7f1ab7f9e981a9ccae5aaa8964807e4d43b4c56681b119508c0148e6ba",
+   "testbed/scenarios/generator.py": "d4e3d99439d56bd99a35efc0898b8794ca354d0b9f81f87ae8583c026d2ed6c7",
+   "testbed/oracle.py": "7ee9c0128a5f4852692ffd7410ae343b6d6346f20d1de0983047296deb55c602",
+   "testbed/evidence_collectors/collectors.py": "9b86bc06a93b8fb207abe27999be4781152c888c4df4ac0a264c45aa2dd0b294",
+   "experiments/stage3/run_stage3.py": "5a237faf9000b8cd663f12eda200e8702dc8d83f6b2a1d0091807a204436a9a0",
+   "experiments/stage3/run_wp1.py": "17e6c8fc6dadd309c1eea3f8b3c1626461802e6ab057ae415643c3cd7751b1c2",
+   "experiments/stage3/run_wp2_ait.py": "1808cb669a75ff5d8bdcb108279d9795c7390ad01323cb9fe5b23771dcb78eb0",
+   "experiments/stage3/run_wp2_cert.py": "6c854df1f865b0d83d4ea08a1b401eb9d09dcc5a86186ca09281c6e30b21e6ac"
+  },
+  "data": {
+   "data/processed/iam_stage3_dev/evidence_store/*.json": {
+    "n_files": 512,
+    "sha256": "f3ef90c27ed65e750cd4f209bae015042d5d423113e439906c3126b8e84c927d"
+   },
+   "data/processed/iam_stage3_dev/ground_truth/*.json": {
+    "n_files": 512,
+    "sha256": "e7454631998a946b54583bb324dc82a444978a383ae68f4f00d586e83da88f74"
+   },
+   "data/processed/iam_stage3_val/evidence_store/*.json": {
+    "n_files": 256,
+    "sha256": "c0415bfd49631c5ea4d79f48ca25798ae21766da63bda4632ffbe0479f3e21ca"
+   },
+   "data/processed/iam_stage3_val/ground_truth/*.json": {
+    "n_files": 256,
+    "sha256": "600b5c80a8dc0b3e85127194bf1a3b753a3f2a781d4454c64ec919e99f0f984c"
+   },
+   "data/processed/iam_stage3_conf/evidence_store/*.json": {
+    "n_files": 256,
+    "sha256": "7c2c88c2cc4c22e32483eca037c0a491256a7511d1947ad4f9a1184d811fa292"
+   },
+   "data/processed/iam_stage3_conf/ground_truth/*.json": {
+    "n_files": 256,
+    "sha256": "07073967132d8963272c5b6374666c0f8a389402062bace4a6e6123f8edf072a"
+   },
+   "data/processed/iam/evidence_store/*.json": {
+    "n_files": 320,
+    "sha256": "3fcc7e62e87fbb57ec8f33bc90839dc81d420630b42820b9f5da94dd02edb9f2"
+   },
+   "data/processed/iam_stage2/evidence_store/*.json": {
+    "n_files": 320,
+    "sha256": "27011aefa4c01fe905d4bd9e2982bf1acb68e3558e9e3692afbbb73952aa0297"
+   },
+   "data/processed/ait/evidence_store.json": {
+    "n_files": 1,
+    "sha256": "177214d3d0dc4ff1aa2ba86825db84b6351eb0ae1e9f6c44200beaed11aeaa73"
+   },
+   "data/processed/ait_stage2/evidence_store.json": {
+    "n_files": 1,
+    "sha256": "1e64638085b775b3aa0602501a87d2991baacdabab73b4dee14754fd0ba6334b"
+   },
+   "data/processed/ait_stage3/evidence_store.json": {
+    "n_files": 1,
+    "sha256": "897cee2316b3053985cfd580204a1228c8597b0c02dffd2795a1a495007eb7a2"
+   },
+   "data/processed/cert/evidence_store.json": {
+    "n_files": 1,
+    "sha256": "7f4393eed79f654df78eec5a0d3dbe0044ec085baa0a16e0daffb18dcce55278"
+   },
+   "data/processed/cert_stage2/evidence_store.json": {
+    "n_files": 1,
+    "sha256": "dd56af2d141b76d6b2a5cd5afd7eb343906ac8a00b8d270a699d2fb28775d84b"
+   },
+   "data/processed/cert_stage3_r4_1/evidence_store.json": {
+    "n_files": 1,
+    "sha256": "8f71ddd1596fe659125e01c60c79d4e0c7719bbdd0c328d13b7b45ad02f78380"
+   },
+   "data/processed/cert_stage3_r5_1/evidence_store.json": {
+    "n_files": 1,
+    "sha256": "e7895bd6ad0c3e8b39ef32357614e9efe34ae9640384ae8a19c98c4ae3ef6e37"
+   }
+  },
+  "combined_sha256": "2270598af50a4486fa5e1d7b40cb5ec96e145163b0a8c86554b405303fdb711f"
+ }
+}
