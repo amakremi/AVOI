@@ -23,10 +23,16 @@ st = F1.st
 
 def save(fig, name):
     FIG.mkdir(parents=True, exist_ok=True)
-    fig.savefig(FIG / f"{name}.pdf")
+    out = []
+    try:
+        fig.savefig(FIG / f"{name}.pdf")
+        out.append(f"results/stage3/figures/{name}.pdf")
+    except ImportError as exc:   # Windows Smart App Control blocking a freshly-installed fontTools DLL (backend_pdf's
+        print(f"WARNING: PDF export blocked for {name} ({exc}); PNG only", flush=True)   # font-subsetting dependency)
     fig.savefig(FIG / f"{name}.png", dpi=300)
+    out.append(f"results/stage3/figures/{name}.png")
     plt.close(fig)
-    return [f"results/stage3/figures/{name}.pdf", f"results/stage3/figures/{name}.png"]
+    return out
 
 
 # ------------------------------------------------------------------------------------------------ 1: adaptive selection
@@ -80,15 +86,21 @@ def fig_adaptive_selection(adapt_summary: dict, rank_trace_path: Path, wp1_objec
     fh = T3.pd.read_csv(S3 / "tables" / "table_fixed_horizon_stage3.csv") if (S3 / "tables" / "table_fixed_horizon_stage3.csv").exists() else None
     if fh is not None:
         width = 0.35
-        for i, oid in enumerate(wp1_objectives):
+        xticks, xlabels = [], []
+        x = 0
+        for oid in wp1_objectives:
             d = fh[fh["objective"] == oid]
-            for j, k in enumerate(sorted(d["horizon_k"].unique())):
+            for k in sorted(d["horizon_k"].unique()):
                 r = d[d["horizon_k"] == k].iloc[0]
-                x = i * 3 + j
                 axD.bar(x - width / 2, r["adaptive_loss"], width, color=st("AVOI")[0], label="Adaptive AVOI" if x == 0 else None)
                 axD.bar(x + width / 2, r["frozen_loss"], width, color=MUTED, label="Frozen-Order AVOI" if x == 0 else None)
+                star = "*" if r["signflip_p_holm"] < 0.05 else ""
+                xticks.append(x); xlabels.append(f"{oid.split('-')[1]}\nk={k}{star}")
+                x += 1
+            x += 0.6
+        axD.set_xticks(xticks, xlabels, fontsize=6)
         axD.legend(fontsize=6.5)
-    axD.set_ylabel("Expected decision loss"); axD.set_xlabel("objective x horizon k")
+    axD.set_ylabel("Expected decision loss"); axD.set_xlabel("objective, horizon k (* = Holm p<0.05)")
     axD.set_title("D. Adaptive vs Frozen-Order loss, fixed horizons k=2,3", fontsize=8)
     fig.suptitle("Same objective + same available actions + different observations = different next action", fontsize=10, color=INK)
     fig.tight_layout(rect=[0, 0, 1, 0.95])
@@ -139,7 +151,7 @@ def fig_external_transfer(ait_dev_records: dict, cert_dev_record: dict | None, a
             if rec is None:
                 continue
             fold_metrics = []
-            if dev_rec:
+            if dev_rec and "candidates_full" in dev_rec:   # per-fold detail (AIT devcheck); CERT's saved JSON omits it
                 chosen_kind, chosen_alpha = dev_rec["chosen"]["kind"], dev_rec["chosen"].get("alpha")
                 match = next((c for c in dev_rec["candidates_full"] if c["kind"] == chosen_kind and c.get("alpha") == chosen_alpha), None)
                 fold_metrics = match["fold_metrics"] if match else []

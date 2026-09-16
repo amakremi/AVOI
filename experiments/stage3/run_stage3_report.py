@@ -63,8 +63,15 @@ def build_all():
     if not stability.empty:
         out["feature_stability"] = T3.write(stability, "table_feature_stability_stage3", "Stage 3 WP2. Development-only feature-stability diagnostic")
 
-    ait_raw = pd.read_csv(S3 / "raw" / "wp2_ait" / "episodes_raw.csv.gz") if (S3 / "raw" / "wp2_ait" / "episodes_raw.csv.gz").exists() else None
-    cert_raw = pd.read_csv(S3 / "raw" / "wp2_cert" / "episodes_raw.csv.gz") if (S3 / "raw" / "wp2_cert" / "episodes_raw.csv.gz").exists() else None
+    def load_ext_raw(p: Path):
+        if not p.exists():
+            return None
+        df = pd.read_csv(p)
+        df["method_family"] = df["method"].str.replace(r"\[s\d+\]", "", regex=True)   # Stage-2 per_method() convention
+        return df
+
+    ait_raw = load_ext_raw(S3 / "raw" / "wp2_ait" / "episodes_raw.csv.gz")
+    cert_raw = load_ext_raw(S3 / "raw" / "wp2_cert" / "episodes_raw.csv.gz")
     ext_avoi = []
     validated_claims = []
     for claim in WP2_AIT_CLAIMS:
@@ -75,27 +82,18 @@ def build_all():
     for dom, claim in validated_claims:
         raw = ait_raw if dom == "ait" else cert_raw
         t = T3.table_external_avoi(raw, dom, claim)
-        t.insert(0, "domain", dom); t.insert(1, "objective", claim)
+        t.insert(2, "note", "VALIDATED - primary E2 evidence")
+        ext_avoi.append(t)
+    # also include RESTRICTED/UNSUPPORTED claims as diagnostic-only rows (protocol Section 45: never discard them)
+    for dom, claim, rec, raw in [("ait", c, ait_records.get(c), ait_raw) for c in WP2_AIT_CLAIMS] + [("cert", WP2_CERT_CLAIM, cert_record, cert_raw)]:
+        if rec is None or raw is None or (dom, claim) in validated_claims:
+            continue
+        t = T3.table_external_avoi(raw, dom, claim)
+        t.insert(2, "note", f"DIAGNOSTIC ONLY - status {rec['decision']['status']}, not VALIDATED (E2 not applicable)")
         ext_avoi.append(t)
     if ext_avoi:
         out["external_avoi"] = T3.write(pd.concat(ext_avoi, ignore_index=True), "table_external_avoi_stage3",
-                                        "Stage 3 WP2. AVOI vs baselines on externally VALIDATED evidence models (E2)")
-    else:
-        # still write an empty/diagnostic table so the report generator does not silently omit the required table
-        diag = []
-        for dom, claim, rec, raw in (("ait", c, ait_records.get(c), ait_raw) for c in WP2_AIT_CLAIMS):
-            if rec is None or raw is None:
-                continue
-            t = T3.table_external_avoi(raw, dom, claim)
-            t.insert(0, "domain", dom); t.insert(1, "objective", claim); t.insert(2, "note", f"DIAGNOSTIC ONLY - status {rec['decision']['status']}, not VALIDATED (E2 not applicable)")
-            diag.append(t)
-        if cert_record is not None and cert_raw is not None:
-            t = T3.table_external_avoi(cert_raw, "cert", WP2_CERT_CLAIM)
-            t.insert(0, "domain", "cert"); t.insert(1, "objective", WP2_CERT_CLAIM); t.insert(2, "note", f"DIAGNOSTIC ONLY - status {cert_record['decision']['status']}, not VALIDATED (E2 not applicable)")
-            diag.append(t)
-        if diag:
-            out["external_avoi"] = T3.write(pd.concat(diag, ignore_index=True), "table_external_avoi_stage3",
-                                            "Stage 3 WP2. Raw acquisition-policy diagnostics on external evidence models (none VALIDATED; E2 not testable - reported per protocol Section 45)")
+                                        "Stage 3 WP2. AVOI vs baselines on external evidence models (VALIDATED = primary E2 evidence; others diagnostic only, protocol Section 45)")
 
     # ---------------- figures
     figs = {}

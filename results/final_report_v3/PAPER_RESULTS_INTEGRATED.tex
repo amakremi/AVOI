@@ -1,0 +1,85 @@
+% AVOI -- integrated manuscript-ready results text across all three stages.
+% Stage 1 = original pre-registered experiment (historical, unchanged).
+% Stage 2 = evidence-model adequacy safety condition + confirmation on new data (defined after Stage 1; not part of
+%           the Stage-1 pre-registration).
+% Stage 3 = adaptive next-evidence selection (WP1) and external-domain evidence-model validation (WP2), defined and
+%           frozen after Stage 2 concluded. Stage 3 was NOT part of the original Stage-1 pre-registration and was NOT
+%           anticipated by the Stage-2 protocol; it is reported here as a third, separately frozen stage of the same
+%           research program, not retroactively folded into the original hypotheses.
+\section{Results}
+
+\subsection{Experimental history and design}
+The evaluation proceeded in three stages, each frozen before its own data collection and each building only on data
+and code artefacts explicitly designated development inputs for the next stage. Stage~1 was the original,
+pre-registered experiment (hypotheses H1--H5), with no evidence-model adequacy condition. Its poor cross-testbed
+transfer on AIT-LDS motivated an evidence-model adequacy safety condition, defined for Stage~2 -- this condition was
+not part of the Stage-1 pre-registration. Stage~2 froze the adequacy policy, evaluated it on new IAM scenarios and
+previously unused AIT-LDS/CERT partitions, and found only IAM evidence models eligible for autonomous use. Two
+questions were left open by Stage~2's frozen design and could not have been asked within it: whether AVOI's
+next-evidence choice is actually history-dependent rather than an artefact of a fixed initial ranking, and whether the
+adequacy policy that blocked every non-IAM evidence model in Stage~2 was structurally unpassable or simply had not yet
+been given a fair chance with correctly developed models. \textbf{Stage~3 was designed and frozen specifically to
+answer these two questions after Stage~2's results were known; it is a new, third stage of this research program, not
+a revision of the original pre-registration or a hypothesis the first two stages were testing for.} It reuses the
+AVOI decision rule, loss matrix and adequacy policy unchanged, and treats every Stage-1/2 dataset as Stage-3
+development data only -- never as new confirmation data.
+
+\subsection{Stage 1}
+AVOI substantially reduced the number of evidence acquisitions relative to exhaustive and fixed-order strategies on
+all three original datasets. It did not uniformly reduce unsafe assurance relative to information gain (H2 not
+supported), and exhaustive evidence collection achieved lower expected loss on the controlled IAM testbed. On
+AIT-LDS, all methods showed high unsafe assurance ($\mathrm{UAR}\approx 0.31$), reflecting a cross-testbed evidence-model
+transfer problem later addressed structurally in Stage~2.
+
+\subsection{Stage 2: evidence-model adequacy}
+Four of nine Stage-2 evidence models satisfied the predefined autonomous-assurance eligibility policy, all four on the
+controlled IAM testbed; the AIT exfiltration model was classified UNSUPPORTED (inverted discrimination, AUROC 0.024),
+the AIT intrusion and CERT models lacked sample support or were over-confident, and two further IAM models were
+restricted by the calibration-slope rule. On the four validated IAM models, AVOI required 1.45 acquisitions per
+confirmation episode versus 4.55 more for exhaustive collection and 3.16 more for a fixed checklist (Holm-adjusted
+$p<10^{-128}$), with unsafe assurance identical to information gain. The gate produced no autonomous decisions for any
+non-validated model and never converted model inadequacy into a false assurance, at the cost of coverage wherever it
+acted (UAR 0.013$\to$0.002 across IAM, coverage 0.785$\to$0.451).
+
+\subsection{Stage 3: is AVOI's evidence selection actually adaptive?}
+Using IAM scenarios extended with a latent, AVOI-invisible branching mechanism (the same admissible evidence-action
+set can require different next evidence depending on observed history, but the acquisition policy never sees the
+latent mechanism directly), a group-aware permutation test rejected history-independence of AVOI's next-evidence
+choice for all three tested objectives (Holm-adjusted $p=0.0003$ each), with 55--59\% of observed steps showing a
+reversal relative to the policy's own initial ranking. \textbf{This state-dependent re-ranking is real}: it is not an
+artefact of always following a fixed initial ranking. Whether this adaptivity reduces expected decision loss compared
+with a policy that fixes its ranking after the first observation (``Frozen-Order AVOI'') was tested at matched
+evidence budgets and was \textbf{not supported at the pre-registered, pooled level} (neither $k=2$ nor $k=3$ showed a
+significant, correctly signed effect once pooled across the three tested objectives). Descriptively, adaptive
+re-ranking helped significantly on one objective (loss lower by 0.086--0.113, Holm $p=0.0006$), made no measurable
+difference on a second (the same evidence is collected regardless of order), and was numerically -- marginally
+significantly at one horizon -- worse on the third, which was also the one objective whose evidence model failed the
+adequacy calibration condition. We therefore do not claim that AVOI's re-ranking reduces expected decision loss in
+general; we claim only that the re-ranking is real and that its value is objective- and model-adequacy-dependent.
+
+\subsection{Stage 3: does the adequacy policy ever pass an external domain?}
+Stage~2's AIT exfiltration failure was diagnosed as a non-monotone calibration-map artefact of a flawed two-testbed
+development split (the raw discriminating statistic separates violations with AUROC 1.00 on every development
+testbed), not a genuine, irreparable transfer failure. Using a corrected development procedure (calibrators restricted
+to monotone maps; model selection by leave-one-development-testbed-out worst-fold AUROC) on three previously unused
+AIT-LDS v2.0 testbeds and two previously unused CERT releases, one of three external claims -- CERT insider-threat
+detection -- passed the unchanged Stage-2 adequacy policy on independent validation data (AUROC 0.895, Brier skill
+score 0.744, expected calibration error 0.017; VALIDATED under all primary adequacy conditions). This is the first
+non-IAM evidence model to pass the adequacy policy across both Stage~2 and Stage~3. The two AIT claims remained
+RESTRICTED for insufficient sample support on the pre-committed target testbed; one of them (intrusion detection)
+showed discrimination as strong and consistent as the validated CERT model (worst-development-fold AUROC 0.837,
+confirmation-testbed AUROC 0.969) and was restricted on sample count alone, while the other (exfiltration detection)
+showed genuinely weaker cross-testbed transfer (confirmation-testbed AUROC 0.729, falling to 0.563 on one testbed)
+independent of its sample-support shortfall. On the validated CERT model, AVOI retained a significant acquisition
+advantage over a fixed checklist at comparable autonomous coverage (2.42 vs.\ 4.85 mean acquisitions, Holm
+$p<10^{-75}$), but this advantage is not claimed against exhaustive collection, whose higher coverage exceeded a
+pre-registered no-trivial-abstention margin. The validated model itself had zero sensitivity to the violated class at
+its tuned operating threshold, despite passing every adequacy condition -- a reminder that the adequacy policy
+certifies probabilistic quality, not operational recall of the outcome that matters.
+
+\subsection{What Stage 3 adds and does not add}
+Stage 3 establishes that AVOI's adaptivity is genuine and that the adequacy policy is not structurally unpassable
+outside the controlled IAM testbed -- both were open questions after Stage 2. It does not establish that adaptive
+re-ranking is generally better than a fixed order, that AVOI generalizes to AIT-LDS, or that CERT-style evidence models
+are reliable beyond the single validated claim and reduced release pool examined here. These qualifications are
+reported alongside the positive results, following the same evidentiary standard applied throughout Stages 1 and 2.

@@ -1,0 +1,78 @@
+% AVOI -- Stage 3 manuscript-ready results text (conservative). Numbers from results/stage3/tables.
+% Stage 3 = adaptive next-evidence selection (WP1) and external-domain (AIT-LDS v2.0, CERT) evidence-model validation (WP2).
+% This section reports Stage 3 on its own terms; it was designed and frozen after Stage 2 concluded and was not part
+% of the original Stage-1 pre-registration or the Stage-2 protocol.
+\section{Results: Stage 3 (adaptive evidence selection and external-domain validation)}
+
+\subsection{Design}
+Stage 3 was frozen (\texttt{config/stage3.yaml}) after Stage 2 concluded, using all nine Stage-1/2 evidence-model
+datasets only as Stage-3 development data. Two questions were pre-registered. WP1: does AVOI's next-evidence choice
+depend on previously observed evidence (A1), and does re-ranking after each observation reduce expected loss relative
+to a policy that commits to a ranking computed once and never revised, at matched evidence budgets (A2, ``Frozen-Order
+AVOI'')? WP2: does at least one external (non-IAM) evidence model pass the unchanged Stage-2 adequacy policy on
+independent data (E1), and does AVOI retain an acquisition-efficiency advantage on it (E2)? The AVOI decision rule,
+loss matrix, and adequacy policy are unchanged from Stage 2. New IAM scenarios use a scenario generator extended with
+a latent, AVOI-invisible ``branching mechanism'' so that the same admissible evidence-action set can require different
+next evidence depending on history. New external data are three previously unused AIT-LDS v2.0 testbeds and two
+previously unused CERT releases.
+
+\subsection{Adaptive next-evidence selection (A1)}
+Across three IAM objectives with branching mechanisms, a group-aware permutation test (null: next action independent
+of observed history, given objective and step; history permuted within scenario-family$\times$step blocks; 10{,}000
+permutations) rejected independence for every objective (Holm-adjusted $p=0.0003$, all three). At least two objectives
+selected more than one distinct next action at step $\ge 2$ across confirmation episodes, and rank-reversal rates
+(the adaptive next action differing from the policy's own frozen initial ranking) were 55--59\% of observed steps.
+AVOI's next-evidence choice is therefore genuinely history-dependent, not an artefact of a fixed initial ranking.
+
+\subsection{Adaptive versus Frozen-Order AVOI (A2)}
+Frozen-Order AVOI computes the AVOI ranking once, at the first decision point, and always acquires the
+highest-ranked remaining action from that fixed list; every other component is identical to Adaptive AVOI. Both
+policies were forced to acquire exactly $k\in\{2,3\}$ actions. Pooled over the three objectives (as pre-registered),
+neither $k$ showed a 95\% paired-bootstrap confidence interval on the loss difference entirely below zero ($k=2$:
+$-0.022$, CI $[-0.048,+0.010]$; $k=3$: $+0.003$, CI $[-0.038,+0.048]$), and neither reached Holm significance
+(sign-flip $p=0.143$ and $0.951$). \textbf{A2 is not supported at the pre-registered pooled level.} Reported
+descriptively per objective: on IAM-02-TERM-DISABLED, adaptive re-ranking was significantly better than the frozen
+order at both horizons (loss lower by 0.086--0.113, Holm $p=0.0006$). On IAM-01-MFA-PRIV the two policies were
+outcome-identical (the acquired evidence set, not its order, determines the terminal decision on this objective). On
+IAM-03-PRIV-AUTHZ -- the one WP1 objective whose evidence model failed the adequacy calibration condition -- the
+frozen order was numerically better, reaching a marginal effect at $k=3$ (Holm $p=0.098$): adaptive re-ranking against
+a poorly calibrated value signal can cost loss rather than save it.
+
+\subsection{External evidence-model adequacy (E1)}
+The Stage-2 AIT exfiltration-detection failure (AUROC 0.024) was diagnosed as a non-monotone calibration-map artefact
+of a flawed two-testbed development split, not a genuine inversion: the raw discriminating statistic separates
+violations with AUROC 1.00 on every development testbed examined. A calibrator restricted to monotone maps, combined
+with leave-one-development-testbed-out model selection, removes this failure mode by construction. On three
+previously unused AIT-LDS v2.0 testbeds and two previously unused CERT releases, one of three external claims passed
+the unchanged adequacy policy: CERT-INSIDER (AUROC 0.895, 95\% CI $[0.671,0.953]$; Brier skill score 0.744, CI
+$[0.554,0.918]$; expected calibration error 0.017; $n=394$, 21 violated episodes, 187 independent groups) was
+VALIDATED under all primary adequacy conditions. Both AIT claims remained RESTRICTED for insufficient sample support
+on the pre-committed target testbed; one of the two (intrusion detection) showed strong, robust discrimination
+(worst-development-fold AUROC 0.837; target-testbed AUROC 0.994; confirmation-testbed AUROC 0.969) and would plausibly
+validate under a target assignment with more positive cases, while the other (exfiltration detection) showed weaker,
+less consistent transfer (worst-development-fold AUROC 0.638; confirmation-testbed AUROC 0.729, falling to 0.563 on
+one confirmation testbed) independent of its sample-support failure.
+
+CERT-INSIDER's pass is not evidence of good operating-point performance: at its adequacy-validation-tuned decision
+threshold, sensitivity to the violated class was 0.0 (0 of 21 violated episodes correctly flagged) despite good ranking
+and calibration quality. The adequacy policy's conditions concern probabilistic discrimination, calibration and sample
+support, not threshold-level recall of the class of interest.
+
+\subsection{Acquisition efficiency on the validated external model (E2)}
+On CERT-INSIDER confirmation episodes ($n=458$), AVOI acquired 2.42 items on average versus 4.85 for a fixed checklist
+and 10.0 for exhaustive collection (paired Wilcoxon, Holm-adjusted $p<10^{-75}$ throughout), at normalised cost 0.056
+versus 0.416 and 1.237 respectively. Applying a pre-registered no-trivial-abstention rule (efficiency is claimed only
+where AVOI's autonomous coverage is not below the comparator's by more than 0.10): the efficiency advantage holds
+against the fixed checklist (coverage gap 0.026) but is not claimed against exhaustive collection (coverage gap 0.150)
+or against information gain, whose operating point on this domain was degenerate (zero acquisitions, 100\% false
+assurance among its ``assured'' decisions). \textbf{E2 is therefore partially supported}: an efficiency advantage
+exists, but only relative to a subset of comparators, on the single external claim that reached VALIDATED status.
+
+\subsection{Limitations}
+The CERT result uses a release pool reduced from four to two releases (7 pooled insiders rather than the originally
+planned 17), a time-budget decision made and frozen before either new release's label was read; the two remaining
+releases were fully downloaded and verified but not processed. Both external-data-independence structures (the
+size-based AIT target-testbed assignment; the reduced CERT release pool) are single, non-adversarial choices, not
+robustness sweeps. A2's pooled test combines one objective with a significant adaptive win, one with a mechanically
+null result, and one with an adequacy-limited loss, into a single pre-registered statistic; this is reported as
+designed, not re-aggregated post hoc to change the conclusion.

@@ -1,0 +1,158 @@
+{
+ "stage": 3,
+ "description": "Reproducibility manifest for Stage 3 (adaptive next-evidence selection, WP1; external-domain evidence-model validation, WP2). Stage 1/2 manifests (results/EXPERIMENT_MANIFEST.json, results/SEED_MANIFEST.json, results/stage1_ungated/*) are unaffected and are not restated here.",
+ "git_commit": "c310622e46f55a89b24758e18f2ea9b9f6a840d9",
+ "freeze": {
+  "file": "results/stage3/EXPERIMENT_FREEZE_STAGE3.json",
+  "freeze_version": 2,
+  "combined_sha256": "cfed9952be3d29d47a4dd7840fac5816795c9c67b2624e95ed354277bfa65607",
+  "supersedes": {
+   "file": "results/stage3/EXPERIMENT_FREEZE_STAGE3_v1_SUPERSEDED.json",
+   "combined_sha256": "2270598af50a4486fa5e1d7b40cb5ec96e145163b0a8c86554b405303fdb711f",
+   "correction_reason": "stale IAM-only CONFLICT global left set by WP1 confirm(), crashing WP2 confirmation-phase threshold tuning; adequacy decisions unaffected (adequacy_phase never used the buggy code path)"
+  }
+ },
+ "adequacy_decisions": {
+  "file": "results/stage3/ADEQUACY_DECISIONS_STAGE3.json",
+  "decisions_sha256": "2346565c9a6504949e6b360e45f28831fe2d3f534e5114f9d03427de442f366c",
+  "policy_source": "config/model_adequacy.yaml (unchanged from Stage 2)",
+  "policy_config_sha256": "788ce4c6ed360cbd5ab6e4cd2b20e728dac8927afb00f7f5f3be7caf2512f8ae",
+  "decisions": {
+   "iam|IAM-01-MFA-PRIV": {"status": "VALIDATED", "model": "tan(alpha=0.5)+none"},
+   "iam|IAM-02-TERM-DISABLED": {"status": "VALIDATED", "model": "tan(alpha=0.5)+beta"},
+   "iam|IAM-03-PRIV-AUTHZ": {"status": "RESTRICTED", "reason": "MODEL_ADEQUACY_RESTRICTED", "model": "tan(alpha=1.0)+none"},
+   "ait|AIT-EXFIL": {"status": "RESTRICTED", "reason": "INSUFFICIENT_ADEQUACY_SAMPLE_SUPPORT", "model": "hgb(alpha=None)+target_isotonic"},
+   "ait|AIT-INTRUSION": {"status": "RESTRICTED", "reason": "INSUFFICIENT_ADEQUACY_SAMPLE_SUPPORT", "model": "tan(alpha=2.0)+target_none"},
+   "cert|CERT-INSIDER": {"status": "VALIDATED", "reason": "ALL_PRIMARY_ADEQUACY_CONDITIONS_MET", "model": "tan(alpha=5.0)+target_sigmoid"}
+  }
+ },
+ "config_hashes": {
+  "config/stage3.yaml": "7cfde1b9bcdbfb8b95c095d9021bcbfdc65088dc3d3fa6b524dc6693876efb25",
+  "config/model_adequacy.yaml": "788ce4c6ed360cbd5ab6e4cd2b20e728dac8927afb00f7f5f3be7caf2512f8ae",
+  "config/loss_matrix.yaml": "6e59e6b74908e668d1ed6b28d7fcb650b2f622861a97ab64ed1cb948ecef423e"
+ },
+ "environment": {
+  "os": "Windows 11 Home 10.0.26200",
+  "python": "3.14.2",
+  "numpy": "2.3.4",
+  "scipy": "1.16.3",
+  "scikit-learn": "1.7.2",
+  "pandas": "2.3.3",
+  "matplotlib": "3.10.7",
+  "fontTools": "4.55.0 (downgraded from 4.65.0: Windows Smart App Control blocked the compiled varLib.iup extension in 4.65.0, pulled in transitively when fastparquet was installed for the adaptive-ranking trace)",
+  "parquet_engine": "fastparquet (pyarrow's compiled parquet extension was blocked by the same Smart App Control policy earlier in the project)"
+ },
+ "seeds": {
+  "analysis": 20270401,
+  "bootstrap": 20270401,
+  "permutation": 20270402,
+  "iam_scenario_generator_dev": 20270111,
+  "iam_scenario_generator_val": 20270222,
+  "iam_scenario_generator_conf": 20270333,
+  "ait_target_split": 20270403,
+  "cert_episode_sampling": 20270404,
+  "cert_user_split": 20270405,
+  "wp1_random_baseline_seeds": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+  "data_split_seeds_distinct": true
+ },
+ "partitions": {
+  "iam": {
+   "development": {"n_scenarios": 512, "n_families": 64, "source": "s3dev", "generator": "config/scenario_generator_stage3_dev.yaml"},
+   "validation": {"n_scenarios": 256, "n_families": 32, "source": "s3val", "generator": "config/scenario_generator_stage3_val.yaml"},
+   "confirmation": {"n_scenarios": 256, "n_families": 32, "source": "s3conf", "generator": "config/scenario_generator_stage3_conf.yaml"},
+   "also_used_as_stage3_development": ["data/processed/iam/evidence_store (Stage 1)", "data/processed/iam_stage2/evidence_store (Stage 2)"]
+  },
+  "ait": {
+   "development_testbeds": ["russellmitchell", "santos", "fox", "harrison", "wardbeck"],
+   "development_validation": "leave-one-development-testbed-out",
+   "target_testbed_A": "shaw",
+   "target_split_rule": "sha256(seed|testbed|60min-block) mod 100 < 40 -> calibration else adequacy_validation, seed 20270403",
+   "confirmation_testbeds": ["wheeler", "wilson"],
+   "role_assignment_rule": "smallest untouched AIT-LDS v2.0 archive by size -> target A, fixed before any Stage-3 AIT label was read"
+  },
+  "cert": {
+   "development_releases": ["r4.2", "r5.2"],
+   "development_validation": "train r4.2 -> evaluate r5.2, and train r5.2 -> evaluate r4.2",
+   "new_release_pool": ["r4.1", "r5.1"],
+   "new_release_pool_originally_planned": ["r4.1", "r5.1", "r6.1", "r6.2"],
+   "scope_reduction_reason": "r6.1 (20GB) / r6.2 (24GB) single-threaded bz2 extraction would need ~7-8 further hours given r5.1's measured ~110min/11GB rate; decided and frozen before any r4.1/r5.1 label was read (docs/STAGE3_EXTERNAL_MODELS.md S2b)",
+   "r6_archives_status": "fully downloaded and MD5-verified, not extracted; retained for future work",
+   "user_split_rule": "sha256(seed|release|user) mod 100: <20 calibration, <60 adequacy_validation, else confirmation, seed 20270405"
+  }
+ },
+ "dataset_checksums": {
+  "cert_release_archive_md5": {
+   "r4.1": "d2fbed1684dd09a6e44072bf05248912",
+   "r5.1": "26b6bda75ffd50c0e8adf3e30fe18746",
+   "r6.1": "e52c8e4134624bb8cbb6ee773a592044",
+   "r6.2": "2f99ec7dfa3e17a29691cbf80c8a662b"
+  },
+  "ait_lds_v2_source": "Zenodo record 5789064",
+  "cert_source": "figshare article 12841247"
+ },
+ "cache_and_reuse_identities": {
+  "reused_unchanged_stage1_2_processed_stores": {
+   "iam_stage1_evidence_store": {"path": "data/processed/iam/evidence_store", "n_files": 320},
+   "iam_stage2_evidence_store": {"path": "data/processed/iam_stage2/evidence_store", "n_files": 320},
+   "ait_dev_testbed_indexes": ["data/processed/ait/russellmitchell_evidence.sqlite", "data/processed/ait/santos_evidence.sqlite", "data/processed/ait/fox_evidence.sqlite", "data/processed/ait/harrison_evidence.sqlite", "data/processed/ait/wardbeck_evidence.sqlite"],
+   "cert_r4_2_store": "data/processed/cert/cert_evidence.sqlite",
+   "cert_r5_2_store": "data/processed/cert_stage2/cert_evidence.sqlite"
+  },
+  "newly_built_stage3_stores": {
+   "iam_stage3_dev_store": {"path": "data/processed/iam_stage3_dev/evidence_store", "n_files": 512},
+   "iam_stage3_val_store": {"path": "data/processed/iam_stage3_val/evidence_store", "n_files": 256},
+   "iam_stage3_conf_store": {"path": "data/processed/iam_stage3_conf/evidence_store", "n_files": 256},
+   "ait_target_confirmation_indexes": {
+    "ait_shaw_index": {"path": "data/processed/ait/shaw_evidence.sqlite", "bytes": 48095232},
+    "ait_wheeler_index": {"path": "data/processed/ait/wheeler_evidence.sqlite", "bytes": 83939328},
+    "ait_wilson_index": {"path": "data/processed/ait/wilson_evidence.sqlite", "bytes": 102666240}
+   },
+   "ait_stage3_episode_store": "data/processed/ait_stage3",
+   "cert_r4_1_store": {"path": "data/processed/cert_stage3_r4_1/cert_evidence.sqlite", "bytes": 72880128},
+   "cert_r5_1_store": {"path": "data/processed/cert_stage3_r5_1/cert_evidence.sqlite", "bytes": 74801152}
+  },
+  "policy": "Historical Stage-1/2 processed stores were read directly (never re-parsed, never re-run through Docker); new Stage-3 stores were built once and raw extracted CERT sources were deleted immediately after building each store. No cached prediction/model artefact was reused across a change in data partition, feature definition, or objective config within this session."
+ },
+ "evidence_model_hyperparameters": {
+  "candidate_grid": {
+   "tan": {"alpha": [0.5, 1.0, 2.0, 5.0]},
+   "naive_bayes": {"alpha": [0.5, 1.0, 2.0, 5.0]},
+   "calibrated_logistic": {"C": [0.1, 1.0], "note": "interface-compatible, evaluated as available but not included in the Stage-3 candidate pool (docs/STAGE3_EXTERNAL_MODELS.md S2a)"},
+   "hist_gradient_boosting": {"max_depth": [3], "learning_rate": [0.1], "max_iter": [200]}
+  },
+  "discretisation": "pooled development 50th/90th percentile thresholds (Stage-1 Discretizer, unchanged)",
+  "selection_rule": ["exclude non-finite outputs or non-monotone (decreasing in P(Y=1|E)) calibration maps", "rank by worst leave-one-development-fold AUROC (descending)", "require median development PR skill > 0", "tie-break within 0.01 worst-fold AUROC: mean log loss, then Brier, then ECE"],
+  "chosen_models": {
+   "IAM-01-MFA-PRIV": "tan(alpha=0.5)+none",
+   "IAM-02-TERM-DISABLED": "tan(alpha=0.5)+beta",
+   "IAM-03-PRIV-AUTHZ": "tan(alpha=1.0)+none",
+   "AIT-EXFIL": "hgb(max_depth=3, learning_rate=0.1, max_iter=200)+isotonic(zero_shot)/target_isotonic(primary)",
+   "AIT-INTRUSION": "tan(alpha=2.0)+none(zero_shot)/target_none(primary, i.e. no recalibration selected)",
+   "CERT-INSIDER": "tan(alpha=5.0)+sigmoid(zero_shot)/target_sigmoid(primary)"
+  },
+  "calibration_methods_considered": ["none", "sigmoid (Platt)", "isotonic", "beta"],
+  "calibration_methods_excluded": "any monotone-map fit found to be decreasing in P(Y=1|E) on grouped CV log loss selection (the Stage-2 AIT-EXFIL root-cause safeguard)"
+ },
+ "loss_and_weights": {
+  "loss_matrix": {"false_assurance": 10.0, "false_non_assurance": 2.0, "human_review": 1.0},
+  "preference_weights": {"lambda_cost": 0.05, "mu_privacy": 0.02, "nu_delay": 0.02},
+  "identical_to": "Stage-2 primary configuration (config/loss_matrix.yaml)"
+ },
+ "hypothesis_outcomes": {
+  "A1": "SUPPORTED",
+  "A2": "NOT SUPPORTED (pooled, pre-registered); per-objective: IAM-02 supported, IAM-01 null, IAM-03 opposite direction",
+  "E1": "SUPPORTED (via E1-CERT)",
+  "E1-AIT": "NOT SUPPORTED",
+  "E1-CERT": "SUPPORTED",
+  "E2": "PARTIALLY SUPPORTED (holds vs Checklist only; gated out vs All Evidence and Information Gain by the no-trivial-abstention rule)"
+ },
+ "required_tables": ["table_adaptive_selection_stage3", "table_external_adequacy_stage3", "table_external_avoi_stage3", "table_fixed_horizon_stage3", "table_normal_operation_stage3", "table_feature_stability_stage3", "table_zero_shot_vs_target_stage3"],
+ "required_figures": ["adaptive_next_evidence_selection", "external_model_adequacy_stage3", "external_model_transfer_stage3", "cross_stage_summary"],
+ "report_suite": ["results/final_report_v3/RESULTS.md", "results/final_report_v3/CLAIMS_ALLOWED.md", "results/final_report_v3/FAILURE_ANALYSIS.md", "results/final_report_v3/PAPER_RESULTS_STAGE3.tex", "results/final_report_v3/PAPER_RESULTS_INTEGRATED.tex"],
+ "stage1_2_integrity_check": {
+  "snapshot": "results/archive/pre_stage3_snapshot/MANIFEST.json",
+  "files_hashed": 2603,
+  "test": "tests/test_stage3.py::test_previous_results_unchanged",
+  "result": "unchanged (verified repeatedly across this session, most recently before this manifest was written)"
+ }
+}

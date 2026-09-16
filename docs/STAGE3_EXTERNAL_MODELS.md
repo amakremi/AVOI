@@ -103,12 +103,30 @@ The role rule (Section 3, fixed before any Stage-3 label was read: smallest unto
 Shaw genuinely contains almost no labelled DNS-exfiltration activity — AIT-LDS v2.0 testbeds do not all carry the same
 mix of injected attacks. On shaw's adequacy-validation split (504 episodes after the 40/60 calibration split), AIT-EXFIL
 has **0 violated episodes** and AIT-INTRUSION has 6 (2 groups with a violation). Both claims are therefore **RESTRICTED**
-(`INSUFFICIENT_ADEQUACY_SAMPLE_SUPPORT`) under the unchanged policy — **not** because the model discriminates poorly
-(leave-one-development-testbed-out and zero-shot AUROC on shaw were both ≈0.998 for AIT-EXFIL), but because the
-pre-committed target testbed happens to carry too few positive cases to certify that discrimination statistically.
+(`INSUFFICIENT_ADEQUACY_SAMPLE_SUPPORT`) under the unchanged policy.
 
-This is reported as the actual outcome: **E1-AIT is not achieved by the frozen size-based role rule**, even though the
-underlying evidence model shows strong descriptive discrimination on the confirmation testbeds (Section 11 of
-`results/final_report_v3/RESULTS.md`). The rule is not changed post hoc; a different pre-registered role assignment
-(e.g. rotating which testbed serves as target A, or a label-blind stratified choice) is left as future work, since
-choosing it now would use confirmation-adjacent information not available before the freeze.
+**Corrected note (verified by direct computation, superseding an earlier imprecise draft of this section that
+conflated median development PR-skill with AUROC):** the two claims are *not* equally well-supported by discrimination.
+AIT-INTRUSION (chosen: TAN, α = 2.0) has robust cross-testbed discrimination — leave-one-development-testbed-out worst-fold
+AUROC 0.837, shaw target-calibrated AUROC 0.994 [0.983, 1.000], and pooled confirmation-testbed (wheeler+wilson)
+AUROC 0.969 (wheeler 0.966, wilson 0.977) — computed directly from the target-calibrated posterior against the
+confirmation labels. It is RESTRICTED purely on sample support (6 violated episodes / 2 independent groups on shaw). AIT-EXFIL
+(chosen: HistGradientBoostingClassifier) is materially weaker: leave-one-development-testbed-out **worst-fold AUROC is
+only 0.638** (russellmitchell is the weak fold — the raw DNS-count feature's within-testbed AUROC is 0.607 there vs.
+0.93-1.00 on the other four development testbeds; see `table_feature_stability_stage3.csv`), and the pooled
+confirmation-testbed AUROC is 0.729 (wilson 0.845, but **wheeler only 0.563 — close to chance**). In addition, because shaw's
+calibration split has zero violated episodes, the isotonic calibrator fit on it collapses every posterior into a narrow
+band near 1.0 (observed range [0.9956, 0.999999] on confirmation data): even where the underlying ranking is informative
+(wilson), the calibrated decision is effectively constant, which is why every acquisition strategy including All-Evidence
+gets uniform catastrophic loss on AIT-EXFIL confirmation data (Section 11 of `results/final_report_v3/RESULTS.md`). The
+median development PR-skill of 0.998 that appears in the candidate-selection table reflects the high base rate of
+violations in the development testbeds, not held-out ranking quality, and should not be read as evidence of strong
+transfer.
+
+This is reported as the actual outcome: **E1-AIT is not achieved by the frozen size-based role rule** for either claim.
+AIT-INTRUSION fails only on sample support and would plausibly validate under a role assignment with more violated cases
+in the target-A role; AIT-EXFIL's transfer is genuinely weaker and would likely remain unvalidated even with more
+target-A samples, given the near-chance wheeler AUROC and the calibration collapse. The role rule is not changed post hoc;
+a different pre-registered role assignment (e.g. rotating which testbed serves as target A, or a label-blind stratified
+choice) is left as future work, since choosing it now would use confirmation-adjacent information not available before
+the freeze.

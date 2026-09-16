@@ -1,0 +1,36 @@
+# Hyperparameter grids. Selected ONLY by inner cross-validation inside each outer training fold.
+evidence_models:
+  tan:
+    alpha: [0.5, 1.0, 2.0, 5.0]
+  naive_bayes:
+    alpha: [0.5, 1.0, 2.0, 5.0]
+  calibrated_logistic:
+    C: [0.1, 1.0, 10.0]
+    n_masks: 12
+    isotonic_min_rows: 1000
+  model_selection_criterion: masked_log_loss   # mean posterior log loss under random evidence masks on inner validation
+  masked_eval_masks: 5
+
+policy_thresholds:
+  risk_tau: [0.0, 0.02, 0.05, 0.08, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+  confidence_theta: [0.5, 0.6, 0.7, 0.75, 0.8, 0.85, 0.9, 0.93, 0.95, 0.97, 0.99, 0.999, 1.01]
+  symmetric_tau: [0.0, 0.01, 0.02, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]
+  curve_tau_points: 81            # dense grid for risk-coverage / frontier curves (descriptive, test set)
+  information_gain_eps_bits: 0.001
+
+tuning_objective: "mean(realised primary loss) + lambda*mean(cost) + mu*mean(privacy exposure) + nu*mean(delay)"
+
+cross_validation:
+  iam:
+    outer: "StratifiedGroupKFold(n_splits=5) over scenario families; stratified by scenario-level count of violated objectives >= 3"
+    inner: "GroupKFold(n_splits=3) over families within the outer training fold"
+    robustness: "leave-one-scenario-family-out (40 folds) for AVOI and selected baselines at primary thresholds"
+  ait:
+    outer: "leave-one-testbed-out (2 folds: russellmitchell, santos)"
+    inner: "3 contiguous day-blocks of the training testbed"
+  cert:
+    outer: "StratifiedGroupKFold(n_splits=5) over users; stratified by insider status"
+    inner: "StratifiedGroupKFold(n_splits=3) over users within the outer training fold"
+
+random_baseline_seeds: 20
+master_seed: 20260914

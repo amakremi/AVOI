@@ -1,0 +1,56 @@
+# STAGE-2 evidence-model adequacy policy (safety/applicability condition for autonomous AVOI).
+# NOT part of the Stage-1 pre-registration: motivated by Stage-1 AIT transfer/calibration problems (docs/EXPERIMENTAL_HISTORY.md).
+# The thresholds are PREDEFINED STAGE-2 AUTONOMOUS-ASSURANCE ELIGIBILITY CRITERIA for this evaluation,
+# not universal cybersecurity or statistical standards. Frozen in results/stage2/EXPERIMENT_FREEZE_STAGE2.json.
+policy_version: stage2-adequacy-1.0
+
+# Probability evaluated for adequacy: calibrated P(Y=1 | E) of the frozen evidence model with ALL evidence of an
+# episode observed (one prediction per episode). Posteriors under random evidence subsets are reported as diagnostics.
+evaluation_state: full_evidence
+positive_class_for_discrimination: violated   # Y = 0; score = 1 - P(Y=1|E)
+
+primary:
+  discrimination:
+    auroc_ci_lower_gt: 0.50
+    pr_skill_ci_lower_gt: 0.0
+  calibration:
+    bss_gt: 0.0                  # Brier Skill Score vs development-prevalence-only predictor
+    ece_le: 0.10                 # 10 equal-width bins
+    slope_min: 0.50
+    slope_max: 1.50
+  support:
+    min_violated_cases: 20
+    min_satisfied_cases: 20
+    min_groups: 10               # independent bootstrap units in the adequacy-validation partition
+    min_groups_with_violation: 5
+
+status_rules:
+  - "support fails -> RESTRICTED (INSUFFICIENT_ADEQUACY_SAMPLE_SUPPORT)"
+  - "discrimination fails -> UNSUPPORTED (MODEL_ADEQUACY_UNSUPPORTED)"
+  - "calibration fails -> RESTRICTED (MODEL_ADEQUACY_RESTRICTED)"
+  - "otherwise VALIDATED"
+enforced_behaviour: >
+  RESTRICTED or UNSUPPORTED: no autonomous acquisition and no autonomous terminal decision; the operational output is
+  HumanReview with reason MODEL_ADEQUACY_RESTRICTED or MODEL_ADEQUACY_UNSUPPORTED (never NotAssured). Ungated AVOI
+  trajectories are retained only as diagnostics.
+
+bootstrap:
+  n_resamples: 5000
+  confidence: 0.95
+  unit: group                    # IAM: scenario family; AIT: contiguous 60-minute block; CERT: user
+  seed: 20261103
+
+calibration_candidates: [none, sigmoid, isotonic, beta]
+calibration_selection: "5-fold group cross-validated mean log loss on development out-of-fold predictions (full evidence + 3 random evidence subsets per episode); ties resolved in the order listed"
+model_candidates:
+  tan: {alpha: [0.5, 1.0, 2.0, 5.0]}
+  naive_bayes: {alpha: [0.5, 1.0, 2.0, 5.0]}
+model_selection: "development out-of-fold log loss of uncalibrated posteriors (full evidence + 3 random evidence subsets)"
+oof_random_masks: 3
+ece_bins: 10
+
+sensitivity:
+  ece_le: [0.05, 0.10, 0.15]
+  slope_interval: [[0.75, 1.25], [0.50, 1.50], [0.25, 1.75]]
+  auroc_ci_lower_gt: [0.50, 0.55, 0.60]
+  min_violated_cases: [10, 20, 40]
