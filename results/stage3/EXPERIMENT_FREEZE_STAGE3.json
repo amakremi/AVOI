@@ -1,5 +1,5 @@
 {
- "frozen_utc": "2026-09-15T13:42:54+00:00",
+ "frozen_utc": "2026-09-16T09:34:18+00:00",
  "statement": "Stage-3 protocol frozen before any Stage-3 adequacy validation or confirmation evaluation.",
  "pre_stage3_snapshot_commit": "b33ac34367f54a296f9999094e9bf7b527cc5b12",
  "stage2_freeze_sha256": "6a99f0fa797c93cf85e77f2850702adbb146ff2f28d1478458cb7414b44300e9",
@@ -302,8 +302,8 @@
    "testbed/evidence_collectors/collectors.py": "9b86bc06a93b8fb207abe27999be4781152c888c4df4ac0a264c45aa2dd0b294",
    "experiments/stage3/run_stage3.py": "5a237faf9000b8cd663f12eda200e8702dc8d83f6b2a1d0091807a204436a9a0",
    "experiments/stage3/run_wp1.py": "17e6c8fc6dadd309c1eea3f8b3c1626461802e6ab057ae415643c3cd7751b1c2",
-   "experiments/stage3/run_wp2_ait.py": "1808cb669a75ff5d8bdcb108279d9795c7390ad01323cb9fe5b23771dcb78eb0",
-   "experiments/stage3/run_wp2_cert.py": "6c854df1f865b0d83d4ea08a1b401eb9d09dcc5a86186ca09281c6e30b21e6ac"
+   "experiments/stage3/run_wp2_ait.py": "5124239947420d53cf1bdfe63511fbee75ff728d4565bba981a3cfef0bad08f1",
+   "experiments/stage3/run_wp2_cert.py": "b5965a3fb6c267ff113e264a46d526480c5a1b5e4de18650368a834f174f562c"
   },
   "data": {
    "data/processed/iam_stage3_dev/evidence_store/*.json": {
@@ -367,6 +367,21 @@
     "sha256": "e7895bd6ad0c3e8b39ef32357614e9efe34ae9640384ae8a19c98c4ae3ef6e37"
    }
   },
+  "combined_sha256": "cfed9952be3d29d47a4dd7840fac5816795c9c67b2624e95ed354277bfa65607"
+ },
+ "freeze_version": 2,
+ "supersedes": {
+  "file": "results/stage3/EXPERIMENT_FREEZE_STAGE3_v1_SUPERSEDED.json",
   "combined_sha256": "2270598af50a4486fa5e1d7b40cb5ec96e145163b0a8c86554b405303fdb711f"
+ },
+ "correction": {
+  "defect": "src/avoi/evaluation/stage2.py's module-level CONFLICT dict (an IAM-only evidence-polarity-conflict flag, reused unchanged from Stage 2) was left set by WP1's confirm() loop and never cleared before WP2's confirm() called the same reused S.tune()/S.rows_at() on AIT/CERT data, indexing the stale 256-length IAM array out of bounds and crashing WP2-AIT confirm() with IndexError.",
+  "scope_of_defect": "confirm()-phase threshold tuning only. adequacy_phase() computes metrics directly from model posteriors (AQ.point_metrics / AQ.group_bootstrap) and never calls rows_at()/tune(); it never hit this code path.",
+  "consequence": "No confirmation output existed for WP2-AIT/WP2-CERT before this correction (the crash occurred before any row was written). WP1 confirmation output, produced before the crash under v1, is unaffected (IAM's own CONFLICT flag was set correctly for every IAM objective) and is kept.",
+  "correction_applied": "S.CONFLICT[\"flags\"] = None added at the start of run_wp2_ait.py::confirm() and run_wp2_cert.py::confirm(), so AIT/CERT rows fall back to the documented conflict=False default (AIT/CERT have no such flag).",
+  "adequacy_decisions_unaffected": true,
+  "adequacy_decisions_sha256": "2346565c9a6504949e6b360e45f28831fe2d3f534e5114f9d03427de442f366c",
+  "primary_rules_changed": false,
+  "statement": "No Stage-3 primary rule, threshold, partition, model-selection procedure, or hypothesis was changed."
  }
 }
