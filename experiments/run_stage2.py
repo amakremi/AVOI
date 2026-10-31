@@ -104,17 +104,11 @@ if __name__ == "__main__":
                "loss_matrix": yaml.safe_load((ROOT / "config/loss_matrix.yaml").read_text(encoding="utf-8")),
                "hyperparameters": yaml.safe_load((ROOT / "config/hyperparameters.yaml").read_text(encoding="utf-8")),
                "iam_generation_seed": yaml.safe_load((ROOT / "config/scenario_generator_stage2.yaml").read_text(encoding="utf-8"))["master_seed"],
-               "required_figures": ["model_adequacy_diagnostics", "calibration_curve", "roc_pr_curves", "risk_coverage_raw",
-                                    "risk_coverage_adequacy_enforced", "cost_safety_frontier", "budget_performance_curve",
-                                    "acquisition_risk_trajectory", "evidence_request_ecdf", "missingness_robustness", "missingness_uar_coverage",
-                                    "privacy_safety_tradeoff", "action_frequency_heatmap", "asymmetric_loss_ablation", "adequacy_sensitivity",
-                                    "cost_violin", "decision_flow"],
                "required_tables": ["table_model_adequacy", "adequacy_gate_effect", "main_comparison_raw", "main_comparison_enforced",
                                    "matched_coverage", "matched_safety_nondegenerate", "budget", "missingness", "privacy", "ablation",
                                    "asymmetric_loss_ablation", "escalation", "zero_acquisition", "statistics", "adequacy_sensitivity",
                                    "fa_sensitivity", "table_boundary", "llm_planner", "main_comparison_validated_models"],
-               "analysis_code_note": ("Table/figure/report code (stage2_tables.py, stage2_figures.py, run_stage2_report.py) is not hashed "
-                                      "so presentation bugs can be fixed; it reads only saved raw outputs and cannot change them."),
+               "analysis_code_note": "CSV export code reads saved raw outputs and does not change them.",
                "hashes": hashes()}
         FREEZE.write_text(json.dumps(rec, indent=1, default=str), encoding="utf-8")
         print("Stage-2 freeze:", rec["hashes"]["combined_sha256"], "freeze-file sha256:", sha256_file(FREEZE))

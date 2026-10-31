@@ -251,7 +251,7 @@ def _fake_episode_frame():
     return pd.DataFrame(rows)
 
 
-def test_stage2_tables_report_uar_with_coverage_and_group_bootstrap():
+def test_stage2_tables_include_uar_coverage_and_group_bootstrap():
     from avoi.evaluation import stage2_tables as T
     df = _fake_episode_frame()
     mt = T.missingness_table(df, df.assign(adequacy_mode="enforced"))
@@ -267,32 +267,3 @@ def test_stage2_tables_report_uar_with_coverage_and_group_bootstrap():
     assert {"P(N_acq=0)", "E[N_acq | N_acq>0]", "acq_required_UAR", "acq_required_coverage"} <= set(z.columns)
 
 
-def test_final_report_v2_consistency():
-    rep = ROOT / "results" / "final_report_v2"
-    if not (rep / "RESULTS.md").exists():
-        pytest.skip("final report v2 not generated yet")
-    res = (rep / "RESULTS.md").read_text(encoding="utf-8")
-    claims = (rep / "CLAIMS_ALLOWED.md").read_text(encoding="utf-8")
-    import re
-    assert len(re.findall(r"^## \d+\.", res, flags=re.M)) == 20
-    assert len(re.findall(r"^\| C\d+ \|", claims, flags=re.M)) == 15
-    for text in (res, claims, (rep / "FAILURE_ANALYSIS.md").read_text(encoding="utf-8"), (rep / "PAPER_RESULTS.tex").read_text(encoding="utf-8")):
-        assert "AVOI-GRC" not in text
-        assert not re.search(r"pre-?registered (model-)?adequacy", text, flags=re.I)
-    assert re.search(r"H1[^\n]*not supported", res, flags=re.I) and re.search(r"H2[^\n]*not supported", res, flags=re.I)
-    assert "raw" in res.lower() and "enforced" in res.lower()
-
-
-def test_manuscript_facing_outputs_use_avoi_label():
-    roots = [ROOT / "results" / "stage1_ungated" / "manuscript", ROOT / "results" / "stage2" / "tables",
-             ROOT / "results" / "final_report_v2"]
-    checked = 0
-    for r in roots:
-        if not r.exists():
-            continue
-        for p in r.rglob("*"):
-            if p.suffix in (".md", ".csv", ".tex"):
-                assert "AVOI-GRC" not in p.read_text(encoding="utf-8", errors="ignore"), p
-                checked += 1
-    if checked == 0:
-        pytest.skip("no manuscript-facing outputs yet")

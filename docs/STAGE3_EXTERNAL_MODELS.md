@@ -118,7 +118,7 @@ confirmation-testbed AUROC is 0.729 (wilson 0.845, but **wheeler only 0.563 — 
 calibration split has zero violated episodes, the isotonic calibrator fit on it collapses every posterior into a narrow
 band near 1.0 (observed range [0.9956, 0.999999] on confirmation data): even where the underlying ranking is informative
 (wilson), the calibrated decision is effectively constant, which is why every acquisition strategy including All-Evidence
-gets uniform catastrophic loss on AIT-EXFIL confirmation data (Section 11 of `results/final_report_v3/RESULTS.md`). The
+gets uniform catastrophic loss on AIT-EXFIL confirmation data (see the external-model CSV results under `results/stage3/tables/`). The
 median development PR-skill of 0.998 that appears in the candidate-selection table reflects the high base rate of
 violations in the development testbeds, not held-out ranking quality, and should not be read as evidence of strong
 transfer.

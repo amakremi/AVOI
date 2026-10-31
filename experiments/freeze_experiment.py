@@ -21,9 +21,6 @@ if __name__ == "__main__":
         "primary_metrics": ["UAR", "FAR_A", "expected decision loss", "mean/median acquisitions", "normalised cost",
                             "privacy exposure", "escalation rate", "autonomous coverage", "balanced accuracy", "macro F1",
                             "MCC", "AUROC", "AUPRC", "Brier", "log loss", "ECE", "calibration slope/intercept"],
-        "primary_figures": ["risk_coverage_curve", "cost_safety_frontier", "budget_performance_curve", "calibration_curve",
-                            "acquisition_risk_trajectory", "evidence_request_ecdf", "privacy_safety_tradeoff",
-                            "missingness_robustness_curve"],
         "hashes": hashes,
     }
     FREEZE.parent.mkdir(parents=True, exist_ok=True)

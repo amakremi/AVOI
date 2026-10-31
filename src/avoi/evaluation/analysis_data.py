@@ -1,7 +1,4 @@
-"""Loading and aggregation of raw experiment outputs for statistics, tables, figures and reports.
-
-All numbers in the final report are computed here from results/raw/*; nothing is entered manually.
-"""
+"""Loading and aggregation of raw experiment outputs for CSV analysis."""
 from __future__ import annotations
 
 import gzip

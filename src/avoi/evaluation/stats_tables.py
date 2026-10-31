@@ -1,4 +1,4 @@
-"""Statistical analysis, result tables (CSV / Markdown / LaTeX) and pre-registered hypothesis evaluation."""
+"""Statistical analysis and CSV result tables."""
 from __future__ import annotations
 
 import json
@@ -27,23 +27,11 @@ def fmt(v, digits=3):
     return str(v)
 
 
-def write_table(df: pd.DataFrame, name: str, caption: str) -> dict:
+def write_table(df: pd.DataFrame, name: str, caption: str = "") -> dict:
     TABLES.mkdir(parents=True, exist_ok=True)
-    df.to_csv(TABLES / f"{name}.csv", index=False)
-    shown = df.copy()
-    for c in shown.columns:
-        shown[c] = shown[c].map(lambda v: fmt(v))
-    md = [f"**{caption}**", "", "| " + " | ".join(shown.columns) + " |", "|" + "---|" * len(shown.columns)]
-    md += ["| " + " | ".join(str(x) for x in row) + " |" for row in shown.itertuples(index=False)]
-    (TABLES / f"{name}.md").write_text("\n".join(md) + "\n", encoding="utf-8")
-    esc = lambda s: str(s).replace("_", r"\_").replace("%", r"\%").replace("&", r"\&").replace("#", r"\#").replace("<=", r"$\le$").replace(">=", r"$\ge$")
-    tex = [r"\begin{table}[!ht]", r"\centering", r"\scriptsize", rf"\caption{{{esc(caption)}}}", rf"\label{{tab:{name}}}",
-           r"\resizebox{\textwidth}{!}{%", r"\begin{tabular}{" + "l" * len(shown.columns) + "}", r"\toprule",
-           " & ".join(esc(c) for c in shown.columns) + r" \\", r"\midrule"]
-    tex += [" & ".join(esc(x) for x in row) + r" \\" for row in shown.itertuples(index=False)]
-    tex += [r"\bottomrule", r"\end{tabular}}", r"\end{table}"]
-    (TABLES / f"{name}.tex").write_text("\n".join(tex) + "\n", encoding="utf-8")
-    return {"name": name, "csv": f"results/tables/{name}.csv", "md": f"results/tables/{name}.md", "tex": f"results/tables/{name}.tex"}
+    path = TABLES / f"{name}.csv"
+    df.to_csv(path, index=False)
+    return {"name": name, "csv": path.relative_to(ROOT).as_posix()}
 
 
 def ci_str(est, lo, hi, d=3):

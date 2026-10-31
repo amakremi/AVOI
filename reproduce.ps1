@@ -41,7 +41,5 @@ if (-not $SkipExperiments) {
     Step "Sensitivity + leave-one-family-out" { & $py experiments\run_sensitivity.py --workers $Workers }
 }
 if (-not $SkipLLM) { Step "Secondary LLM planner (requires Ollama + llama3.1:8b)" { & $py experiments\run_llm_planner.py --model llama3.1:8b --fold 0 } }
-Step "Live agent demonstration on running testbed" { & $py experiments\live_agent_demo.py }
-Step "Statistics, tables, figures, reports" { & $py experiments\run_statistics.py }
-Step "Environment report and manifests" { & $py experiments\environment_report.py }
-Write-Host "Done. See results\final_report\RESULTS.md" -ForegroundColor Green
+Step "CSV analysis exports" { & $py experiments\run_statistics.py }
+Write-Host "Done. CSV results are under results\tables" -ForegroundColor Green

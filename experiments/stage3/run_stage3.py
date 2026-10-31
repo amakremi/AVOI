@@ -101,8 +101,7 @@ def do_freeze():
            "required_tables": ["table_adaptive_selection_stage3", "table_external_adequacy_stage3", "table_external_avoi_stage3",
                                "table_fixed_horizon_stage3", "table_normal_operation_stage3", "table_feature_stability_stage3",
                                "table_zero_shot_vs_target_stage3"],
-           "required_figures": ["adaptive_next_evidence_selection", "external_model_adequacy_stage3", "external_model_transfer_stage3", "cross_stage_summary"],
-           "analysis_code_note": "table/figure/report generation code is not hashed so presentation bugs can be fixed; it reads only saved raw outputs and cannot change them",
+           "analysis_code_note": "CSV export code reads saved raw outputs and does not change them",
            "hashes": hashes()}
     FREEZE.write_text(json.dumps(rec, indent=1, default=str), encoding="utf-8")
     print("Stage-3 freeze:", rec["hashes"]["combined_sha256"], "freeze-file sha256:", sha256_file(FREEZE))

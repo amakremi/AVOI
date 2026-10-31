@@ -39,7 +39,7 @@ LOSS = LossMatrix()
 def write(df, name, caption):
     ST.TABLES = TABLES
     ST.write_table(df, name, caption)
-    return {"name": name, **{ext: f"results/stage2/tables/{name}.{ext}" for ext in ("csv", "md", "tex")}}
+    return {"name": name, "csv": f"results/stage2/tables/{name}.csv"}
 
 
 # ====================================================================================== loading

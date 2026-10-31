@@ -1,4 +1,4 @@
-"""POST-HOC analyses (declared as deviations from the pre-registration in RESULTS.md).
+"""POST-HOC analyses declared as deviations from the pre-registration.
 
 Deviation D1 — degenerate safety-target matching. The pre-registered safety-target operating point ("lowest inner cost
 with inner UAR <= target") is satisfied trivially by thresholds that stop immediately and decide NotAssured for every

@@ -62,5 +62,5 @@ and the oracle only consider events strictly before T0, so login tests executed 
 evidence or labels.
 
 ## Deviations
-See `results/final_report/RESULTS.md` § Deviations (D1: degenerate registered safety-target matching; post-hoc
-non-degenerate variant reported separately and labelled exploratory).
+The non-degenerate matched-safety analysis is exported in `results/tables/table5b_matched_safety_nondegenerate.csv`;
+it is a post-hoc exploratory analysis and does not replace the registered comparison.

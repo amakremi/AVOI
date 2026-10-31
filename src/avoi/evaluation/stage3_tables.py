@@ -22,7 +22,7 @@ DISPLAY = dict(T2.DISPLAY, **{"Frozen-Order AVOI": "Frozen-Order AVOI"})
 def write(df, name, caption):
     ST.TABLES = TABLES
     ST.write_table(df, name, caption)
-    return {"name": name, **{ext: f"results/stage3/tables/{name}.{ext}" for ext in ("csv", "md", "tex")}}
+    return {"name": name, "csv": f"results/stage3/tables/{name}.csv"}
 
 
 def ci_str(est, lo, hi, d=3):

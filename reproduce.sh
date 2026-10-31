@@ -18,6 +18,4 @@ fi
 [ -f results/EXPERIMENT_FREEZE.json ] || "$PY" experiments/freeze_experiment.py
 "$PY" experiments/run_primary.py && "$PY" experiments/run_public_replay.py && "$PY" experiments/run_ablation.py && "$PY" experiments/run_sensitivity.py
 [ "${SKIP_LLM:-0}" = 1 ] || "$PY" experiments/run_llm_planner.py --model llama3.1:8b --fold 0
-"$PY" experiments/live_agent_demo.py
 "$PY" experiments/run_statistics.py
-"$PY" experiments/environment_report.py

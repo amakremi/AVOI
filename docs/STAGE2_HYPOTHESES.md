@@ -4,7 +4,7 @@ Written before the Stage-2 freeze (`results/stage2/EXPERIMENT_FREEZE_STAGE2.json
 validation or confirmation evaluation. **These are not part of the Stage-1 pre-registration.** They were formulated
 after Stage-1 results were known (Stage-1 AIT results motivated the adequacy condition), so they are prospective only
 relative to the Stage-2 frozen protocol and the new Stage-2 data. Stage-1 hypotheses H1–H5 and their outcomes are
-unchanged (see `docs/PREREGISTERED_HYPOTHESES.md`, `results/stage1_ungated/final_report/RESULTS.md`).
+unchanged (see `docs/PREREGISTERED_HYPOTHESES.md` and the Stage-1 CSV results in `results/stage1_ungated/tables/`).
 
 Definitions: adequacy status per evidence model (objective / micro-claim) from `config/model_adequacy.yaml` on the
 adequacy-validation partition; UAR = #(Assured ∧ Y=0)/#(Y=0); coverage = share of autonomous terminal decisions;
@@ -34,8 +34,8 @@ differences (not part of the decision rule, never used to reinterpret S3).
 **S4 — safety versus coverage.** The effect of adequacy enforcement on unsafe assurance is accompanied by an explicit
 change in autonomous coverage.
 *Operationalisation:* for every non-VALIDATED model, report ΔUAR (enforced − raw) with CI and Δcoverage; S4 is
-**supported** if every non-zero ΔUAR co-occurs with Δcoverage < 0 and all reports present both quantities jointly
-(checked by the report generator). **Not testable** if all models are VALIDATED.
+**supported** if every non-zero ΔUAR co-occurs with Δcoverage < 0 and the exported CSV contains both quantities jointly.
+**Not testable** if all models are VALIDATED.
 
 Not hypotheses: Stage-2 replication of Stage-1 comparisons (information gain, generic VOI, confidence threshold,
 all-evidence), asymmetric-loss ablation, missingness, privacy, budget, LLM planner — reported descriptively with paired
